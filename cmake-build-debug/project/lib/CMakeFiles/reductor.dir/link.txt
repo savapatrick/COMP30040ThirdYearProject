@@ -1,0 +1,2 @@
+C:\PROGRA~1\CODEBL~1\MinGW\bin\ar.exe qc libreductor.a  CMakeFiles/reductor.dir/reductor.cpp.obj
+C:\PROGRA~1\CODEBL~1\MinGW\bin\ranlib.exe libreductor.a
