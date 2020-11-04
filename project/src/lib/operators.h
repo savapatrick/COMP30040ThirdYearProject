@@ -6,10 +6,12 @@
 #define PROJECT_OPERATORS_H
 
 #include <string>
+#include <unordered_map>
+#include <set>
 
 namespace utils {
     // singleton class for tokens
-    class Tokens {
+    class Operators {
     public:
         const std::string AND;
         const std::string OR;
@@ -20,15 +22,31 @@ namespace utils {
         const std::string EQuantifier;
         const std::string VQuantifier;
     private:
-        Tokens(): AND("&"), OR("|"), NOT("~"), OPENEDBracket("("),
-        CLOSEDBracket(")"), IMPLY("->"), EQuantifier("?"), VQuantifier("@"){}
-        Tokens(Tokens const&);
-        void operator=(Tokens const&);
+        std::unordered_map<std::string, std::string> mapping;
+        std::unordered_map<std::string, std::string> inv;
+        Operators(): AND("&"), OR("|"), NOT("~"), OPENEDBracket("("),
+                     CLOSEDBracket(")"), IMPLY("->"), EQuantifier("?"), VQuantifier("@"){
+            mapping["AND"] = AND;
+            mapping["OR"] = OR;
+            mapping["NOT"] = NOT;
+            mapping["OPENED"] = OPENEDBracket;
+            mapping["CLOSED"] = CLOSEDBracket;
+            mapping["IMPLY"] = IMPLY;
+            mapping["E"] = EQuantifier;
+            mapping["@"] = VQuantifier;
+            for (auto &elem : mapping) {
+                inv[elem.second] = elem.first;
+            }
+        }
+        Operators(Operators const&);
+        void operator=(Operators const&);
     public:
-        static Tokens &getInstance() {
-            static Tokens instance;
+        static Operators &getInstance() {
+            static Operators instance;
             return instance;
         }
+        std::string whichOperator(int position, const std::string& seq);
+        void advanceOperator(int &position, const std::string& seq, const std::string &result);
     };
 }
 

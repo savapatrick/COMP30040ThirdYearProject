@@ -9,8 +9,6 @@
 using namespace std;
 
 int main() {
-    auto a = utils::salut();
-    auto b = utils::salut2();
     std::cout << "Hello, patrick 2020!" << std::endl;
     return 0;
 }
