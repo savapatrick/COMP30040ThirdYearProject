@@ -1,2 +1,0 @@
-C:\PROGRA~1\CODEBL~1\MinGW\bin\ar.exe qc libparser.a  CMakeFiles/parser.dir/parser.cpp.obj
-C:\PROGRA~1\CODEBL~1\MinGW\bin\ranlib.exe libparser.a

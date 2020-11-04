@@ -1,2 +1,0 @@
-C:\PROGRA~1\CODEBL~1\MinGW\bin\ar.exe qc libutils.a  CMakeFiles/utils.dir/verifier.cpp.obj CMakeFiles/utils.dir/evaluator.cpp.obj CMakeFiles/utils.dir/parser.cpp.obj CMakeFiles/utils.dir/reducer.cpp.obj
-C:\PROGRA~1\CODEBL~1\MinGW\bin\ranlib.exe libutils.a
