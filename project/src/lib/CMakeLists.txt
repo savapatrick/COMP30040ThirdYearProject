@@ -1,13 +1,13 @@
 set(SOURCE_FILES
         verifier.h
         verifier.cpp
-        evaluator.h
-        evaluator.cpp
+        parse_tree.h
+        parse_tree.cpp
         parser.h
         parser.cpp
         reducer.h
         reducer.cpp
-        tokens.h
-        tokens.cpp)
+        operators.h
+        operators.cpp)
 
 add_library(utils SHARED STATIC ${SOURCE_FILES})
