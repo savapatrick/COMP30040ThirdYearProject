@@ -3,8 +3,22 @@
 //
 
 #include "reducer.h"
+#include <algorithm>
+
+using namespace std;
 
 namespace utils {
+
+    // does step 1.1)
+    bool Reducer::reduceImplicationStep(int node) {
+        throw "Not implemented";
+    }
+
+    // does step 1.2) - 1.6)
+    bool Reducer::pushNOTStep(int node) {
+        throw  "Not implemented";
+    }
+
     void Reducer::basicReduce() {
         bool doIt;
         do {
@@ -21,25 +35,35 @@ namespace utils {
         }while(doIt);
     }
 
-    // does step 1.1)
-    bool Reducer::reduceImplicationStep(int node) {
-        throw "Not implemented";
-    }
-
-    // does step 1.2) - 1.6)
-    bool Reducer::pushNOTStep(int node) {
-        throw  "Not implemented";
+    bool Reducer::skolemizationStep(int node) {
+        return false;
     }
 
     void Reducer::skolemization() {
         while(skolemizationStep(parseTree.Root));
     }
 
-    void Reducer::convertToCNF(int node) {
-        while(convertToCNFStep(parseTree.Root));
+    Entity Reducer::mergeEntities(const Entity &first, const Entity &second) {
+        if (first.getType() == NORMALForms and second.getType() == NORMALForms) {
+            auto firstStorage = first.getEntity<Entity::NormalFormStorage>();
+            auto secondStorage = second.getEntity<Entity::NormalFormStorage>();
+            if(firstStorage.first == secondStorage.first) {
+                vector<Entity::PredicateStorage> result(first.getEntity<Entity::NormalFormStorage>().second);
+                vector<Entity::PredicateStorage> aux(second.getEntity<Entity::NormalFormStorage>().second);
+                for (auto &elem: aux) {
+                    result.emplace_back(elem);
+                }
+                return Entity(NORMALForms, Entity::NormalFormStorage(firstStorage.first, result));
+            }
+        }
+        throw invalid_argument("at least of the Entities provided are not in NormalForm");
     }
 
-    bool Reducer::skolemizationStep(int node) {
+    bool Reducer::convertToCNFStep(int node) {
         return false;
+    }
+
+    void Reducer::convertToCNF(int node) {
+        while(convertToCNFStep(parseTree.Root));
     }
 }

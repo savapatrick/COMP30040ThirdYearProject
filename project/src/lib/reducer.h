@@ -6,6 +6,7 @@
 #define PROJECT_REDUCER_H
 
 #include "parse_tree.h"
+#include "entity.h"
 
 namespace utils {
     class ParseTree;
@@ -16,6 +17,7 @@ namespace utils {
         bool pushNOTStep(int node);
         bool skolemizationStep(int node);
         bool convertToCNFStep(int node);
+        Entity mergeEntities(const Entity& first, const Entity& second);
     public:
         Reducer()= default;
         explicit Reducer(ParseTree &_parseTree) : parseTree(_parseTree){}

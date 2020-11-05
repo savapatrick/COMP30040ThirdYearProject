@@ -3,13 +3,35 @@
 //
 
 #include "entity.h"
+#include <stdexcept>
+
+using namespace std;
 
 namespace utils {
-    bool Entity::isDisjunctionNormalForm() {
-        return false;
+
+    EntityType Entity::getType() const {
+        return type;
     }
 
-    bool Entity::isConjunctiveNormalForm() {
-        return false;
+    template<typename Value>
+    const Value &Entity::getEntity() const {
+        throw logic_error("Not existing getter");
+    }
+
+    template<> const string &Entity::getEntity() const {
+        if (type == 0) {
+            return get<0>(entity);
+        }
+        return get<2>(entity);
+    }
+
+    // throws
+    template<> const Entity::PredicateStorage &Entity::getEntity() const {
+        return get<1>(entity);
+    }
+
+    // throws
+    template<> const Entity::NormalFormStorage &Entity::getEntity() const {
+        return get<3>(entity);
     }
 };

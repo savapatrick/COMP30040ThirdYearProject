@@ -2,9 +2,10 @@
 // Created by Patrick Sava on 11/4/2020.
 //
 
-#include <bits/stdc++.h>
+#include <iostream>
 #include "lib/verifier.h"
-#include "lib/parser.h"
+
+// C++ 17, because it uses variant
 
 using namespace std;
 
