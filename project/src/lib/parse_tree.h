@@ -28,7 +28,7 @@ namespace utils {
     public:
         ParseTree()= default;
         explicit ParseTree(const std::vector <std::string> &tokens);
-        string extractClauseForm();
+        std::string extractClauseForm();
     };
 };
 
