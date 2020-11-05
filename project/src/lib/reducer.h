@@ -13,11 +13,13 @@ namespace utils {
     class Reducer {
     private:
         ParseTree& parseTree;
+        void disposeNode(int node);
         bool reduceImplicationStep(int node);
         bool pushNOTStep(int node);
         bool skolemizationStep(int node);
         bool convertToCNFStep(int node);
-        Entity mergeEntities(const Entity& first, const Entity& second);
+        Entity mergeSameNormalFormEntities(const Entity& first, const Entity& second);
+//        Entity mergeNormalFormEntitiesOnOrO
     public:
         Reducer()= default;
         explicit Reducer(ParseTree &_parseTree) : parseTree(_parseTree){}

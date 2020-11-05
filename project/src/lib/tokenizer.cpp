@@ -17,6 +17,7 @@ namespace utils {
         /// FROM NOW, each predicate starts with UPPER-CASE letter
         /// functions can occur only as an argument to a predicate
         /// both functions and variables start with lower-case letters
+        /// TODO: reconsider whether this is okay or whether we really want lower-case starting predicates
         vector <string> tokens;
         Operators& operators = Operators::getInstance();
         for (int ind = 0; ind < (int)aux.size(); ++ ind) {

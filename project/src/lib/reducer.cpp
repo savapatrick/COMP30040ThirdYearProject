@@ -43,7 +43,7 @@ namespace utils {
         while(skolemizationStep(parseTree.Root));
     }
 
-    Entity Reducer::mergeEntities(const Entity &first, const Entity &second) {
+    Entity Reducer::mergeSameNormalFormEntities(const Entity &first, const Entity &second) {
         if (first.getType() == NORMALForms and second.getType() == NORMALForms) {
             auto firstStorage = first.getEntity<Entity::NormalFormStorage>();
             auto secondStorage = second.getEntity<Entity::NormalFormStorage>();
@@ -55,6 +55,9 @@ namespace utils {
                 }
                 return Entity(NORMALForms, Entity::NormalFormStorage(firstStorage.first, result));
             }
+            else {
+                throw invalid_argument("Both of the Entities provided have to be in CNF(both) or in DNF(both)");
+            }
         }
         throw invalid_argument("at least of the Entities provided are not in NormalForm");
     }
@@ -65,5 +68,15 @@ namespace utils {
 
     void Reducer::convertToCNF(int node) {
         while(convertToCNFStep(parseTree.Root));
+    }
+
+    void Reducer::disposeNode(int node) {
+        try {
+            parseTree.graph.erase(parseTree.graph.find(node));
+            parseTree.information.erase(parseTree.information.find(node));
+            parseTree.redundantNodes.push_back(node);
+        } catch (...) {
+            throw invalid_argument("dispose node failed to dispose node " + to_string(node));
+        }
     }
 }
