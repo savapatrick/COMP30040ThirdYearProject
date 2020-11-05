@@ -59,7 +59,7 @@ namespace utils {
                     graph[fatherChain.top()].emplace_back(node);
                     fatherChain.push(node);
                     if (token == operators.NOT) {
-                        information[node] = Entity(EntityType::SIMPLIFIEDOperator, token);
+                        information[node] = new Entity(EntityType::SIMPLIFIEDOperator, token);
                     }
                 } else if (token == operators.CLOSEDBracket) {
                     fatherChain.pop();
@@ -67,7 +67,7 @@ namespace utils {
                     auto node = getNextNode();
                     graph[fatherChain.top()].emplace_back(node);
                     fatherChain.push(node);
-                    information[node] = Entity(EntityType::BOUNDVariable, token);
+                    information[node] = new Entity(EntityType::BOUNDVariable, token);
                 }
                 else {
                     if (token != operators.AND and token != operators.IMPLY and token != operators.OR) {
@@ -75,7 +75,7 @@ namespace utils {
                     }
                     auto node = getNextNode();
                     graph[fatherChain.top()].emplace_back(node);
-                    information[node] = Entity(EntityType::SIMPLIFIEDOperator, token);
+                    information[node] = new Entity(EntityType::SIMPLIFIEDOperator, token);
                 }
             }
             else {
@@ -85,13 +85,19 @@ namespace utils {
                 }
                 auto node = getNextNode();
                 graph[fatherChain.top()].emplace_back(node);
-                auto predicate = make_pair(false, Tokenizer::decomposePredicate(token));
-                information[node] = Entity(EntityType::PREDICATE, predicate);
+                auto predicate = Tokenizer::decomposePredicate(token);
+                information[node] = new Entity(EntityType::LITERAL, Literal(false, predicate.first, predicate.second));
             }
         }
     }
 
     void ParseTree::applyParanthesesToConjunctions(int node) {
+
+    }
+
+    string ParseTree::extractClauseForm() {
+        string result;
+        result += '{';
 
     }
 }

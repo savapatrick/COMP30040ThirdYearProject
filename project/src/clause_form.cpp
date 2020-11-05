@@ -3,11 +3,22 @@
 //
 
 #include <iostream>
+#include "lib/tokenizer.h"
+#include "lib/parse_tree.h"
 
 // C++ 17, because it uses variant
 
 using namespace std;
 
 int main() {
+    string formula;
+    while(getline(cin, formula)) {
+        cout << "for the formula " + formula << "\nthe clause form is\n";
+        utils::Tokenizer& tokenizer = utils::Tokenizer::getInstance();
+        auto tokens = tokenizer.tokenize(formula);
+        utils::ParseTree tree(tokens);
+        cout << tree.extractClauseForm() << '\n';
+        cout << "\n";
+    }
     return 0;
 }

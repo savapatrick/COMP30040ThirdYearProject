@@ -10,6 +10,8 @@ set(SOURCE_FILES
         operators.h
         operators.cpp
         tokenizer.h
-        tokenizer.cpp)
+        tokenizer.cpp
+        literal.h
+        literal.cpp)
 
 add_library(utils SHARED STATIC ${SOURCE_FILES})

@@ -17,7 +17,7 @@ namespace utils {
     private:
         int Root;
         std::unordered_map <int, std::vector <int> > graph;
-        std::unordered_map <int, Entity> information;
+        std::unordered_map <int, Entity*> information;
         std::vector <int> spareNodesBuffer;
         int highestNodeLabel;
         /// when compacting/reducing nodes, push them here in order to reuse them later
@@ -28,6 +28,7 @@ namespace utils {
     public:
         ParseTree()= default;
         explicit ParseTree(const std::vector <std::string> &tokens);
+        string extractClauseForm();
     };
 };
 

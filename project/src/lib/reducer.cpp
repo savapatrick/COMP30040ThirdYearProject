@@ -48,8 +48,8 @@ namespace utils {
             auto firstStorage = first.getEntity<Entity::NormalFormStorage>();
             auto secondStorage = second.getEntity<Entity::NormalFormStorage>();
             if(firstStorage.first == secondStorage.first) {
-                vector<Entity::PredicateStorage> result(first.getEntity<Entity::NormalFormStorage>().second);
-                vector<Entity::PredicateStorage> aux(second.getEntity<Entity::NormalFormStorage>().second);
+                vector<Literal> result(first.getEntity<Entity::NormalFormStorage>().second);
+                vector<Literal> aux(second.getEntity<Entity::NormalFormStorage>().second);
                 for (auto &elem: aux) {
                     result.emplace_back(elem);
                 }
@@ -73,6 +73,7 @@ namespace utils {
     void Reducer::disposeNode(int node) {
         try {
             parseTree.graph.erase(parseTree.graph.find(node));
+            delete parseTree.information[node];
             parseTree.information.erase(parseTree.information.find(node));
             parseTree.redundantNodes.push_back(node);
         } catch (...) {
