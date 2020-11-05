@@ -43,7 +43,20 @@ namespace utils {
         }
         else {
             auto info = get<2>(entity);
-
+            string op = operators.OR;
+            if (info.first == NormalFormType::CNF) {
+                op = operators.AND;
+            }
+            string result;
+            for (int ind = 0; ind < (int)info.second.size(); ++ ind) {
+                if (ind + 1 == info.second.size()) {
+                    result += info.second[ind].getString();
+                }
+                else {
+                    result += info.second[ind].getString() + op;
+                }
+            }
+            return result;
         }
     }
 };

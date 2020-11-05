@@ -44,7 +44,7 @@ namespace utils {
         template<typename Value>
         const Value &getEntity() const;
 
-        std::string getString() const;
+        [[nodiscard]] std::string getString() const;
     };
 };
 
