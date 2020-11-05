@@ -35,4 +35,8 @@ namespace utils {
             throw out_of_range("result of the operator was altered");
         }
     }
+
+    bool Operators::isQuantifier(const string &current) {
+        return current == EQuantifier or current == VQuantifier;
+    }
 }

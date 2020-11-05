@@ -47,6 +47,7 @@ namespace utils {
         }
         std::string whichOperator(int position, const std::string& seq);
         void advanceOperator(int &position, const std::string& seq, const std::string &result);
+        bool isQuantifier(const std::string &current);
     };
 }
 

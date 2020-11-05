@@ -32,9 +32,20 @@ namespace utils {
                     current += aux[ind];
                     ind += 1;
                 }
+                if (ind < (int)aux.size() and aux[ind] == '>') {
+                    // edge case for ->
+                    current += aux[ind];
+                    ind += 1;
+                }
+            }
+            if (islower(aux[ind]) and !tokens.empty() and operators.isQuantifier(tokens.back())) {
+                // we have a variable and before it was quantifier
+                current = tokens.back() + current;
+                tokens.pop_back();
             }
             tokens.emplace_back(current);
         }
+        // TODO: Incredibly important, enforce the order of the tokens to be initial one
         return tokens;
     }
 

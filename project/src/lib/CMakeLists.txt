@@ -1,4 +1,6 @@
 set(SOURCE_FILES
+        entity.h
+        entity.cpp
         verifier.h
         verifier.cpp
         parse_tree.h
