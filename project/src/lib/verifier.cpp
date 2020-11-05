@@ -26,23 +26,21 @@ namespace utils {
     }
 
     bool Verifier::areAllDNFs(const vector<std::vector<std::string>> &terms) {
-        static Operators& operators = Operators::getInstance();
+        static Operators &operators = Operators::getInstance();
         for (auto &term : terms) {
             if (term.size() % 2 == 1) {
-                for (int ind = 0; ind < (int)term.size(); ++ ind) {
+                for (int ind = 0; ind < (int) term.size(); ++ind) {
                     if (ind % 2 == 1) {
                         if (operators.whichOperator(ind, term[ind]) != "OR") {
                             return false;
                         }
-                    }
-                    else {
+                    } else {
                         if (!Literal::isLiteral(term[ind])) {
                             return false;
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 return false;
             }
         }
