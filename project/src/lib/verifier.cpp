@@ -4,13 +4,13 @@
 
 #include "verifier.h"
 
-bool utils::Verifier::isBalanced(const std::string &seq) {
+bool utils::Verifier::isBalanced(const std::vector<std::string> &seq) {
     int open = 0;
     for (auto &elem: seq) {
-        if (elem == '(') {
+        if (elem == "(") {
             open += 1;
         }
-        else if (elem == ')') {
+        else if (elem == ")") {
             open -= 1;
             if (open < 0) {
                 return false;

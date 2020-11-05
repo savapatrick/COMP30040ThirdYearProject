@@ -19,10 +19,7 @@ namespace utils {
     }
 
     template<> const string &Entity::getEntity() const {
-        if (type == 0) {
-            return get<0>(entity);
-        }
-        return get<2>(entity);
+        return get<0>(entity);
     }
 
     // throws
@@ -32,6 +29,6 @@ namespace utils {
 
     // throws
     template<> const Entity::NormalFormStorage &Entity::getEntity() const {
-        return get<3>(entity);
+        return get<2>(entity);
     }
 };

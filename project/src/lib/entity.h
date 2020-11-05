@@ -21,9 +21,8 @@ namespace utils {
     public:
         typedef std::pair<bool, std::pair<std::string, std::vector<std::string>>> PredicateStorage;
         typedef std::pair<bool, std::vector<PredicateStorage>> NormalFormStorage;
-        typedef std::variant<std::string, /*type 0*/
+        typedef std::variant<std::string, /*type 0 or type 2*/
                 PredicateStorage , /*type 1*/
-                std::string, /*type 2*/
                 NormalFormStorage /*type 3*/> EntityStorage;
     private:
         EntityType type;
@@ -32,7 +31,6 @@ namespace utils {
         Entity() = default;
         explicit Entity(const EntityType &_type, EntityStorage _entity) : type(_type), entity(std::move(_entity)){};
         [[nodiscard]] EntityType getType() const;
-
         template<typename Value>
         const Value &getEntity() const;
     };

@@ -6,6 +6,7 @@
 #define PROJECT_VERIFIER_H
 
 #include <string>
+#include <vector>
 
 namespace utils {
     class Verifier {
@@ -13,7 +14,7 @@ namespace utils {
         Verifier(){}
         // function which matches if the sequence is balanced
         // parantheses-wise
-        static bool isBalanced(const std::string &seq);
+        static bool isBalanced(const std::vector<std::string> &seq);
 
     };
 };
