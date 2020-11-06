@@ -7,6 +7,7 @@
 #include "operators.h"
 #include "tokenizer.h"
 #include <stack>
+#include <algorithm>
 
 using namespace std;
 
@@ -115,7 +116,9 @@ namespace utils {
         }
     }
 
-    bool ParseTree::applyParanthesesToConjunctions(int node) {
+    bool ParseTree::applyParanthesesToOperators(int node,
+                                                const std::string &targetOperator,
+                                                const std::vector<std::string>& lowerOperators) {
         static vector<int> pile;
         Operators& operators = Operators::getInstance();
         pile.clear();
@@ -123,8 +126,9 @@ namespace utils {
         int begin = 0;
         for (auto &neigh: graph[node]) {
             pile.push_back(neigh);
-            if (information[neigh]->getType() == EntityType::SIMPLIFIEDOperator) {
-                if (operators.whichOperator(0, information[neigh]->getString()) == "AND") {
+            if (information.find(neigh) != information.end() and
+            information[neigh]->getType() == EntityType::SIMPLIFIEDOperator) {
+                if (operators.whichOperator(0, information[neigh]->getString()) == targetOperator) {
                     if (!andInside) {
                         andInside = true;
                         if (pile.size() < 2) {
@@ -133,8 +137,10 @@ namespace utils {
                         begin = (int) pile.size() - 2;
                     }
                 }
-                else if (operators.whichOperator(0, information[neigh]->getString()) == "OR" or
-                operators.whichOperator(0, information[neigh]->getString()) == "IMPLY") {
+                else if (any_of(lowerOperators.begin(), lowerOperators.end(), [&](const std::string &current) {
+                    return current == operators.whichOperator(0, information[neigh]->getString());
+                }))
+                {
                     if (andInside) {
                         auto newNode = getNextNode();
                         for (int ind = begin; ind < (int) pile.size() - 2; ++ind) {
@@ -157,6 +163,14 @@ namespace utils {
             wasModified |= applyParanthesesToConjunctions(neigh);
         }
         return wasModified;
+    }
+
+    bool ParseTree::applyParanthesesToConjunctions(int node) {
+        return applyParanthesesToOperators(node, "AND", {"OR", "IMPLY"});
+    }
+
+    bool ParseTree::applyParanthesesToDisjunctions(int node) {
+        return applyParanthesesToOperators(node, "OR", {"IMPLY"});
     }
 
     string ParseTree::extractClauseForm() {

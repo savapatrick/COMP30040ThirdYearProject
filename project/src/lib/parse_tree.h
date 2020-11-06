@@ -25,6 +25,10 @@ namespace utils {
         int getNextNode();
         void buildTree(const std::vector <std::string> &tokens);
         bool applyParanthesesToConjunctions(int node);
+        bool applyParanthesesToDisjunctions(int node);
+        bool applyParanthesesToOperators(int node,
+                                         const std::string &targetOperator,
+                                         const std::vector<std::string>& lowerOperators);
     public:
         ParseTree()= default;
         explicit ParseTree(const std::vector <std::string> &tokens);
