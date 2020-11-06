@@ -122,19 +122,41 @@ namespace utils {
         bool andInside = false;
         int begin = 0;
         for (auto &neigh: graph[node]) {
+            pile.push_back(neigh);
             if (information[neigh]->getType() == EntityType::SIMPLIFIEDOperator) {
                 if (operators.whichOperator(0, information[neigh]->getString()) == "AND") {
                     if (!andInside) {
                         andInside = true;
-                        if (pile.empty()) {
+                        if (pile.size() < 2) {
                             throw logic_error("Expected predicate before AND on the pile");
                         }
-                        begin = (int) pile.size() - 1;
+                        begin = (int) pile.size() - 2;
                     }
                 }
-                else if (operators.whichOperator(0, ))
+                else if (operators.whichOperator(0, information[neigh]->getString()) == "OR" or
+                operators.whichOperator(0, information[neigh]->getString()) == "IMPLY") {
+                    if (andInside) {
+                        auto newNode = getNextNode();
+                        for (int ind = begin; ind < (int) pile.size() - 2; ++ind) {
+                            graph[newNode].push_back(pile[ind]);
+                        }
+                        auto keep = pile.back();
+                        pile.pop_back();
+                        pile.push_back(newNode);
+                        pile.push_back(keep);
+                        andInside = false;
+                    }
+                }
             }
         }
+        bool wasModified = false;
+        wasModified |= (graph[node] != pile);
+        graph[node] = pile;
+        pile.clear();
+        for (auto &neigh : graph[node]) {
+            wasModified |= applyParanthesesToConjunctions(neigh);
+        }
+        return wasModified;
     }
 
     string ParseTree::extractClauseForm() {
