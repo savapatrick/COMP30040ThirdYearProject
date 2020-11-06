@@ -45,6 +45,7 @@ namespace utils {
         const Value &getEntity() const;
 
         [[nodiscard]] std::string getString() const;
+        void andPredicate();
     };
 };
 

@@ -3,10 +3,10 @@
 //
 
 #include "parse_tree.h"
-#include <stack>
 #include "verifier.h"
 #include "operators.h"
 #include "tokenizer.h"
+#include <stack>
 
 using namespace std;
 
@@ -46,12 +46,16 @@ namespace utils {
     }
 
     void ParseTree::buildTree(const vector<std::string> &tokens) {
+        /// operator precedence
+        /// NOT, AND, OR, IMPLICATION
         if (!Verifier::isBalanced(tokens)) {
             throw invalid_argument("the tokens given are not correctly parenthesised");
         }
         stack<int> fatherChain;
         fatherChain.push(Root);
         Operators& operators = Operators::getInstance();
+        int sumSoFarParanthesis = 0;
+        stack<pair <int, int>> operatorPrecedenceNOTQuant;
         for (auto &token: tokens) {
             if (operators.whichOperator(0, token) != "none") {
                 if (token == operators.OPENEDBracket or token == operators.NOT) {
@@ -60,14 +64,27 @@ namespace utils {
                     fatherChain.push(node);
                     if (token == operators.NOT) {
                         information[node] = new Entity(EntityType::SIMPLIFIEDOperator, token);
+                        operatorPrecedenceNOTQuant.push({(int)fatherChain.size() - 1, sumSoFarParanthesis});
+                    }
+                    else {
+                        sumSoFarParanthesis += 1;
                     }
                 } else if (token == operators.CLOSEDBracket) {
                     fatherChain.pop();
+                    sumSoFarParanthesis -= 1;
+                    if (!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
+                        auto target = operatorPrecedenceNOTQuant.top().first;
+                        operatorPrecedenceNOTQuant.pop();
+                        while(fatherChain.size() > target) {
+                            fatherChain.pop();
+                        }
+                    }
                 } else if (operators.isQuantifier(token)) {
                     auto node = getNextNode();
                     graph[fatherChain.top()].emplace_back(node);
                     fatherChain.push(node);
                     information[node] = new Entity(EntityType::BOUNDVariable, token);
+                    operatorPrecedenceNOTQuant.push({(int)fatherChain.size() - 1, sumSoFarParanthesis});
                 }
                 else {
                     if (token != operators.AND and token != operators.IMPLY and token != operators.OR) {
@@ -87,19 +104,75 @@ namespace utils {
                 graph[fatherChain.top()].emplace_back(node);
                 auto predicate = Tokenizer::decomposePredicate(token);
                 information[node] = new Entity(EntityType::LITERAL, Literal(false, predicate.first, predicate.second));
+                if (!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
+                    auto target = operatorPrecedenceNOTQuant.top().first;
+                    operatorPrecedenceNOTQuant.pop();
+                    while(fatherChain.size() > target) {
+                        fatherChain.pop();
+                    }
+                }
             }
         }
     }
 
-    void ParseTree::applyParanthesesToConjunctions(int node) {
-
+    bool ParseTree::applyParanthesesToConjunctions(int node) {
+        static vector<int> pile;
+        Operators& operators = Operators::getInstance();
+        pile.clear();
+        bool andInside = false;
+        int begin = 0;
+        for (auto &neigh: graph[node]) {
+            if (information[neigh]->getType() == EntityType::SIMPLIFIEDOperator) {
+                if (operators.whichOperator(0, information[neigh]->getString()) == "AND") {
+                    if (!andInside) {
+                        andInside = true;
+                        if (pile.empty()) {
+                            throw logic_error("Expected predicate before AND on the pile");
+                        }
+                        begin = (int) pile.size() - 1;
+                    }
+                }
+                else if (operators.whichOperator(0, ))
+            }
+        }
     }
 
     string ParseTree::extractClauseForm() {
         string result;
-        result += '{';
-
-
+        result += "{";
+        Operators& operators = Operators::getInstance();
+        for (int ind = 0; ind < (int)graph[Root].size(); ++ ind) {
+            auto child = graph[Root][ind];
+            if (ind % 2 == 0) {
+                if (information[child]->getType() != EntityType::NORMALForms) {
+                    throw logic_error("malformed tree --- cannot extract it in clause form");
+                }
+                else {
+                    auto entity = information[child]->getEntity<Entity::NormalFormStorage>();
+                    if (entity.first != NormalFormType::DNF) {
+                        throw logic_error("malformed tree --- cannot extract it in clause form");
+                    }
+                }
+            }
+            else {
+                if (information[child]->getType() != EntityType::SIMPLIFIEDOperator) {
+                    throw logic_error("malformed tree --- cannot extract it in clause form");
+                }
+                else {
+                    if (operators.whichOperator(0, information[child]->getString()) != "AND") {
+                        throw logic_error("malformed tree --- cannot extract it in clause form");
+                    }
+                }
+            }
+            result += information[child]->getString();
+            if (ind + 1 == graph[Root].size()) {
+                result += "}";
+            }
+            else {
+                result += ", ";
+            }
+        }
+        return result;
     }
 }
 
