@@ -80,7 +80,7 @@ namespace utils {
                             fatherChain.pop();
                         }
                     }
-                } else if (operators.isQuantifier(token)) {
+                } else if (operators.isQuantifierAndVariable(token)) {
                     auto node = getNextNode();
                     graph[fatherChain.top()].emplace_back(node);
                     fatherChain.push(node);
@@ -88,8 +88,8 @@ namespace utils {
                     operatorPrecedenceNOTQuant.push({(int)fatherChain.size() - 1, sumSoFarParanthesis});
                 }
                 else {
-                    if (token != operators.AND and token != operators.IMPLY and token != operators.OR) {
-                        throw invalid_argument("malformed tokens --- exhausted all of the possibilities for operators");
+                    if (token != operators.AND and token != operators.IMPLY and token != operators.OR and token != operators.DOUBLEImply) {
+                        throw invalid_argument("malformed tokens --- exhausted all of the possibilities for operators; token is " + token);
                     }
                     auto node = getNextNode();
                     graph[fatherChain.top()].emplace_back(node);
@@ -210,5 +210,30 @@ namespace utils {
         }
         return result;
     }
+
+    std::string ParseTree::getEulerTraversal(int node) {
+        string result;
+        if (information.find(node) != information.end()) {
+            result += information[node]->getString();
+        }
+        else {
+            result += "$none$";
+        }
+        for (auto &neighbour: graph[node]) {
+            result += getEulerTraversal(neighbour);
+        }
+        if (information.find(node) != information.end()) {
+            result += information[node]->getString();
+        }
+        else {
+            result += "$none$";
+        }
+        return result;
+    }
+
+    std::string ParseTree::getEulerTraversal() {
+        return getEulerTraversal(Root);
+    }
+
 }
 

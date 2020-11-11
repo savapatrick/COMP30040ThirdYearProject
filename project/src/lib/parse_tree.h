@@ -29,9 +29,11 @@ namespace utils {
         bool applyParanthesesToOperators(int node,
                                          const std::string &targetOperator,
                                          const std::vector<std::string>& lowerOperators);
+        std::string getEulerTraversal(int node);
     public:
         ParseTree()= default;
         explicit ParseTree(const std::vector <std::string> &tokens);
+        std::string getEulerTraversal();
         std::string extractClauseForm();
     };
 };

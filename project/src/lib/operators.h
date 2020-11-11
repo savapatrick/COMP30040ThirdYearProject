@@ -50,6 +50,7 @@ namespace utils {
         std::string whichOperator(const int& position, const std::string& seq);
         std::string advanceOperator(int &position, const std::string& seq, const std::string &result);
         bool isQuantifier(const std::string &current);
+        bool isQuantifierAndVariable(const std::string &current);
     };
 }
 

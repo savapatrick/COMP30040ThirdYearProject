@@ -3,6 +3,7 @@
 //
 
 #include "operators.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -49,5 +50,13 @@ namespace utils {
 
     bool Operators::isQuantifier(const string &current) {
         return current == EQuantifier or current == VQuantifier;
+    }
+
+    bool Operators::isQuantifierAndVariable(const string &current) {
+        if (!isQuantifier(current.substr(0, 1))) {
+            return false;
+        }
+        return (std::find_if_not(current.begin() + 1, current.end(),
+                                [](char c){return islower(c);}) == current.end());
     }
 }

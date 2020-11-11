@@ -21,6 +21,7 @@ namespace utils {
         }
         [[nodiscard]] std::vector <std::string> tokenize(const std::string& seq) const;
         static std::pair<std::string, std::vector<std::string> > decomposePredicate(const std::string& seq);
+        static std::pair<std::string, std::string> decomposeQuantifierAndVariable(const std::string& seq);
     };
 };
 

@@ -88,4 +88,18 @@ namespace utils {
         }
         return {predicateName, argumentsParsed};
     }
+
+    std::pair<std::string, std::string> Tokenizer::decomposeQuantifierAndVariable(const string &seq) {
+        Operators& operators = Operators::getInstance();
+        if (!operators.isQuantifierAndVariable(seq)) {
+            throw invalid_argument("expected quantifier and variable but given " + seq);
+        }
+        string quantifier = seq.substr(0, 1);
+        string variable = seq.substr(1);
+        if (std::find_if_not(variable.begin(), variable.end(),
+                             [](char c){return islower(c);}) != variable.end()){
+            throw invalid_argument("expected exactly one variable but given " + variable);
+        }
+        return {quantifier, variable};
+    }
 };
