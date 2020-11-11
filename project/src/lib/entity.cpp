@@ -61,7 +61,8 @@ namespace utils {
     }
 
     void Entity::andPredicate() {
-        if (type == 0)
+//        if (type == 0)
+        return;
     }
 
 };

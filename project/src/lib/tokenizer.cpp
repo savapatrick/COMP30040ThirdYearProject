@@ -11,6 +11,8 @@ using namespace std;
 
 namespace utils {
     std::vector<std::string> Tokenizer::tokenize(const std::string &seq) const {
+        /// TODO: when introducing equality, manually remove all of the equality signs and replace them
+        /// with an equality predicate of arity 2, possibly with a special name
         string aux(seq);
         /// get rid of all of the whitespaces
         aux.erase(remove_if(aux.begin(), aux.end(), [](char c) {return isspace(c);}), aux.end());
@@ -33,10 +35,9 @@ namespace utils {
                     current += aux[ind];
                     ind += 1;
                 }
-                if (ind < (int)aux.size() and aux[ind] == '>') {
-                    // edge case for ->
-                    current += aux[ind];
-                    ind += 1;
+                auto result = operators.whichOperator(ind, aux);
+                if (result != "none") {
+                    current += operators.advanceOperator(ind, aux, result);
                 }
             }
             if (islower(aux[ind]) and !tokens.empty() and operators.isQuantifier(tokens.back())) {
@@ -51,6 +52,9 @@ namespace utils {
     }
 
     std::pair<std::string, std::vector<std::string> > Tokenizer::decomposePredicate(const string &seq) {
+        if (find_if(seq.begin(), seq.end(), [](char c){return isspace(c);}) != seq.end()) {
+            throw invalid_argument("the string should not contain whitespaces");
+        }
         auto notAtAll = static_cast<bool>(seq.find('(') == string::npos or seq.find(')') == string::npos);
         auto countOpened = static_cast<bool>(count(seq.begin(), seq.end(), '(') != 1);
         auto countClosed = static_cast<bool>(count(seq.begin(), seq.end(), ')') != 1);
@@ -58,7 +62,7 @@ namespace utils {
             throw invalid_argument("the predicate should contain exactly one ( and one ) in the given argument");
         }
         auto correctOrder = static_cast<bool>(seq.find('(') < seq.find(')'));
-        if (correctOrder) {
+        if (!correctOrder) {
             throw invalid_argument(") occurs before ( in the given argument");
         }
         auto firstBracket = seq.find('(');

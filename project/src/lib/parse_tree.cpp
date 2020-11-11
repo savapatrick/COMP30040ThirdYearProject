@@ -48,7 +48,7 @@ namespace utils {
 
     void ParseTree::buildTree(const vector<std::string> &tokens) {
         /// operator precedence
-        /// NOT, AND, OR, IMPLICATION
+        /// NOT, QUANTIFIER, AND, OR, IMPLICATION, DOUBLE IMPLICATION
         if (!Verifier::isBalanced(tokens)) {
             throw invalid_argument("the tokens given are not correctly parenthesised");
         }
