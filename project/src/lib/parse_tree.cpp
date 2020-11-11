@@ -8,11 +8,16 @@
 #include "tokenizer.h"
 #include <stack>
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
 namespace utils {
     ParseTree::ParseTree(const std::vector<std::string> &tokens) {
+        graph.clear();
+        information.clear();
+        spareNodesBuffer.clear();
+        redundantNodes.clear();
         Root = 1;
         const int bufferOrder = 100;
         highestNodeLabel = 100;
@@ -20,7 +25,7 @@ namespace utils {
             spareNodesBuffer.push_back(nodeLabel);
         }
         buildTree(tokens);
-        applyParanthesesToConjunctions(Root);
+//        applyParanthesesToConjunctions(Root);
     }
 
     int ParseTree::getNextNode() {
@@ -73,7 +78,7 @@ namespace utils {
                 } else if (token == operators.CLOSEDBracket) {
                     fatherChain.pop();
                     sumSoFarParanthesis -= 1;
-                    if (!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
+                    while (!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
                         auto target = operatorPrecedenceNOTQuant.top().first;
                         operatorPrecedenceNOTQuant.pop();
                         while(fatherChain.size() > target) {
@@ -105,7 +110,7 @@ namespace utils {
                 graph[fatherChain.top()].emplace_back(node);
                 auto predicate = Tokenizer::decomposePredicate(token);
                 information[node] = new Entity(EntityType::LITERAL, Literal(false, predicate.first, predicate.second));
-                if (!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
+                while (!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
                     auto target = operatorPrecedenceNOTQuant.top().first;
                     operatorPrecedenceNOTQuant.pop();
                     while(fatherChain.size() > target) {
@@ -114,6 +119,16 @@ namespace utils {
                 }
             }
         }
+        for (auto &x : graph[97]) {
+            cout << x << ' ';
+            cout.flush();
+        }
+        cout << endl;
+        for (auto &x : graph[87]) {
+            cout << x << ' ';
+            cout.flush();
+        }
+        cout << endl;
     }
 
     bool ParseTree::applyParanthesesToOperators(int node,
@@ -219,8 +234,10 @@ namespace utils {
         else {
             result += "$none$";
         }
-        for (auto &neighbour: graph[node]) {
-            result += getEulerTraversal(neighbour);
+        if (graph.find(node) != graph.end()) {
+            for (auto &neighbour: graph[node]) {
+                result += getEulerTraversal(neighbour);
+            }
         }
         if (information.find(node) != information.end()) {
             result += information[node]->getString();
