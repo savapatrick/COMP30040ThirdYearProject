@@ -19,7 +19,7 @@ namespace utils {
             static Tokenizer instance;
             return instance;
         }
-        std::vector <std::string> tokenize(const std::string& seq) const;
+        [[nodiscard]] std::vector <std::string> tokenize(const std::string& seq) const;
         static std::pair<std::string, std::vector<std::string> > decomposePredicate(const std::string& seq);
     };
 };

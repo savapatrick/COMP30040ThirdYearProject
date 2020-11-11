@@ -22,28 +22,37 @@ namespace utils {
         /// TODO: reconsider whether this is okay or whether we really want lower-case starting predicates
         vector <string> tokens;
         Operators& operators = Operators::getInstance();
-        for (int ind = 0; ind < (int)aux.size(); ++ ind) {
+        int ind = 0;
+        while (ind < (int)aux.size()) {
             string current;
             if (isupper(aux[ind])) {
                 do {
                     current += aux[ind];
                     ind += 1;
                 }while(ind < (int)aux.size() and aux[ind] != ')');
+                current += aux[ind];
+                ind += 1;
             }
             else {
-                while (ind < (int) aux.size() and operators.whichOperator(ind, aux) == "none" and !isupper(aux[ind])) {
-                    current += aux[ind];
-                    ind += 1;
-                }
                 auto result = operators.whichOperator(ind, aux);
                 if (result != "none") {
                     current += operators.advanceOperator(ind, aux, result);
                 }
-            }
-            if (islower(aux[ind]) and !tokens.empty() and operators.isQuantifier(tokens.back())) {
-                // we have a variable and before it was quantifier
-                current = tokens.back() + current;
-                tokens.pop_back();
+                else {
+                    while (ind < (int) aux.size() and operators.whichOperator(ind, aux) == "none" and !isupper(aux[ind])) {
+                        current += aux[ind];
+                        ind += 1;
+                    }
+                    // this should be a variable
+                    // a variable could occur at this point ONLY after a quantifier
+                    if (!islower(current[0]) or !(!tokens.empty() and operators.isQuantifier(tokens.back()))) {
+                        // this means that this does not start with lowercase letter OR
+                        // there are no tokens in the list
+                        throw invalid_argument("the given formula is malformed");
+                    }
+                    tokens[(int)tokens.size() - 1] += current;
+                    continue;
+                }
             }
             tokens.emplace_back(current);
         }
