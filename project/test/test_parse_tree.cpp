@@ -19,7 +19,14 @@ TEST(parseTreeTestSuite, testBuildTreeScenarioTwo) {
 }
 
 TEST(parseTreeTestSuite, testBuildTreeScenarioThree) {
-
+    const std::string formula = "@x@y?z(R(x, y, z) & ( P(x, y) | T(z) & ?tQ(z,t) ) | @rW(y,r) ) "
+            "-> @x@y (P(x, y) | R(y, x, x) )";
+    auto parseTree = utils::ParseTree(formula);
+    const std::string eulerExpected =
+            "$none$@x@y?z$none$R(x,y,z)R(x,y,z)&&$none$P(x,y)P(x,y)||T(z)T(z)&&?tQ(z,t)Q(z,t)?t$none$"
+            "||@rW(y,r)W(y,r)@r$none$?z@y@x->->"
+            "@x@y$none$P(x,y)P(x,y)||R(y,x,x)R(y,x,x)$none$@y@x$none$";
+    ASSERT_EQ(parseTree.getEulerTraversal(), eulerExpected);
 }
 
 TEST(parseTreeTestSuite, testBuildTreeScenarioFour) {
