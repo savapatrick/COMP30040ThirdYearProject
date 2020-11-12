@@ -54,7 +54,8 @@ namespace utils {
         parseTree.graph[node] = pile;
         pile.clear();
         for (auto &neigh : parseTree.graph[node]) {
-            wasModified |= applyParanthesesToOperators(neigh);
+            // TODO: check what's going on here
+            wasModified |= applyParanthesesToOperators(neigh, targetOperator, lowerOperators);
         }
         return wasModified;
     }
