@@ -29,7 +29,6 @@ namespace utils {
         ParseTree()= default;
         explicit ParseTree(const std::string &tokens);
         std::string getEulerTraversal();
-        std::string extractClauseForm();
     };
 };
 

@@ -59,4 +59,11 @@ namespace utils {
         return (std::find_if_not(current.begin() + 1, current.end(),
                                 [](char c){return islower(c);}) == current.end());
     }
+
+    std::string Operators::getOperator(const string &which) {
+        if (mapping.find(which) == mapping.end()) {
+            throw invalid_argument("the given argument is not an operator; argument: " + which);
+        }
+        return mapping[which];
+    }
 }

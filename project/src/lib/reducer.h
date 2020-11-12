@@ -14,15 +14,22 @@ namespace utils {
     private:
         ParseTree& parseTree;
         void disposeNode(int node);
+        int addNodeWithOperator(const std::string& which);
+        int addImplication(const int& nodeOne, const int& nodeTwo);
         bool applyParanthesesToConjunctions(int node);
         bool applyParanthesesToDisjunctions(int node);
+        bool applyParanthesesToImplications(int node);
+        bool eliminateDoubleImplication(int node);
+        bool resolveRightAssociativityForImplications(int node);
         bool applyParanthesesToOperators(int node,
                                          const std::string &targetOperator,
                                          const std::vector<std::string>& lowerOperators);
         bool reduceImplicationStep(int node);
+        bool reduceDoubleImplicationStep(int node);
         bool pushNOTStep(int node);
         bool skolemizationStep(int node);
         bool convertToCNFStep(int node);
+        std::string extractClauseForm();
         Entity mergeSameNormalFormEntities(const Entity& first, const Entity& second);
 //        Entity mergeNormalFormEntitiesOnOrO
     public:
@@ -30,7 +37,8 @@ namespace utils {
         explicit Reducer(ParseTree &_parseTree) : parseTree(_parseTree){}
         void basicReduce();
         void skolemization();
-        void convertToCNF(int node);
+        void convertToCNF();
+        std::string getClauseForm();
     };
 };
 

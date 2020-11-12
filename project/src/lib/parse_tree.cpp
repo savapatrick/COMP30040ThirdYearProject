@@ -121,44 +121,6 @@ namespace utils {
         }
     }
 
-    string ParseTree::extractClauseForm() {
-        string result;
-        result += "{";
-        Operators& operators = Operators::getInstance();
-        for (int ind = 0; ind < (int)graph[Root].size(); ++ ind) {
-            auto child = graph[Root][ind];
-            if (ind % 2 == 0) {
-                if (information[child]->getType() != EntityType::NORMALForms) {
-                    throw logic_error("malformed tree --- cannot extract it in clause form");
-                }
-                else {
-                    auto entity = information[child]->getEntity<Entity::NormalFormStorage>();
-                    if (entity.first != NormalFormType::DNF) {
-                        throw logic_error("malformed tree --- cannot extract it in clause form");
-                    }
-                }
-            }
-            else {
-                if (information[child]->getType() != EntityType::SIMPLIFIEDOperator) {
-                    throw logic_error("malformed tree --- cannot extract it in clause form");
-                }
-                else {
-                    if (operators.whichOperator(0, information[child]->getString()) != "AND") {
-                        throw logic_error("malformed tree --- cannot extract it in clause form");
-                    }
-                }
-            }
-            result += information[child]->getString();
-            if (ind + 1 == graph[Root].size()) {
-                result += "}";
-            }
-            else {
-                result += ", ";
-            }
-        }
-        return result;
-    }
-
     std::string ParseTree::getEulerTraversal(int node) {
         string result;
         if (information.find(node) != information.end()) {
