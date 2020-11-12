@@ -16,10 +16,11 @@ namespace utils {
         void disposeNode(int node);
         int addNodeWithOperator(const std::string& which);
         int addImplication(const int& nodeOne, const int& nodeTwo);
+        int addOrClause(const int& nodeOne, const int& nodeTwo);
         bool applyParanthesesToConjunctions(int node);
         bool applyParanthesesToDisjunctions(int node);
         bool applyParanthesesToImplications(int node);
-        bool eliminateDoubleImplication(int node);
+        bool eliminateDoubleImplicationOrImplication(bool isDoubleImplication, int node);
         bool resolveRightAssociativityForImplications(int node);
         bool applyParanthesesToOperators(int node,
                                          const std::string &targetOperator,

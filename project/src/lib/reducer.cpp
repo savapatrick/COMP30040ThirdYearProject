@@ -41,6 +41,15 @@ namespace utils {
         return father;
     }
 
+    int Reducer::addOrClause(const int& nodeOne, const int& nodeTwo) {
+        auto orOperator = addNodeWithOperator("OR");
+        auto father = parseTree.getNextNode();
+        parseTree.graph[father].emplace_back(nodeOne);
+        parseTree.graph[father].emplace_back(orOperator);
+        parseTree.graph[father].emplace_back(nodeTwo);
+        return father;
+    }
+
     bool Reducer::applyParanthesesToOperators(int node,
                                                 const std::string &targetOperator,
                                                 const std::vector<std::string>& lowerOperators) {
@@ -106,15 +115,21 @@ namespace utils {
         return applyParanthesesToOperators(node, "IMPLY", {"DOUBLEImply"});
     }
 
-    bool Reducer::eliminateDoubleImplication(int node) {
+    bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, int node) {
         static vector<int> pile;
         Operators& operators = Operators::getInstance();
         pile.clear();
+        if (!isDoubleImplication) {
+            /// that's because it's implication and this is
+            /// RIGHT ASSOCIATIVE
+            reverse(parseTree.graph[node].begin(), parseTree.graph[node].end());
+        }
         for (auto &neigh: parseTree.graph[node]) {
             pile.push_back(neigh);
             if (pile.size() >= 3 and
             parseTree.information.find(pile[(int)pile.size() - 2]) != parseTree.information.end()) {
-                if (operators.whichOperator(0, parseTree.information[pile[(int)pile.size() - 2]]->getString()) == "DOUBLEImply") {
+                auto whichOperator = operators.whichOperator(0, parseTree.information[pile[(int)pile.size() - 2]]->getString());
+                if (isDoubleImplication and whichOperator == "DOUBLEImply") {
                     auto rightPredicate = pile.back(); pile.pop_back();
                     auto doubleImply = pile.back(); pile.pop_back();
                     auto leftPredicate = pile.back(); pile.pop_back();
@@ -123,14 +138,25 @@ namespace utils {
                     pile.push_back(addNodeWithOperator("AND"));
                     pile.push_back(addImplication(rightPredicate, leftPredicate));
                 }
+                else if (!isDoubleImplication and whichOperator == "IMPLY") {
+                    auto leftPredicate = pile.back(); pile.pop_back();
+                    auto imply = pile.back(); pile.pop_back();
+                    auto rightPredicate = pile.back(); pile.pop_back();
+                    disposeNode(imply);
+                    pile.push_back()
+                }
             }
         }
         bool wasModified = false;
         wasModified |= (parseTree.graph[node] != pile);
+        if (!isDoubleImplication) {
+            // this is because we have to revert the correct order for implication
+            reverse(pile.begin(), pile.end());
+        }
         parseTree.graph[node] = pile;
         pile.clear();
         for (auto &neigh : parseTree.graph[node]) {
-            wasModified |= eliminateDoubleImplication(neigh);
+            wasModified |= eliminateDoubleImplicationOrImplication(isDoubleImplication, neigh);
         }
         return wasModified;
     }
@@ -158,8 +184,8 @@ namespace utils {
                         "applying applyParanthesesToImplications");
             }
         }
-        if (eliminateDoubleImplication(node)) {
-            if (eliminateDoubleImplication(node)) {
+        if (eliminateDoubleImplicationOrImplication(true, node)) {
+            if (eliminateDoubleImplicationOrImplication(true, node)) {
                 throw logic_error(
                         "it should not get modified twice when "
                         "applying eliminateDoubleImplication");
@@ -170,7 +196,7 @@ namespace utils {
     }
 
     bool Reducer::resolveRightAssociativityForImplications(int node) {
-        return false;
+        return eliminateDoubleImplicationOrImplication(false, node);
     }
 
     // does step 1.1)
