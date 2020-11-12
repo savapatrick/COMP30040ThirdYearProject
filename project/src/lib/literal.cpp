@@ -52,4 +52,8 @@ namespace utils {
     const vector<std::string> &Literal::getArguments() const {
         return arguments;
     }
+
+    void Literal::negate() {
+        isNegated ^= true;
+    }
 };

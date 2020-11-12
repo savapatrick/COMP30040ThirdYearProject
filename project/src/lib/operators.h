@@ -51,7 +51,14 @@ namespace utils {
         std::string advanceOperator(int &position, const std::string& seq, const std::string &result);
         bool isQuantifier(const std::string &current);
         bool isQuantifierAndVariable(const std::string &current);
+        std::string getQuantifierFromQuantifierAndVariable(const std::string &current);
+        std::string getVariableFromQuantifierAndVariable(const std::string &current);
         std::string getOperator(const std::string &which);
+        std::string flipQuantifier(const std::string& which);
+        bool isNot(const std::string& which);
+        bool isAnd(const std::string& which);
+        bool isOr(const std::string& which);
+        std::string flipAndOrOr(const std::string &which);
     };
 }
 

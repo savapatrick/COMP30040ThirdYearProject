@@ -17,6 +17,7 @@ namespace utils {
         int addNodeWithOperator(const std::string& which);
         int addImplication(const int& nodeOne, const int& nodeTwo);
         int addOrClause(const int& nodeOne, const int& nodeTwo);
+        int addNegationToFormula(const int& nodeOne);
         bool applyParanthesesToConjunctions(int node);
         bool applyParanthesesToDisjunctions(int node);
         bool applyParanthesesToImplications(int node);
@@ -32,7 +33,7 @@ namespace utils {
         bool convertToCNFStep(int node);
         std::string extractClauseForm();
         Entity mergeSameNormalFormEntities(const Entity& first, const Entity& second);
-//        Entity mergeNormalFormEntitiesOnOrO
+        static Entity* getEntityWithFlippedQuantifierAndVariable(const std::string &which);
     public:
         Reducer()= default;
         explicit Reducer(ParseTree &_parseTree) : parseTree(_parseTree){}

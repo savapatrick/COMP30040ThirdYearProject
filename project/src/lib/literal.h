@@ -11,7 +11,7 @@
 namespace utils {
     class Literal {
     private:
-        const bool isNegated;
+        bool isNegated;
         std::string predicateName;
         std::vector<std::string> arguments;
     public:
@@ -23,6 +23,7 @@ namespace utils {
         [[nodiscard]] const std::string &getPredicateName() const;
         [[nodiscard]] const std::vector<std::string> &getArguments() const;
         [[nodiscard]] std::string getString() const;
+        void negate();
     };
 };
 

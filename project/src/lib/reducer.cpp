@@ -5,6 +5,7 @@
 #include "reducer.h"
 #include "operators.h"
 #include <algorithm>
+#include <cassert>
 
 using namespace std;
 
@@ -19,6 +20,14 @@ namespace utils {
         } catch (...) {
             throw invalid_argument("dispose node failed to dispose node " + to_string(node));
         }
+    }
+
+    Entity* Reducer::getEntityWithFlippedQuantifierAndVariable(const string &which) {
+        Operators& operators = Operators::getInstance();
+        auto givenQuantifier = operators.getQuantifierFromQuantifierAndVariable(which);
+        auto givenVariable = operators.getVariableFromQuantifierAndVariable(which);
+        auto newQuantifierAndVariable = operators.flipQuantifier(givenQuantifier) + givenVariable;
+        return new Entity(EntityType::BOUNDVariable, newQuantifierAndVariable);
     }
 
     int Reducer::addNodeWithOperator(const string &which) {
@@ -48,6 +57,12 @@ namespace utils {
         parseTree.graph[father].emplace_back(orOperator);
         parseTree.graph[father].emplace_back(nodeTwo);
         return father;
+    }
+
+    int Reducer::addNegationToFormula(const int& nodeOne) {
+        auto notOperator = addNodeWithOperator("NOT");
+        parseTree.graph[notOperator].emplace_back(nodeOne);
+        return notOperator;
     }
 
     bool Reducer::applyParanthesesToOperators(int node,
@@ -143,7 +158,8 @@ namespace utils {
                     auto imply = pile.back(); pile.pop_back();
                     auto rightPredicate = pile.back(); pile.pop_back();
                     disposeNode(imply);
-                    pile.push_back()
+                    auto negatedLeftPredicate = addNegationToFormula(leftPredicate);
+                    pile.push_back(addOrClause(negatedLeftPredicate, rightPredicate));
                 }
             }
         }
@@ -208,13 +224,117 @@ namespace utils {
                         "it should not get modified twice when "
                         "applying resolveRightAssociativityForImplications");
             }
+            return true;
         }
-        throw "Not implemented";
+        return false;
     }
 
     // does step 1.2) - 1.6)
     bool Reducer::pushNOTStep(int node) {
-        throw  "Not implemented";
+        bool isNot = false;
+        Operators& operators = Operators::getInstance();
+        if (parseTree.information.find(node) != parseTree.information.end()) {
+            if (operators.whichOperator(0, parseTree.information[node]->getString()) == "NOT") {
+                isNot = true;
+            }
+        }
+        string operatorOnTheLevel;
+        for (auto &neighbour: parseTree.graph[node]) {
+            if (parseTree.information.find(node) != parseTree.information.end()) {
+                if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDOperator) {
+                    if (operatorOnTheLevel.empty()) {
+                        operatorOnTheLevel = parseTree.information[node]->getString();
+                        if (operatorOnTheLevel == "NOT") {
+                            // that's not unary
+                            // then reset
+                            operatorOnTheLevel.clear();
+                        }
+                        else if (operatorOnTheLevel != "AND" and operatorOnTheLevel != "OR") {
+                            // at this point the tree should have only AND, OR and NOT + quantifiers
+                            throw logic_error("at this point the tree should have only AND, OR and NOT + quantifiers");
+                        }
+                    }
+                    else {
+                        if (operatorOnTheLevel != parseTree.information[node]->getString()) {
+                            throw logic_error("all of the simplified operators which are on"
+                                              "the same level should be the same at this point");
+                        }
+                    }
+                }
+            }
+        }
+        bool wasModified = false;
+        if (isNot) {
+            bool wasRecycled = false;
+            vector <int> newNodes;
+            /// at this point we know that all what we have is either a CNF or a DNF
+            for (auto &neighbour: parseTree.graph[node]) {
+                newNodes.push_back(neighbour);
+                if (parseTree.information.find(neighbour) != parseTree.information.end()) {
+                    switch (parseTree.information[neighbour]->getType()) {
+                        case BOUNDVariable: {
+                            newNodes.pop_back();
+                            if (operators.isQuantifierAndVariable(
+                                    parseTree.information[neighbour]->getString())) {
+                                auto newEntity = getEntityWithFlippedQuantifierAndVariable(
+                                parseTree.information[neighbour]->getString()
+                                );
+                                delete parseTree.information[neighbour];
+                                parseTree.information[neighbour] = parseTree.information[node];
+                                wasRecycled = true;
+                                auto newNode = parseTree.getNextNode();
+                                parseTree.information[newNode] = newEntity;
+                                parseTree.graph[newNode].push_back(neighbour);
+                                newNodes.push_back(newNode);
+                            }
+                            else {
+                                throw logic_error("BOUNDVariable should always contain a quantifier "
+                                                  "and a variable but it was given the "
+                                                  "following " + parseTree.information[neighbour]->getString());
+                            }
+                            break;
+                        }
+                        case SIMPLIFIEDOperator: {
+                            if (operators.whichOperator(
+                                    0, parseTree.information[neighbour]->getString()) == "NOT") {
+                                delete parseTree.information[neighbour];
+                                parseTree.information.erase(parseTree.information.find(neighbour));
+                            }
+                            else if (operators.isAnd(parseTree.information[neighbour]->getString())
+                                or operators.isOr(parseTree.information[neighbour]->getString())) {
+                                auto target = operators.flipAndOrOr(parseTree.information[neighbour]->getString());
+                                delete parseTree.information[neighbour];
+                                parseTree.information[neighbour] = new Entity(EntityType::SIMPLIFIEDOperator, target);
+                            }
+                            break;
+                        }
+                        case LITERAL:
+                            /// TODO: reconsider what I am going to do here.
+                            parseTree.information[neighbour]->getEntity<Literal>().negate();
+                            break;
+                        case NORMALForms:
+                            break;
+                        default:
+                            /// if we reach this state, we can kill the program
+                            /// because it's absurd
+                            assert(false);
+                    }
+                }
+                else {
+                    parseTree.information[neighbour] = parseTree.information[node];
+                    wasRecycled = true;
+                }
+            }
+            wasModified = true;
+            if (!wasRecycled) {
+                delete parseTree.information[node];
+            }
+            parseTree.information.erase(parseTree.information.find(node));
+        }
+        for (auto &neighbour: parseTree.graph[node]) {
+            wasModified |= pushNOTStep(neighbour);
+        }
+        return wasModified;
     }
 
     void Reducer::basicReduce() {
@@ -222,7 +342,7 @@ namespace utils {
         do {
             doIt = false;
             // this coresponds to rules 1.1-1.6 from Leitsch
-            // 1.1) break IMPLICATION on conjunctions
+            // 1.1) break IMPLICATION on disjunctions
             doIt |= reduceImplicationStep(parseTree.Root);
             // 1.2) push NOT further on conjunctions
             // 1.3) push NOT further on disjunctions
