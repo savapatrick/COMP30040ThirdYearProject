@@ -24,15 +24,10 @@ namespace utils {
         std::vector <int> redundantNodes;
         int getNextNode();
         void buildTree(const std::vector <std::string> &tokens);
-        bool applyParanthesesToConjunctions(int node);
-        bool applyParanthesesToDisjunctions(int node);
-        bool applyParanthesesToOperators(int node,
-                                         const std::string &targetOperator,
-                                         const std::vector<std::string>& lowerOperators);
         std::string getEulerTraversal(int node);
     public:
         ParseTree()= default;
-        explicit ParseTree(const std::vector <std::string> &tokens);
+        explicit ParseTree(const std::string &tokens);
         std::string getEulerTraversal();
         std::string extractClauseForm();
     };

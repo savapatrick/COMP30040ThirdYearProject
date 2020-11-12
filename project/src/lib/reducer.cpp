@@ -3,11 +3,69 @@
 //
 
 #include "reducer.h"
+#include "operators.h"
 #include <algorithm>
 
 using namespace std;
 
 namespace utils {
+
+    bool Reducer::applyParanthesesToOperators(int node,
+                                                const std::string &targetOperator,
+                                                const std::vector<std::string>& lowerOperators) {
+        static vector<int> pile;
+        Operators& operators = Operators::getInstance();
+        pile.clear();
+        bool andInside = false;
+        int begin = 0;
+        for (auto &neigh: parseTree.graph[node]) {
+            pile.push_back(neigh);
+            if (parseTree.information.find(neigh) != parseTree.information.end() and
+                parseTree.information[neigh]->getType() == EntityType::SIMPLIFIEDOperator) {
+                if (operators.whichOperator(0, parseTree.information[neigh]->getString()) == targetOperator) {
+                    if (!andInside) {
+                        andInside = true;
+                        if (pile.size() < 2) {
+                            throw logic_error("Expected predicate before AND on the pile");
+                        }
+                        begin = (int) pile.size() - 2;
+                    }
+                }
+                else if (any_of(lowerOperators.begin(), lowerOperators.end(), [&](const std::string &current) {
+                    return current == operators.whichOperator(0, parseTree.information[neigh]->getString());
+                }))
+                {
+                    if (andInside) {
+                        auto newNode = parseTree.getNextNode();
+                        for (int ind = begin; ind < (int) pile.size() - 2; ++ind) {
+                            parseTree.graph[newNode].push_back(pile[ind]);
+                        }
+                        auto keep = pile.back();
+                        pile.pop_back();
+                        pile.push_back(newNode);
+                        pile.push_back(keep);
+                        andInside = false;
+                    }
+                }
+            }
+        }
+        bool wasModified = false;
+        wasModified |= (parseTree.graph[node] != pile);
+        parseTree.graph[node] = pile;
+        pile.clear();
+        for (auto &neigh : parseTree.graph[node]) {
+            wasModified |= applyParanthesesToOperators(neigh);
+        }
+        return wasModified;
+    }
+
+    bool Reducer::applyParanthesesToConjunctions(int node) {
+        return applyParanthesesToOperators(node, "AND", {"OR", "IMPLY"});
+    }
+
+    bool Reducer::applyParanthesesToDisjunctions(int node) {
+        return applyParanthesesToOperators(node, "OR", {"IMPLY"});
+    }
 
     // does step 1.1)
     bool Reducer::reduceImplicationStep(int node) {

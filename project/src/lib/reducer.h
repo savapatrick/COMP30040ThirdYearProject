@@ -14,6 +14,11 @@ namespace utils {
     private:
         ParseTree& parseTree;
         void disposeNode(int node);
+        bool applyParanthesesToConjunctions(int node);
+        bool applyParanthesesToDisjunctions(int node);
+        bool applyParanthesesToOperators(int node,
+                                         const std::string &targetOperator,
+                                         const std::vector<std::string>& lowerOperators);
         bool reduceImplicationStep(int node);
         bool pushNOTStep(int node);
         bool skolemizationStep(int node);

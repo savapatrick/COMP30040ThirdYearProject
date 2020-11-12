@@ -8,12 +8,13 @@
 #include "tokenizer.h"
 #include <stack>
 #include <algorithm>
-#include <iostream>
 
 using namespace std;
 
 namespace utils {
-    ParseTree::ParseTree(const std::vector<std::string> &tokens) {
+    ParseTree::ParseTree(const std::string &formula) {
+        utils::Tokenizer& tokenizer = utils::Tokenizer::getInstance();
+        auto tokens = tokenizer.tokenize(formula);
         graph.clear();
         information.clear();
         spareNodesBuffer.clear();
@@ -25,7 +26,6 @@ namespace utils {
             spareNodesBuffer.push_back(nodeLabel);
         }
         buildTree(tokens);
-//        applyParanthesesToConjunctions(Root);
     }
 
     int ParseTree::getNextNode() {
@@ -119,73 +119,6 @@ namespace utils {
                 }
             }
         }
-        for (auto &x : graph[97]) {
-            cout << x << ' ';
-            cout.flush();
-        }
-        cout << endl;
-        for (auto &x : graph[87]) {
-            cout << x << ' ';
-            cout.flush();
-        }
-        cout << endl;
-    }
-
-    bool ParseTree::applyParanthesesToOperators(int node,
-                                                const std::string &targetOperator,
-                                                const std::vector<std::string>& lowerOperators) {
-        static vector<int> pile;
-        Operators& operators = Operators::getInstance();
-        pile.clear();
-        bool andInside = false;
-        int begin = 0;
-        for (auto &neigh: graph[node]) {
-            pile.push_back(neigh);
-            if (information.find(neigh) != information.end() and
-            information[neigh]->getType() == EntityType::SIMPLIFIEDOperator) {
-                if (operators.whichOperator(0, information[neigh]->getString()) == targetOperator) {
-                    if (!andInside) {
-                        andInside = true;
-                        if (pile.size() < 2) {
-                            throw logic_error("Expected predicate before AND on the pile");
-                        }
-                        begin = (int) pile.size() - 2;
-                    }
-                }
-                else if (any_of(lowerOperators.begin(), lowerOperators.end(), [&](const std::string &current) {
-                    return current == operators.whichOperator(0, information[neigh]->getString());
-                }))
-                {
-                    if (andInside) {
-                        auto newNode = getNextNode();
-                        for (int ind = begin; ind < (int) pile.size() - 2; ++ind) {
-                            graph[newNode].push_back(pile[ind]);
-                        }
-                        auto keep = pile.back();
-                        pile.pop_back();
-                        pile.push_back(newNode);
-                        pile.push_back(keep);
-                        andInside = false;
-                    }
-                }
-            }
-        }
-        bool wasModified = false;
-        wasModified |= (graph[node] != pile);
-        graph[node] = pile;
-        pile.clear();
-        for (auto &neigh : graph[node]) {
-            wasModified |= applyParanthesesToConjunctions(neigh);
-        }
-        return wasModified;
-    }
-
-    bool ParseTree::applyParanthesesToConjunctions(int node) {
-        return applyParanthesesToOperators(node, "AND", {"OR", "IMPLY"});
-    }
-
-    bool ParseTree::applyParanthesesToDisjunctions(int node) {
-        return applyParanthesesToOperators(node, "OR", {"IMPLY"});
     }
 
     string ParseTree::extractClauseForm() {
@@ -251,6 +184,5 @@ namespace utils {
     std::string ParseTree::getEulerTraversal() {
         return getEulerTraversal(Root);
     }
-
 }
 
