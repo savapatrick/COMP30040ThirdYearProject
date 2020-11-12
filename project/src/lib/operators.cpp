@@ -3,12 +3,13 @@
 //
 
 #include "operators.h"
+#include <algorithm>
 
 using namespace std;
 
 namespace utils {
-    string Operators::whichOperator(int position, const std::string& seq) {
-        if(position < (int)seq.size()) {
+    string Operators::whichOperator(const int& position, const std::string& seq) {
+        if(position >= (int)seq.size()) {
             throw out_of_range("position beyond end of seq");
         }
         string aux = ""; aux += seq[position];
@@ -20,23 +21,49 @@ namespace utils {
             if (inv.find(aux) != inv.end()) {
                 return inv[aux];
             }
+            if (position + 2 < (int)seq.size()) {
+                aux += seq[position + 2];
+                if (inv.find(aux) != inv.end()) {
+                    return inv[aux];
+                }
+            }
         }
         return "none";
     }
 
-    void Operators::advanceOperator(int &position, const string &seq, const string &result) {
+    string Operators::advanceOperator(int &position, const string &seq, const string &result) {
+        string answer;
         if (mapping.find(result) != mapping.end()) {
+            for (int ind = position; ind < position + mapping[result].size(); ++ ind) {
+                answer += seq[ind];
+            }
             position += mapping[result].size();
         }
         else {
             if(result == "none") {
-                return;
+                throw logic_error("advanceOperator should always return an operator");
             }
             throw out_of_range("result of the operator was altered");
         }
+        return answer;
     }
 
     bool Operators::isQuantifier(const string &current) {
         return current == EQuantifier or current == VQuantifier;
+    }
+
+    bool Operators::isQuantifierAndVariable(const string &current) {
+        if (!isQuantifier(current.substr(0, 1))) {
+            return false;
+        }
+        return (std::find_if_not(current.begin() + 1, current.end(),
+                                [](char c){return islower(c);}) == current.end());
+    }
+
+    std::string Operators::getOperator(const string &which) {
+        if (mapping.find(which) == mapping.end()) {
+            throw invalid_argument("the given argument is not an operator; argument: " + which);
+        }
+        return mapping[which];
     }
 }

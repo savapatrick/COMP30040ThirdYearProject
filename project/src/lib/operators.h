@@ -19,19 +19,21 @@ namespace utils {
         const std::string OPENEDBracket;
         const std::string CLOSEDBracket;
         const std::string IMPLY;
+        const std::string DOUBLEImply;
         const std::string EQuantifier;
         const std::string VQuantifier;
     private:
         std::unordered_map<std::string, std::string> mapping;
         std::unordered_map<std::string, std::string> inv;
         Operators(): AND("&"), OR("|"), NOT("~"), OPENEDBracket("("),
-                     CLOSEDBracket(")"), IMPLY("->"), EQuantifier("?"), VQuantifier("@"){
+                     CLOSEDBracket(")"), IMPLY("->"), DOUBLEImply("<->"), EQuantifier("?"), VQuantifier("@"){
             mapping["AND"] = AND;
             mapping["OR"] = OR;
             mapping["NOT"] = NOT;
             mapping["OPENED"] = OPENEDBracket;
             mapping["CLOSED"] = CLOSEDBracket;
             mapping["IMPLY"] = IMPLY;
+            mapping["DOUBLEImply"] = DOUBLEImply;
             mapping["E"] = EQuantifier;
             mapping["@"] = VQuantifier;
             for (auto &elem : mapping) {
@@ -45,9 +47,11 @@ namespace utils {
             static Operators instance;
             return instance;
         }
-        std::string whichOperator(int position, const std::string& seq);
-        void advanceOperator(int &position, const std::string& seq, const std::string &result);
+        std::string whichOperator(const int& position, const std::string& seq);
+        std::string advanceOperator(int &position, const std::string& seq, const std::string &result);
         bool isQuantifier(const std::string &current);
+        bool isQuantifierAndVariable(const std::string &current);
+        std::string getOperator(const std::string &which);
     };
 }
 

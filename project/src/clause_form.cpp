@@ -14,10 +14,9 @@ int main() {
     string formula;
     while(getline(cin, formula)) {
         cout << "for the formula " + formula << "\nthe clause form is\n";
-        utils::Tokenizer& tokenizer = utils::Tokenizer::getInstance();
-        auto tokens = tokenizer.tokenize(formula);
-        utils::ParseTree tree(tokens);
-        cout << tree.extractClauseForm() << '\n';
+        utils::ParseTree tree(formula);
+        utils::Reducer reducer(tree);
+        cout << reducer.getClauseForm() << '\n';
         cout << "\n";
     }
     return 0;
