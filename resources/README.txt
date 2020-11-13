@@ -6,3 +6,4 @@ for operator precedence
 
 https://www.cs.yale.edu/homes/piskac/teaching/decpro-729/fol.pdf might be worth reading
 
+https://medium.com/using-valgrind-on-windows-in-clion-with-wsl/install-windows-subsystem-for-linux-windows-10-3ea33c535625

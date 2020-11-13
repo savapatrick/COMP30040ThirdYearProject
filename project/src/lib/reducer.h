@@ -5,6 +5,8 @@
 #ifndef PROJECT_REDUCER_H
 #define PROJECT_REDUCER_H
 
+#include <set>
+#include <map>
 #include "parse_tree.h"
 #include "entity.h"
 
@@ -13,13 +15,16 @@ namespace utils {
     class Reducer {
     private:
         ParseTree& parseTree;
+        std::set<std::string> reservedVariableNames;
         void disposeNode(int node);
         int addNodeWithOperator(const std::string& which);
         int addImplication(const int& nodeOne, const int& nodeTwo);
+        int addOrClause(const int& nodeOne, const int& nodeTwo);
+        int addNegationToFormula(const int& nodeOne);
         bool applyParanthesesToConjunctions(int node);
         bool applyParanthesesToDisjunctions(int node);
         bool applyParanthesesToImplications(int node);
-        bool eliminateDoubleImplication(int node);
+        bool eliminateDoubleImplicationOrImplication(bool isDoubleImplication, int node);
         bool resolveRightAssociativityForImplications(int node);
         bool applyParanthesesToOperators(int node,
                                          const std::string &targetOperator,
@@ -27,14 +32,17 @@ namespace utils {
         bool reduceImplicationStep(int node);
         bool reduceDoubleImplicationStep(int node);
         bool pushNOTStep(int node);
-        bool skolemizationStep(int node);
+        bool skolemizationStep(int node,
+                               std::set<std::string>& variablesSoFar,
+                               std::vector<std::string>& variablesInUniversalQuantifiers,
+                               std::map<std::string, std::string>& skolem);
         bool convertToCNFStep(int node);
         std::string extractClauseForm();
         Entity mergeSameNormalFormEntities(const Entity& first, const Entity& second);
-//        Entity mergeNormalFormEntitiesOnOrO
+        static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string &which);
+        std::string getRandomFunctionOrConstantName();
     public:
-        Reducer()= default;
-        explicit Reducer(ParseTree &_parseTree) : parseTree(_parseTree){}
+        explicit Reducer(ParseTree &_parseTree);
         void basicReduce();
         void skolemization();
         void convertToCNF();

@@ -3,8 +3,8 @@
 //
 
 #include "entity.h"
-#include <stdexcept>
 #include "operators.h"
+#include <stdexcept>
 
 using namespace std;
 
@@ -15,21 +15,21 @@ namespace utils {
     }
 
     template<typename Value>
-    const Value &Entity::getEntity() const {
+    Value Entity::getEntity() const {
         throw logic_error("Not existing getter");
     }
 
-    template<> const string &Entity::getEntity() const {
+    template<> string Entity::getEntity() const {
         return get<0>(entity);
     }
 
     // throws
-    template<> const Literal &Entity::getEntity() const {
+    template<> shared_ptr<Literal> Entity::getEntity() const {
         return get<1>(entity);
     }
 
     // throws
-    template<> const Entity::NormalFormStorage &Entity::getEntity() const {
+    template<> Entity::NormalFormStorage Entity::getEntity() const {
         return get<2>(entity);
     }
 
@@ -39,7 +39,7 @@ namespace utils {
             return get<0>(entity);
         }
         else if (type == EntityType::LITERAL) {
-            return get<1>(entity).getString();
+            return get<1>(entity)->getString();
         }
         else {
             auto info = get<2>(entity);
@@ -59,10 +59,4 @@ namespace utils {
             return result;
         }
     }
-
-    void Entity::andPredicate() {
-//        if (type == 0)
-        return;
-    }
-
 };

@@ -60,10 +60,55 @@ namespace utils {
                                 [](char c){return islower(c);}) == current.end());
     }
 
+    std::string Operators::getQuantifierFromQuantifierAndVariable(const string& current) {
+        if (!isQuantifierAndVariable(current)) {
+            throw invalid_argument("expected quantifier and variable but given " + current);
+        }
+        return current.substr(0,1);
+    }
+
+    std::string Operators::getVariableFromQuantifierAndVariable(const string &current) {
+        if (!isQuantifierAndVariable(current)) {
+            throw invalid_argument("expected quantifier and variable but given " + current);
+        }
+        return current.substr(1);
+    }
+
     std::string Operators::getOperator(const string &which) {
         if (mapping.find(which) == mapping.end()) {
             throw invalid_argument("the given argument is not an operator; argument: " + which);
         }
         return mapping[which];
+    }
+
+    std::string Operators::flipQuantifier(const string &which) {
+        if (!isQuantifier(which)) {
+            throw invalid_argument("expected quantifier but given " + which);
+        }
+        if (which == EQuantifier)
+            return VQuantifier;
+        return EQuantifier;
+    }
+
+    bool Operators::isNot(const string &which) {
+        return (which == NOT);
+    }
+
+    bool Operators::isAnd(const string &which) {
+        return (which == AND);
+    }
+
+    bool Operators::isOr(const string &which) {
+        return (which == OR);
+    }
+
+    std::string Operators::flipAndOrOr(const string &which) {
+        if (!isAnd(which) and !isOr(which)) {
+            throw invalid_argument("the given argument is not AND or OR; given " + which);
+        }
+        if (isAnd(which)) {
+            return OR;
+        }
+        return AND;
     }
 }

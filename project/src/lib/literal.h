@@ -6,23 +6,32 @@
 #define PROJECT_LITERAL_H
 
 #include <string>
+#include <utility>
 #include <vector>
+#include <variant>
 
 namespace utils {
     class Literal {
     private:
-        const bool isNegated;
+        bool isNegated;
         std::string predicateName;
-        std::vector<std::string> arguments;
+        std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> arguments;
     public:
-        Literal(bool _isNegated, std::string _predicateName, std::vector<std::string> _arguments): isNegated(_isNegated),
-                predicateName(std::move(_predicateName)), arguments(std::move(_arguments)){}
+        Literal(bool _isNegated,
+                std::string  _predicateName,
+                std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> _arguments):
+        isNegated(_isNegated), predicateName(std::move(_predicateName)), arguments(std::move(_arguments)){}
 
         static bool isLiteral(const std::string &seq);
         [[nodiscard]] const bool getIsNegated() const;
         [[nodiscard]] const std::string &getPredicateName() const;
-        [[nodiscard]] const std::vector<std::string> &getArguments() const;
+        [[nodiscard]] const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> &getArguments() const;
+        [[nodiscard]] static std::string getArgumentString(const std::variant<std::string, std::pair<std::string,
+                          std::vector<std::string>>>& argument);
         [[nodiscard]] std::string getString() const;
+        void negate();
+        void setArguments(
+                const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> &arguments);
     };
 };
 

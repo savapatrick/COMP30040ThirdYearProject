@@ -6,6 +6,7 @@
 #include "operators.h"
 #include <algorithm>
 #include <sstream>
+#include <variant>
 
 using namespace std;
 
@@ -60,7 +61,8 @@ namespace utils {
         return tokens;
     }
 
-    std::pair<std::string, std::vector<std::string> > Tokenizer::decomposePredicate(const string &seq) {
+    std::pair<std::string, std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>>
+            Tokenizer::decomposePredicate(const string &seq) {
         if (find_if(seq.begin(), seq.end(), [](char c){return isspace(c);}) != seq.end()) {
             throw invalid_argument("the string should not contain whitespaces");
         }
@@ -80,26 +82,12 @@ namespace utils {
         auto predicateName = seq.substr(0, firstBracket);
         auto arguments = seq.substr(firstBracket + 1, lengthOfArguments);
         stringstream stream(arguments);
-        vector <string> argumentsParsed;
+        std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> argumentsParsed;
         while(stream.good()) {
             string current;
             getline(stream, current, ',');
-            argumentsParsed.push_back(current);
+            argumentsParsed.emplace_back(current);
         }
         return {predicateName, argumentsParsed};
-    }
-
-    std::pair<std::string, std::string> Tokenizer::decomposeQuantifierAndVariable(const string &seq) {
-        Operators& operators = Operators::getInstance();
-        if (!operators.isQuantifierAndVariable(seq)) {
-            throw invalid_argument("expected quantifier and variable but given " + seq);
-        }
-        string quantifier = seq.substr(0, 1);
-        string variable = seq.substr(1);
-        if (std::find_if_not(variable.begin(), variable.end(),
-                             [](char c){return islower(c);}) != variable.end()){
-            throw invalid_argument("expected exactly one variable but given " + variable);
-        }
-        return {quantifier, variable};
     }
 };
