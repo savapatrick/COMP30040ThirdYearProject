@@ -7,3 +7,14 @@ for operator precedence
 https://www.cs.yale.edu/homes/piskac/teaching/decpro-729/fol.pdf might be worth reading
 
 https://medium.com/using-valgrind-on-windows-in-clion-with-wsl/install-windows-subsystem-for-linux-windows-10-3ea33c535625
+
+read about skolemization:
+https://www.cs.toronto.edu/~sheila/384/w11/Lectures/csc384w11-KR-tutorial.pdf
+https://en.wikipedia.org/wiki/Skolem_normal_form
+https://www.sciencedirect.com/science/article/pii/S0168007206000170
+https://planetmath.org/skolemization
+https://www.ccs.neu.edu/home/rjw/csg120/programs/logic/skolem.handout
+http://www-verimag.imag.fr/~monin/EnseignementPublic/Misc/L2/INF242/Slides/cours09skolem_En.pdf
+
+read about heterogeneous containers:
+https://gieseanw.wordpress.com/2017/05/03/a-true-heterogeneous-container-in-c/
