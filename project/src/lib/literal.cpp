@@ -22,6 +22,23 @@ namespace utils {
         return (i < (int) seq.size() and isupper(seq[i]));
     }
 
+    std::string Literal::getArgumentString(
+            const std::variant<std::string, std::pair<std::string, std::vector<std::string>>> &argument) {
+        if(argument.index() == 0) {
+            return get<0>(argument);
+        }
+        string result;
+        auto function = get<1>(argument);
+        result += function.first;
+        result += "(";
+        for (auto &functionArgument: function.second) {
+            result += functionArgument + ",";
+        }
+        result.pop_back();
+        result += ")";
+        return result;
+    }
+
     std::string Literal::getString() const {
         string result;
         Operators& operators = Operators::getInstance();
@@ -32,10 +49,10 @@ namespace utils {
         result += "(";
         for (int ind = 0; ind < (int)arguments.size(); ++ ind) {
             if (ind + 1 == arguments.size()) {
-                result += arguments[ind] + ")";
+                result += getArgumentString(arguments[ind]) + ")";
             }
             else {
-                result += arguments[ind] + ",";
+                result += getArgumentString(arguments[ind]) + ",";
             }
         }
         return result;
@@ -49,7 +66,7 @@ namespace utils {
         return predicateName;
     }
 
-    const vector<std::string> &Literal::getArguments() const {
+    const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> &Literal::getArguments() const {
         return arguments;
     }
 

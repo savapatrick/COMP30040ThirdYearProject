@@ -5,6 +5,8 @@
 #ifndef PROJECT_REDUCER_H
 #define PROJECT_REDUCER_H
 
+#include <set>
+#include <map>
 #include "parse_tree.h"
 #include "entity.h"
 
@@ -29,7 +31,10 @@ namespace utils {
         bool reduceImplicationStep(int node);
         bool reduceDoubleImplicationStep(int node);
         bool pushNOTStep(int node);
-        bool skolemizationStep(int node);
+        bool skolemizationStep(int node,
+                               std::set<std::string>& variablesSoFar,
+                               std::vector<std::string>& variablesInUniversalQuantifiers,
+                               std::map<std::string, std::string>& skolem);
         bool convertToCNFStep(int node);
         std::string extractClauseForm();
         Entity mergeSameNormalFormEntities(const Entity& first, const Entity& second);

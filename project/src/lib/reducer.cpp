@@ -340,12 +340,33 @@ namespace utils {
         }while(doIt);
     }
 
-    bool Reducer::skolemizationStep(int node) {
-        return false;
+    bool Reducer::skolemizationStep(int node, std::set<std::string>& variablesSoFar,
+                           std::vector<std::string>& variablesInUniversalQuantifiers,
+                           std::map<std::string, std::string>& skolem) {
+        Operators& operators = Operators::getInstance();
+        if(parseTree.information.find(node) != parseTree.information.end()) {
+            auto information = parseTree.information[node]->getString();
+            if (operators.isQuantifierAndVariable(information)) {
+                auto quantifier = operators.getQuantifierFromQuantifierAndVariable(information);
+                auto variable = operators.getVariableFromQuantifierAndVariable(information);
+                if (quantifier == operators.EQuantifier) {
+                    if (variablesSoFar.find(variable) != variablesSoFar.end()) {
+                        throw logic_error("the given formula has ambiguities in variable namings; "
+                                          "the variable " + variable + " apears multiple times in a chain of quantifiers");
+                    }
+                    else {
+                        variablesSoFar.insert(variable);
+                    }
+                }
+            }
+        }
     }
 
     void Reducer::skolemization() {
-        while(skolemizationStep(parseTree.Root));
+        set <std::string> variablesSoFar;
+        vector <std::string> variablesInUniversalQuantifiers;
+        std::map<std::string, std::string> skolem;
+        while(skolemizationStep(parseTree.Root, variablesSoFar, variablesInUniversalQuantifiers, skolem));
     }
 
     Entity Reducer::mergeSameNormalFormEntities(const Entity &first, const Entity &second) {

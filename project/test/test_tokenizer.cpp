@@ -6,7 +6,7 @@ using namespace std;
 
 TEST(tokenizerTestSuite, testDecomposePredicate) {
     const string predicate = "AreBrothers(x1,y1,x2,y2,x3,y3,x4,y4,z,a,b,c,d)";
-    pair <string, vector <string>> answer;
+    pair <string, std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>> answer;
     answer.first = "AreBrothers";
     answer.second = {"x1", "y1", "x2", "y2", "x3", "y3", "x4", "y4", "z", "a", "b", "c", "d"};
     utils::Tokenizer& tokenizer = utils::Tokenizer::getInstance();
