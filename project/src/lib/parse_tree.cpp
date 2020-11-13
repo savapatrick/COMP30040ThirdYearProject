@@ -8,6 +8,7 @@
 #include "tokenizer.h"
 #include <stack>
 #include <algorithm>
+#include <memory>
 
 using namespace std;
 
@@ -109,7 +110,10 @@ namespace utils {
                 auto node = getNextNode();
                 graph[fatherChain.top()].emplace_back(node);
                 auto predicate = Tokenizer::decomposePredicate(token);
-                information[node] = new Entity(EntityType::LITERAL, Literal(false, predicate.first, predicate.second));
+                std::shared_ptr<Literal> literal = std::make_shared<Literal>(
+                        false,predicate.first, predicate.second
+                );
+                information[node] = new Entity(EntityType::LITERAL, literal);
                 while (!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
                     auto target = operatorPrecedenceNOTQuant.top().first;
                     operatorPrecedenceNOTQuant.pop();

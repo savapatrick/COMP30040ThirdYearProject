@@ -10,6 +10,7 @@
 #include <vector>
 #include <variant>
 #include <stdexcept>
+#include <memory>
 #include "literal.h"
 
 namespace utils {
@@ -27,25 +28,36 @@ namespace utils {
     public:
         typedef std::pair<NormalFormType, std::vector<Literal>> NormalFormStorage;
         typedef std::variant<std::string, /*type 0 or type 2*/
-                Literal , /*type 1*/
+                std::shared_ptr<Literal>,
                 NormalFormStorage /*type 3*/> EntityStorage;
     private:
         EntityType type;
         EntityStorage entity;
     public:
         Entity() = default;
-        explicit Entity(const EntityType &_type, EntityStorage _entity) : type(_type), entity(std::move(_entity)){
-            if (!(0 <= type and type <= 3)) {
-                throw std::invalid_argument("Type for Entity has to lie between 0 and 3 but given " + std::to_string(type));
+        explicit Entity(const EntityType &_type, const std::string& _entity) : type(_type), entity(_entity){
+            if (type and type != 2) {
+                throw std::invalid_argument("Type for Entity has to be 0 or 2 but given " + std::to_string(type));
+            }
+        };
+        explicit Entity(const EntityType &_type, const NormalFormStorage& _entity) :
+        type(_type), entity(_entity) {
+            if (type != 3) {
+                throw std::invalid_argument("Type for Entity has to be 3 but given " + std::to_string(type));
+            }
+        };
+        explicit Entity(const EntityType &_type, const std::shared_ptr<Literal>& _entity) :
+                type(_type), entity(_entity) {
+            if (type != 1) {
+                throw std::invalid_argument("Type for Entity has to be 1 but given " + std::to_string(type));
             }
         };
         [[nodiscard]] EntityType getType() const;
 
         template<typename Value>
-        const Value &getEntity() const;
+        Value getEntity() const;
 
         [[nodiscard]] std::string getString() const;
-        void andPredicate();
     };
 };
 

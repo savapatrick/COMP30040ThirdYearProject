@@ -310,7 +310,7 @@ namespace utils {
                         }
                         case LITERAL:
                             /// TODO: reconsider what I am going to do here.
-                            parseTree.information[neighbour]->getEntity<Literal>().negate();
+                            parseTree.information[neighbour]->getEntity<Literal*>()->negate();
                             break;
                         case NORMALForms:
                             break;

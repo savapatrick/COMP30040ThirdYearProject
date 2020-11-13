@@ -6,6 +6,7 @@
 #define PROJECT_LITERAL_H
 
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace utils {
@@ -15,8 +16,10 @@ namespace utils {
         std::string predicateName;
         std::vector<std::string> arguments;
     public:
-        Literal(bool _isNegated, std::string _predicateName, std::vector<std::string> _arguments): isNegated(_isNegated),
-                predicateName(std::move(_predicateName)), arguments(std::move(_arguments)){}
+        Literal(bool _isNegated,
+                std::string  _predicateName,
+                std::vector<std::string>  _arguments):
+        isNegated(_isNegated), predicateName(std::move(_predicateName)), arguments(std::move(_arguments)){}
 
         static bool isLiteral(const std::string &seq);
         [[nodiscard]] const bool getIsNegated() const;
