@@ -73,4 +73,9 @@ namespace utils {
     void Literal::negate() {
         isNegated ^= true;
     }
+
+    void Literal::setArguments(
+            const vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> &arguments) {
+        Literal::arguments = arguments;
+    }
 };

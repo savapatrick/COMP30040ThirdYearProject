@@ -6,10 +6,54 @@
 #include "operators.h"
 #include <algorithm>
 #include <cassert>
+#include <ctime>
 
 using namespace std;
 
 namespace utils {
+
+    Reducer::Reducer(ParseTree &_parseTree) : parseTree(_parseTree) {
+        Operators& operators = Operators::getInstance();
+        for (auto &info : parseTree.information) {
+            auto key = info.first;
+            auto value = info.second;
+            if (value->getType() == EntityType::LITERAL) {
+                auto arguments = value->getEntity<shared_ptr<Literal>>()->getArguments();
+                for (auto &argument: arguments) {
+                    if (argument.index() == 1) {
+                       throw invalid_argument("given a non-raw parse tree to the Reducer constructor");
+                    }
+                    reservedVariableNames.insert(Literal::getArgumentString(argument));
+                }
+            }
+            else if (value->getType() == EntityType::SIMPLIFIEDOperator) {
+                reservedVariableNames.insert(operators.getVariableFromQuantifierAndVariable(value->getString()));
+            }
+            else if (value->getType() == EntityType::NORMALForms) {
+                // for the intended purpose of this class, we should never enter on this branch
+                // because we expect the Reducer class to always get the raw parseTree
+                // TODO: consider whether to enforce that/redesign
+                throw invalid_argument("Reducer always expects a raw parse tree; given one with normal forms");
+            }
+        }
+    }
+
+    std::string Reducer::getRandomFunctionOrConstantName() {
+        static std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
+        const int sizeOfAlphabet = 26;
+        // TODO: consider whether we want the C++11 random generator
+        std::srand(std::time(nullptr));
+        string result;
+        do {
+            result.clear();
+            int length = rand() % 15 + 1; /// 26^15 is huge
+            for (int ind = 1; ind <= length; ++ind) {
+                result += alphabet[rand() % sizeOfAlphabet];
+            }
+        }while(reservedVariableNames.find(result) != reservedVariableNames.end());
+        reservedVariableNames.insert(result);
+        return result;
+    }
 
     void Reducer::disposeNode(int node) {
         try {

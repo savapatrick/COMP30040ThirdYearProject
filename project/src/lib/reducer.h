@@ -15,6 +15,7 @@ namespace utils {
     class Reducer {
     private:
         ParseTree& parseTree;
+        std::set<std::string> reservedVariableNames;
         void disposeNode(int node);
         int addNodeWithOperator(const std::string& which);
         int addImplication(const int& nodeOne, const int& nodeTwo);
@@ -39,9 +40,9 @@ namespace utils {
         std::string extractClauseForm();
         Entity mergeSameNormalFormEntities(const Entity& first, const Entity& second);
         static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string &which);
+        std::string getRandomFunctionOrConstantName();
     public:
-        Reducer()= default;
-        explicit Reducer(ParseTree &_parseTree) : parseTree(_parseTree){}
+        explicit Reducer(ParseTree &_parseTree);
         void basicReduce();
         void skolemization();
         void convertToCNF();

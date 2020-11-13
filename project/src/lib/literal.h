@@ -30,6 +30,8 @@ namespace utils {
                           std::vector<std::string>>>& argument);
         [[nodiscard]] std::string getString() const;
         void negate();
+        void setArguments(
+                const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> &arguments);
     };
 };
 
