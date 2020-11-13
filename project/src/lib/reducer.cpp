@@ -303,15 +303,11 @@ namespace utils {
                             break;
                         }
                         case LITERAL:
-                            /// TODO: reconsider what I am going to do here.
-                            parseTree.information[neighbour]->getEntity<Literal*>()->negate();
+                            parseTree.information[neighbour]->getEntity<shared_ptr<Literal>>()->negate();
                             break;
                         case NORMALForms:
-                            break;
                         default:
-                            /// if we reach this state, we can kill the program
-                            /// because it's absurd
-                            assert(false);
+                            throw logic_error("at this point the atoms are not grouped on normal forms");
                     }
                 }
                 else {
@@ -320,6 +316,7 @@ namespace utils {
             }
             wasModified = true;
             parseTree.information.erase(parseTree.information.find(node));
+            parseTree.graph[node] = newNodes;
         }
         for (auto &neighbour: parseTree.graph[node]) {
             wasModified |= pushNOTStep(neighbour);
@@ -331,7 +328,7 @@ namespace utils {
         bool doIt;
         do {
             doIt = false;
-            // this coresponds to rules 1.1-1.6 from Leitsch
+            // this corresponds to rules 1.1-1.6 from Leitsch
             // 1.1) break IMPLICATION on disjunctions
             doIt |= reduceImplicationStep(parseTree.Root);
             // 1.2) push NOT further on conjunctions
