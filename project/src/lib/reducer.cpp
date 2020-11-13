@@ -14,7 +14,6 @@ namespace utils {
     void Reducer::disposeNode(int node) {
         try {
             parseTree.graph.erase(parseTree.graph.find(node));
-            delete parseTree.information[node];
             parseTree.information.erase(parseTree.information.find(node));
             parseTree.redundantNodes.push_back(node);
         } catch (...) {
@@ -22,12 +21,12 @@ namespace utils {
         }
     }
 
-    Entity* Reducer::getEntityWithFlippedQuantifierAndVariable(const string &which) {
+    std::shared_ptr<Entity> Reducer::getEntityWithFlippedQuantifierAndVariable(const string &which) {
         Operators& operators = Operators::getInstance();
         auto givenQuantifier = operators.getQuantifierFromQuantifierAndVariable(which);
         auto givenVariable = operators.getVariableFromQuantifierAndVariable(which);
         auto newQuantifierAndVariable = operators.flipQuantifier(givenQuantifier) + givenVariable;
-        return new Entity(EntityType::BOUNDVariable, newQuantifierAndVariable);
+        return make_shared<Entity>(EntityType::BOUNDVariable, newQuantifierAndVariable);
     }
 
     int Reducer::addNodeWithOperator(const string &which) {
@@ -37,7 +36,7 @@ namespace utils {
         if (operators.isQuantifier(givenOperator)) {
             throw invalid_argument("given operator is a quantifier --- something went wrong");
         }
-        parseTree.information[newNode] = new Entity(EntityType::SIMPLIFIEDOperator, givenOperator);
+        parseTree.information[newNode] = make_shared<Entity>(EntityType::SIMPLIFIEDOperator, givenOperator);
         return newNode;
     }
 
@@ -265,7 +264,6 @@ namespace utils {
         }
         bool wasModified = false;
         if (isNot) {
-            bool wasRecycled = false;
             vector <int> newNodes;
             /// at this point we know that all what we have is either a CNF or a DNF
             for (auto &neighbour: parseTree.graph[node]) {
@@ -279,9 +277,7 @@ namespace utils {
                                 auto newEntity = getEntityWithFlippedQuantifierAndVariable(
                                 parseTree.information[neighbour]->getString()
                                 );
-                                delete parseTree.information[neighbour];
                                 parseTree.information[neighbour] = parseTree.information[node];
-                                wasRecycled = true;
                                 auto newNode = parseTree.getNextNode();
                                 parseTree.information[newNode] = newEntity;
                                 parseTree.graph[newNode].push_back(neighbour);
@@ -297,14 +293,12 @@ namespace utils {
                         case SIMPLIFIEDOperator: {
                             if (operators.whichOperator(
                                     0, parseTree.information[neighbour]->getString()) == "NOT") {
-                                delete parseTree.information[neighbour];
                                 parseTree.information.erase(parseTree.information.find(neighbour));
                             }
                             else if (operators.isAnd(parseTree.information[neighbour]->getString())
                                 or operators.isOr(parseTree.information[neighbour]->getString())) {
                                 auto target = operators.flipAndOrOr(parseTree.information[neighbour]->getString());
-                                delete parseTree.information[neighbour];
-                                parseTree.information[neighbour] = new Entity(EntityType::SIMPLIFIEDOperator, target);
+                                parseTree.information[neighbour] = make_shared<Entity>(EntityType::SIMPLIFIEDOperator, target);
                             }
                             break;
                         }
@@ -322,13 +316,9 @@ namespace utils {
                 }
                 else {
                     parseTree.information[neighbour] = parseTree.information[node];
-                    wasRecycled = true;
                 }
             }
             wasModified = true;
-            if (!wasRecycled) {
-                delete parseTree.information[node];
-            }
             parseTree.information.erase(parseTree.information.find(node));
         }
         for (auto &neighbour: parseTree.graph[node]) {

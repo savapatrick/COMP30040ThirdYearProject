@@ -5,7 +5,6 @@
 #include "entity.h"
 #include "operators.h"
 #include <stdexcept>
-#include <memory>
 
 using namespace std;
 

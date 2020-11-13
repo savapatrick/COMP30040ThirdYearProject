@@ -33,7 +33,7 @@ namespace utils {
         bool convertToCNFStep(int node);
         std::string extractClauseForm();
         Entity mergeSameNormalFormEntities(const Entity& first, const Entity& second);
-        static Entity* getEntityWithFlippedQuantifierAndVariable(const std::string &which);
+        static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string &which);
     public:
         Reducer()= default;
         explicit Reducer(ParseTree &_parseTree) : parseTree(_parseTree){}

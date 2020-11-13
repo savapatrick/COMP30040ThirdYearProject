@@ -70,7 +70,7 @@ namespace utils {
                     graph[fatherChain.top()].emplace_back(node);
                     fatherChain.push(node);
                     if (token == operators.NOT) {
-                        information[node] = new Entity(EntityType::SIMPLIFIEDOperator, token);
+                        information[node] = make_shared<Entity>(EntityType::SIMPLIFIEDOperator, token);
                         operatorPrecedenceNOTQuant.push({(int)fatherChain.size() - 1, sumSoFarParanthesis});
                     }
                     else {
@@ -90,7 +90,7 @@ namespace utils {
                     auto node = getNextNode();
                     graph[fatherChain.top()].emplace_back(node);
                     fatherChain.push(node);
-                    information[node] = new Entity(EntityType::BOUNDVariable, token);
+                    information[node] = make_shared<Entity>(EntityType::BOUNDVariable, token);
                     operatorPrecedenceNOTQuant.push({(int)fatherChain.size() - 1, sumSoFarParanthesis});
                 }
                 else {
@@ -99,7 +99,7 @@ namespace utils {
                     }
                     auto node = getNextNode();
                     graph[fatherChain.top()].emplace_back(node);
-                    information[node] = new Entity(EntityType::SIMPLIFIEDOperator, token);
+                    information[node] = make_shared<Entity>(EntityType::SIMPLIFIEDOperator, token);
                 }
             }
             else {
@@ -113,7 +113,7 @@ namespace utils {
                 std::shared_ptr<Literal> literal = std::make_shared<Literal>(
                         false,predicate.first, predicate.second
                 );
-                information[node] = new Entity(EntityType::LITERAL, literal);
+                information[node] = make_shared<Entity>(EntityType::LITERAL, literal);
                 while (!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
                     auto target = operatorPrecedenceNOTQuant.top().first;
                     operatorPrecedenceNOTQuant.pop();

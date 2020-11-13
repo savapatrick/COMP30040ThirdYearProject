@@ -17,7 +17,7 @@ namespace utils {
     private:
         int Root;
         std::unordered_map <int, std::vector <int> > graph;
-        std::unordered_map <int, Entity*> information;
+        std::unordered_map <int, std::shared_ptr<Entity> > information;
         std::vector <int> spareNodesBuffer;
         int highestNodeLabel;
         /// when compacting/reducing nodes, push them here in order to reuse them later
