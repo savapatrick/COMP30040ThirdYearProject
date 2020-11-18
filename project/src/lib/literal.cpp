@@ -89,4 +89,16 @@ bool Literal::substituteSkolem(std::unordered_map<std::string, Literal::arg>& sk
     }
     return wasModified;
 }
+void Literal::simpleSubstitution(unordered_map<std::string, std::string>& substitution) {
+    for(auto& argument : arguments) {
+        if(argument.index() == 0) {
+            // this is variable
+            // only raw variables could be substituted
+            auto variable = get<0>(argument);
+            if(substitution.find(variable) != substitution.end()) {
+                argument = substitution[variable];
+            }
+        }
+    }
+}
 }; // namespace utils

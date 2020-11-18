@@ -385,7 +385,9 @@ bool Reducer::checkNonAmbiguousScope(int node, set<std::string>& variablesInCurr
         }
     }
     bool isOk = true;
-    for(auto& neighbour : parseTree.graph[node]) { isOk &= checkNonAmbiguousScope(neighbour, variablesInCurrentStack); }
+    for(auto& neighbour : parseTree.graph[node]) {
+        isOk &= checkNonAmbiguousScope(neighbour, variablesInCurrentStack, result);
+    }
     if(!toRemove.empty()) {
         variablesInCurrentStack.erase(variablesInCurrentStack.find(toRemove));
     }
@@ -393,12 +395,39 @@ bool Reducer::checkNonAmbiguousScope(int node, set<std::string>& variablesInCurr
 }
 
 void Reducer::variableRenaming(int node, set<std::string>& accumulator, unordered_map<std::string, std::string>& substitution) {
+    string whichVariable;
+    bool wasSubstitution = false;
+    Operators& operators = Operators::getInstance();
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
+            string variable  = operators.getVariableFromQuantifierAndVariable(information);
+            if(accumulator.find(variable) != accumulator.end()) {
+                // we want then to rename it
+                substitution[variable] = getRandomFunctionOrConstantName();
+                accumulator.insert(substitution[variable]);
+                wasSubstitution = true;
+                whichVariable   = variable;
+            }
+        } else if(parseTree.information[node]->getType() == EntityType::LITERAL) {
+            auto literal = parseTree.information[node]->getEntity<shared_ptr<Literal>>();
+            literal->simpleSubstitution(substitution);
+        }
+    }
+    for(auto& neighbour : parseTree.graph[node]) { variableRenaming(neighbour, accumulator, substitution); }
+    if(wasSubstitution) {
+        substitution.erase(substitution.find(whichVariable));
+    }
 }
 
 bool Reducer::skolemizationStep(int node,
 std::vector<std::string>& variablesInUniversalQuantifiers,
 unordered_map<string, Literal::arg>& skolem) {
-    bool wasModified     = false;
+    bool wasModified    = false;
+    bool wasEQuantifier = false;
+    bool wasVQuantifier = false;
+    string whichVariable;
     Operators& operators = Operators::getInstance();
     if(parseTree.information.find(node) != parseTree.information.end()) {
         if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
@@ -412,11 +441,14 @@ unordered_map<string, Literal::arg>& skolem) {
                     skolem[variable] = make_pair(getRandomFunctionOrConstantName(), variablesInUniversalQuantifiers);
                 }
                 wasModified |= true;
+                wasEQuantifier = true;
+                whichVariable  = variable;
             } else {
                 if(quantifier != operators.VQuantifier) {
                     throw logic_error("the quantifier should be either existential or universal");
                 }
                 variablesInUniversalQuantifiers.push_back(variable);
+                wasVQuantifier = true;
             }
         } else if(parseTree.information[node]->getType() == EntityType::LITERAL) {
             auto literal = parseTree.information[node]->getEntity<shared_ptr<Literal>>();
@@ -426,19 +458,13 @@ unordered_map<string, Literal::arg>& skolem) {
     for(auto& neighbour : parseTree.graph[node]) {
         wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
     }
-    if(parseTree.information.find(node) != parseTree.information.end()) {
-        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
-            auto information = parseTree.information[node]->getEntity<string>();
-            auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
-            auto variable    = operators.getVariableFromQuantifierAndVariable(information);
-            if(quantifier == operators.EQuantifier) {
-                skolem.erase(skolem.find(variable));
-                /// here we delete the information for this node
-                parseTree.information.erase(parseTree.information.find(node));
-            } else {
-                variablesInUniversalQuantifiers.pop_back();
-            }
-        }
+    if(wasEQuantifier) {
+        skolem.erase(skolem.find(whichVariable));
+        /// here we delete the information for this node
+        parseTree.information.erase(parseTree.information.find(node));
+    }
+    if(wasVQuantifier) {
+        variablesInUniversalQuantifiers.pop_back();
     }
     return wasModified;
 }
@@ -451,10 +477,16 @@ void Reducer::skolemization() {
                           "the variable " +
         violatingVariable + " apears multiple times in a chain of quantifiers");
     }
+    if(!variablesSoFar.empty()) {
+        throw logic_error("something went wrong with checkNonAmbiguousScope function; content partially disposed");
+    }
+    // in order to disambiguate the formula, make the variables unique
+    unordered_map<string, string> simpleSubstitution;
+    variableRenaming(parseTree.Root, variablesSoFar, simpleSubstitution);
     vector<std::string> variablesInUniversalQuantifiers;
     unordered_map<string, variant<string, pair<string, vector<string>>>> skolem;
     while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, skolem)) {
-        if(!variablesSoFar.empty() or !variablesInUniversalQuantifiers.empty() or !skolem.empty()) {
+        if(!variablesInUniversalQuantifiers.empty() or !skolem.empty()) {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }
     }

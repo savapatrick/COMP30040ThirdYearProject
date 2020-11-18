@@ -43,6 +43,7 @@ class Literal {
     void setArguments(const std::vector<arg>& args);
 
     bool substituteSkolem(std::unordered_map<std::string, arg>& skolem);
+    void simpleSubstitution(std::unordered_map<std::string, std::string>& substitution);
 };
 }; // namespace utils
 
