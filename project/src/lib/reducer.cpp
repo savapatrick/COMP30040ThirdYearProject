@@ -369,6 +369,7 @@ bool Reducer::skolemizationStep(int node,
 std::set<std::string>& variablesSoFar,
 std::vector<std::string>& variablesInUniversalQuantifiers,
 map<string, Literal::arg>& skolem) {
+    bool wasModified = false;
     Operators& operators = Operators::getInstance();
     if(parseTree.information.find(node) != parseTree.information.end()) {
         if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
@@ -387,6 +388,7 @@ map<string, Literal::arg>& skolem) {
                 } else {
                     skolem[variable] = make_pair(getRandomFunctionOrConstantName(), variablesInUniversalQuantifiers);
                 }
+                wasModified |= true;
             } else {
                 if(quantifier != operators.VQuantifier) {
                     throw logic_error("the quantifier should be either existential or universal");
@@ -395,10 +397,12 @@ map<string, Literal::arg>& skolem) {
             }
         } else if(parseTree.information[node]->getType() == EntityType::LITERAL) {
             auto literal = parseTree.information[node]->getEntity<shared_ptr<Literal>>();
-            literal->substituteSkolem(skolem);
+            wasModified |= literal->substituteSkolem(skolem);
         }
     }
-    for(auto& neighbour : parseTree.graph[node]) { skolemizationStep(neighbour); }
+    for(auto& neighbour : parseTree.graph[node]) {
+        wasModified |= skolemizationStep(neighbour, variablesSoFar, variablesInUniversalQuantifiers, skolem);
+    }
     if(parseTree.information.find(node) != parseTree.information.end()) {
         if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
             auto information = parseTree.information[node]->getEntity<string>();
@@ -414,13 +418,18 @@ map<string, Literal::arg>& skolem) {
             }
         }
     }
+    return wasModified;
 }
 
 void Reducer::skolemization() {
     set<std::string> variablesSoFar;
     vector<std::string> variablesInUniversalQuantifiers;
     map<string, variant<string, pair<string, vector<string>>>> skolem;
-    while(skolemizationStep(parseTree.Root, variablesSoFar, variablesInUniversalQuantifiers, skolem)) {}
+    while(skolemizationStep(parseTree.Root, variablesSoFar, variablesInUniversalQuantifiers, skolem)) {
+        if (!variablesSoFar.empty() or !variablesInUniversalQuantifiers.empty() or !skolem.empty()) {
+            throw logic_error("skolemization does not dispose the right content between two independent executions");
+        }
+    }
 }
 
 Entity Reducer::mergeSameNormalFormEntities(const Entity& first, const Entity& second) {

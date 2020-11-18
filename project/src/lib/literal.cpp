@@ -74,7 +74,8 @@ void Literal::setArguments(const vector<Literal::arg>& args) {
     Literal::arguments = args;
 }
 
-void Literal::substituteSkolem(std::map<std::string, Literal::arg>& skolem) {
+bool Literal::substituteSkolem(std::map<std::string, Literal::arg>& skolem) {
+    bool wasModified = false;
     for(auto& argument : arguments) {
         if(argument.index() == 0) {
             // this is variable
@@ -82,8 +83,10 @@ void Literal::substituteSkolem(std::map<std::string, Literal::arg>& skolem) {
             auto variable = get<0>(argument);
             if(skolem.find(variable) != skolem.end()) {
                 argument = skolem[variable];
+                wasModified = true;
             }
         }
     }
+    return wasModified;
 }
 }; // namespace utils

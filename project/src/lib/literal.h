@@ -42,7 +42,7 @@ class Literal {
 
     void setArguments(const std::vector<arg>& args);
 
-    void substituteSkolem(std::map<std::string, arg>& skolem);
+    bool substituteSkolem(std::map<std::string, arg>& skolem);
 };
 }; // namespace utils
 
