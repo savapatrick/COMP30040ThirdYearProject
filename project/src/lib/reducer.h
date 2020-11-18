@@ -7,8 +7,8 @@
 
 #include "entity.h"
 #include "parse_tree.h"
-#include <map>
 #include <set>
+#include <unordered_map>
 
 namespace utils {
 class ParseTree;
@@ -46,10 +46,13 @@ class Reducer {
 
     bool pushNOTStep(int node);
 
+    bool checkNonAmbiguousScope(int node, std::set<std::string>& variablesInCurrentStack, std::string* result);
+
+    void variableRenaming(int node, std::set<std::string>& accumulator, std::unordered_map<std::string, std::string>& substitution);
+
     bool skolemizationStep(int node,
-    std::set<std::string>& variablesSoFar,
     std::vector<std::string>& variablesInUniversalQuantifiers,
-    std::map<std::string, Literal::arg>& skolem);
+    std::unordered_map<std::string, Literal::arg>& skolem);
 
     bool convertToCNFStep(int node);
 

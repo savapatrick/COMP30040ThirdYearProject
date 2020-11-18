@@ -5,8 +5,8 @@
 #ifndef PROJECT_LITERAL_H
 #define PROJECT_LITERAL_H
 
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <variant>
 #include <vector>
@@ -42,7 +42,7 @@ class Literal {
 
     void setArguments(const std::vector<arg>& args);
 
-    bool substituteSkolem(std::map<std::string, arg>& skolem);
+    bool substituteSkolem(std::unordered_map<std::string, arg>& skolem);
 };
 }; // namespace utils
 

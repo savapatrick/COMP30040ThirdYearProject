@@ -15,7 +15,6 @@ namespace utils {
 Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
     Operators& operators = Operators::getInstance();
     for(auto& info : parseTree.information) {
-        auto key   = info.first;
         auto value = info.second;
         if(value->getType() == EntityType::LITERAL) {
             auto arguments = value->getEntity<shared_ptr<Literal>>()->getArguments();
@@ -219,32 +218,36 @@ bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, 
 
 // warm-up for step 1.1)
 bool Reducer::reduceDoubleImplicationStep(int node) {
+    bool wasModified = false;
     if(applyParanthesesToConjunctions(node)) {
         if(applyParanthesesToConjunctions(node)) {
             throw logic_error("it should not get modified twice when "
                               "applying applyParanthesesToConjunctions");
         }
+        wasModified = true;
     }
     if(applyParanthesesToDisjunctions(node)) {
         if(applyParanthesesToDisjunctions(node)) {
             throw logic_error("it should not get modified twice when "
                               "applying applyParanthesesToDisjunctions");
         }
+        wasModified = true;
     }
     if(applyParanthesesToImplications(node)) {
         if(applyParanthesesToImplications(node)) {
             throw logic_error("it should not get modified twice when "
                               "applying applyParanthesesToImplications");
         }
+        wasModified = true;
     }
     if(eliminateDoubleImplicationOrImplication(true, node)) {
         if(eliminateDoubleImplicationOrImplication(true, node)) {
             throw logic_error("it should not get modified twice when "
                               "applying eliminateDoubleImplication");
         }
-        return true;
+        wasModified = true;
     }
-    return false;
+    return wasModified;
 }
 
 bool Reducer::resolveRightAssociativityForImplications(int node) {
@@ -253,16 +256,16 @@ bool Reducer::resolveRightAssociativityForImplications(int node) {
 
 // does step 1.1)
 bool Reducer::reduceImplicationStep(int node) {
-    while(!reduceDoubleImplicationStep(node))
-        ;
+    bool wasModified = false;
+    while(!reduceDoubleImplicationStep(node)) { wasModified = true; }
     if(resolveRightAssociativityForImplications(node)) {
         if(resolveRightAssociativityForImplications(node)) {
             throw logic_error("it should not get modified twice when "
                               "applying resolveRightAssociativityForImplications");
         }
-        return true;
+        wasModified = true;
     }
-    return false;
+    return wasModified;
 }
 
 // does step 1.2) - 1.6)
@@ -365,23 +368,43 @@ void Reducer::basicReduce() {
     } while(doIt);
 }
 
+bool Reducer::checkNonAmbiguousScope(int node, set<std::string>& variablesInCurrentStack, string* result) {
+    Operators& operators = Operators::getInstance();
+    string toRemove;
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
+            auto variable    = operators.getVariableFromQuantifierAndVariable(information);
+            if(variablesInCurrentStack.find(variable) != variablesInCurrentStack.end()) {
+                *result = variable;
+                return false;
+            }
+            variablesInCurrentStack.insert(variable);
+            toRemove = variable;
+        }
+    }
+    bool isOk = true;
+    for(auto& neighbour : parseTree.graph[node]) { isOk &= checkNonAmbiguousScope(neighbour, variablesInCurrentStack); }
+    if(!toRemove.empty()) {
+        variablesInCurrentStack.erase(variablesInCurrentStack.find(toRemove));
+    }
+    return isOk;
+}
+
+void Reducer::variableRenaming(int node, set<std::string>& accumulator, unordered_map<std::string, std::string>& substitution) {
+}
+
 bool Reducer::skolemizationStep(int node,
-std::set<std::string>& variablesSoFar,
 std::vector<std::string>& variablesInUniversalQuantifiers,
-map<string, Literal::arg>& skolem) {
-    bool wasModified = false;
+unordered_map<string, Literal::arg>& skolem) {
+    bool wasModified     = false;
     Operators& operators = Operators::getInstance();
     if(parseTree.information.find(node) != parseTree.information.end()) {
         if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
             auto information = parseTree.information[node]->getEntity<string>();
             auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
             auto variable    = operators.getVariableFromQuantifierAndVariable(information);
-            if(variablesSoFar.find(variable) != variablesSoFar.end()) {
-                throw logic_error("the given formula has ambiguities in variable namings; "
-                                  "the variable " +
-                variable + " apears multiple times in a chain of quantifiers");
-            }
-            variablesSoFar.insert(variable);
             if(quantifier == operators.EQuantifier) {
                 if(variablesInUniversalQuantifiers.empty()) {
                     skolem[variable] = getRandomFunctionOrConstantName();
@@ -401,14 +424,13 @@ map<string, Literal::arg>& skolem) {
         }
     }
     for(auto& neighbour : parseTree.graph[node]) {
-        wasModified |= skolemizationStep(neighbour, variablesSoFar, variablesInUniversalQuantifiers, skolem);
+        wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
     }
     if(parseTree.information.find(node) != parseTree.information.end()) {
         if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
             auto information = parseTree.information[node]->getEntity<string>();
             auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
             auto variable    = operators.getVariableFromQuantifierAndVariable(information);
-            variablesSoFar.erase(variablesSoFar.find(variable));
             if(quantifier == operators.EQuantifier) {
                 skolem.erase(skolem.find(variable));
                 /// here we delete the information for this node
@@ -423,10 +445,16 @@ map<string, Literal::arg>& skolem) {
 
 void Reducer::skolemization() {
     set<std::string> variablesSoFar;
+    string violatingVariable;
+    if(!checkNonAmbiguousScope(parseTree.Root, variablesSoFar, &violatingVariable)) {
+        throw logic_error("the given formula has ambiguities in variable namings; "
+                          "the variable " +
+        violatingVariable + " apears multiple times in a chain of quantifiers");
+    }
     vector<std::string> variablesInUniversalQuantifiers;
-    map<string, variant<string, pair<string, vector<string>>>> skolem;
-    while(skolemizationStep(parseTree.Root, variablesSoFar, variablesInUniversalQuantifiers, skolem)) {
-        if (!variablesSoFar.empty() or !variablesInUniversalQuantifiers.empty() or !skolem.empty()) {
+    unordered_map<string, variant<string, pair<string, vector<string>>>> skolem;
+    while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, skolem)) {
+        if(!variablesSoFar.empty() or !variablesInUniversalQuantifiers.empty() or !skolem.empty()) {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }
     }
