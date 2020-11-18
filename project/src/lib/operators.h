@@ -27,9 +27,9 @@ class Operators {
     std::unordered_map<std::string, std::string> mapping;
     std::unordered_map<std::string, std::string> inv;
 
-    Operators ()
-    : AND ("&"), OR ("|"), NOT ("~"), OPENEDBracket ("("), CLOSEDBracket (")"), IMPLY ("->"), DOUBLEImply ("<->"),
-      EQuantifier ("?"), VQuantifier ("@") {
+    Operators()
+    : AND("&"), OR("|"), NOT("~"), OPENEDBracket("("), CLOSEDBracket(")"), IMPLY("->"), DOUBLEImply("<->"),
+      EQuantifier("?"), VQuantifier("@") {
         mapping["AND"]         = AND;
         mapping["OR"]          = OR;
         mapping["NOT"]         = NOT;
@@ -39,44 +39,44 @@ class Operators {
         mapping["DOUBLEImply"] = DOUBLEImply;
         mapping["E"]           = EQuantifier;
         mapping["@"]           = VQuantifier;
-        for (auto& elem : mapping) {
+        for(auto& elem : mapping) {
             inv[elem.second] = elem.first;
         }
     }
 
-    Operators (Operators const&);
+    Operators(Operators const&);
 
-    void operator= (Operators const&);
+    void operator=(Operators const&);
 
     public:
-    static Operators& getInstance () {
+    static Operators& getInstance() {
         static Operators instance;
         return instance;
     }
 
-    std::string whichOperator (const int& position, const std::string& seq);
+    std::string whichOperator(const int& position, const std::string& seq);
 
-    std::string advanceOperator (int& position, const std::string& seq, const std::string& result);
+    std::string advanceOperator(int& position, const std::string& seq, const std::string& result);
 
-    bool isQuantifier (const std::string& current);
+    bool isQuantifier(const std::string& current);
 
-    bool isQuantifierAndVariable (const std::string& current);
+    bool isQuantifierAndVariable(const std::string& current);
 
-    std::string getQuantifierFromQuantifierAndVariable (const std::string& current);
+    std::string getQuantifierFromQuantifierAndVariable(const std::string& current);
 
-    std::string getVariableFromQuantifierAndVariable (const std::string& current);
+    std::string getVariableFromQuantifierAndVariable(const std::string& current);
 
-    std::string getOperator (const std::string& which);
+    std::string getOperator(const std::string& which);
 
-    std::string flipQuantifier (const std::string& which);
+    std::string flipQuantifier(const std::string& which);
 
-    bool isNot (const std::string& which);
+    bool isNot(const std::string& which);
 
-    bool isAnd (const std::string& which);
+    bool isAnd(const std::string& which);
 
-    bool isOr (const std::string& which);
+    bool isOr(const std::string& which);
 
-    std::string flipAndOrOr (const std::string& which);
+    std::string flipAndOrOr(const std::string& which);
 };
 } // namespace utils
 

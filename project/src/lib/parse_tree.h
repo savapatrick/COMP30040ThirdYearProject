@@ -24,18 +24,18 @@ class ParseTree {
     /// when compacting/reducing nodes, push them here in order to reuse them later
     std::vector<int> redundantNodes;
 
-    int getNextNode ();
+    int getNextNode();
 
-    void buildTree (const std::vector<std::string>& tokens);
+    void buildTree(const std::vector<std::string>& tokens);
 
-    std::string getEulerTraversal (int node);
+    std::string getEulerTraversal(int node);
 
     public:
-    ParseTree () = default;
+    ParseTree() = default;
 
-    explicit ParseTree (const std::string& tokens);
+    explicit ParseTree(const std::string& tokens);
 
-    std::string getEulerTraversal ();
+    std::string getEulerTraversal();
 };
 }; // namespace utils
 

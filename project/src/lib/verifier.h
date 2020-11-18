@@ -11,14 +11,14 @@
 namespace utils {
 class Verifier {
     public:
-    Verifier () {
+    Verifier() {
     }
 
     // function which matches if the sequence is balanced
     // parantheses-wise
-    static bool isBalanced (const std::vector<std::string>& seq);
+    static bool isBalanced(const std::vector<std::string>& seq);
 
-    static bool areAllDNFs (const std::vector<std::vector<std::string>>& terms);
+    static bool areAllDNFs(const std::vector<std::vector<std::string>>& terms);
 };
 }; // namespace utils
 

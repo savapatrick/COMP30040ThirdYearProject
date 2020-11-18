@@ -11,80 +11,80 @@
 using namespace std;
 
 namespace utils {
-std::vector<std::string> Tokenizer::tokenize (const std::string& seq) const {
+std::vector<std::string> Tokenizer::tokenize(const std::string& seq) const {
     /// TODO: when introducing equality, manually remove all of the equality signs and replace them
     /// with an equality predicate of arity 2, possibly with a special name
-    string aux (seq);
+    string aux(seq);
     /// get rid of all of the whitespaces
-    aux.erase (remove_if (aux.begin (), aux.end (), [] (char c) { return isspace (c); }), aux.end ());
+    aux.erase(remove_if(aux.begin(), aux.end(), [](char c) { return isspace(c); }), aux.end());
     /// FROM NOW, each predicate starts with UPPER-CASE letter
     /// functions can occur only as an argument to a predicate
     /// both functions and variables start with lower-case letters
     /// TODO: reconsider whether this is okay or whether we really want lower-case starting predicates
     vector<string> tokens;
-    Operators& operators = Operators::getInstance ();
+    Operators& operators = Operators::getInstance();
     int ind              = 0;
-    while (ind < (int)aux.size ()) {
+    while(ind < (int)aux.size()) {
         string current;
-        if (isupper (aux[ind])) {
+        if(isupper(aux[ind])) {
             do {
                 current += aux[ind];
                 ind += 1;
-            } while (ind < (int)aux.size () and aux[ind] != ')');
+            } while(ind < (int)aux.size() and aux[ind] != ')');
             current += aux[ind];
             ind += 1;
         } else {
-            auto result = operators.whichOperator (ind, aux);
-            if (result != "none") {
-                current += operators.advanceOperator (ind, aux, result);
+            auto result = operators.whichOperator(ind, aux);
+            if(result != "none") {
+                current += operators.advanceOperator(ind, aux, result);
             } else {
-                while (ind < (int)aux.size () and operators.whichOperator (ind, aux) == "none" and !isupper (aux[ind])) {
+                while(ind < (int)aux.size() and operators.whichOperator(ind, aux) == "none" and !isupper(aux[ind])) {
                     current += aux[ind];
                     ind += 1;
                 }
                 // this should be a variable
                 // a variable could occur at this point ONLY after a quantifier
-                if (!islower (current[0]) or !(!tokens.empty () and operators.isQuantifier (tokens.back ()))) {
+                if(!islower(current[0]) or !(!tokens.empty() and operators.isQuantifier(tokens.back()))) {
                     // this means that this does not start with lowercase letter OR
                     // there are no tokens in the list
-                    throw invalid_argument ("the given formula is malformed");
+                    throw invalid_argument("the given formula is malformed");
                 }
-                tokens[(int)tokens.size () - 1] += current;
+                tokens[(int)tokens.size() - 1] += current;
                 continue;
             }
         }
-        tokens.emplace_back (current);
+        tokens.emplace_back(current);
     }
     // TODO: Incredibly important, enforce the order of the tokens to be initial one
     return tokens;
 }
 
 std::pair<std::string, std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>>
-Tokenizer::decomposePredicate (const string& seq) {
-    if (find_if (seq.begin (), seq.end (), [] (char c) { return isspace (c); }) != seq.end ()) {
-        throw invalid_argument ("the string should not contain whitespaces");
+Tokenizer::decomposePredicate(const string& seq) {
+    if(find_if(seq.begin(), seq.end(), [](char c) { return isspace(c); }) != seq.end()) {
+        throw invalid_argument("the string should not contain whitespaces");
     }
-    auto notAtAll    = static_cast<bool> (seq.find ('(') == string::npos or seq.find (')') == string::npos);
-    auto countOpened = static_cast<bool> (count (seq.begin (), seq.end (), '(') != 1);
-    auto countClosed = static_cast<bool> (count (seq.begin (), seq.end (), ')') != 1);
-    if (notAtAll or countOpened or countClosed) {
-        throw invalid_argument ("the predicate should contain exactly one ( and one ) in the given argument");
+    auto notAtAll    = static_cast<bool>(seq.find('(') == string::npos or seq.find(')') == string::npos);
+    auto countOpened = static_cast<bool>(count(seq.begin(), seq.end(), '(') != 1);
+    auto countClosed = static_cast<bool>(count(seq.begin(), seq.end(), ')') != 1);
+    if(notAtAll or countOpened or countClosed) {
+        throw invalid_argument("the predicate should contain exactly one ( and one ) in the given argument");
     }
-    auto correctOrder = static_cast<bool> (seq.find ('(') < seq.find (')'));
-    if (!correctOrder) {
-        throw invalid_argument (") occurs before ( in the given argument");
+    auto correctOrder = static_cast<bool>(seq.find('(') < seq.find(')'));
+    if(!correctOrder) {
+        throw invalid_argument(") occurs before ( in the given argument");
     }
-    auto firstBracket      = seq.find ('(');
-    auto lastBracket       = seq.find (')');
+    auto firstBracket      = seq.find('(');
+    auto lastBracket       = seq.find(')');
     auto lengthOfArguments = lastBracket - firstBracket - 1;
-    auto predicateName     = seq.substr (0, firstBracket);
-    auto arguments         = seq.substr (firstBracket + 1, lengthOfArguments);
-    stringstream stream (arguments);
+    auto predicateName     = seq.substr(0, firstBracket);
+    auto arguments         = seq.substr(firstBracket + 1, lengthOfArguments);
+    stringstream stream(arguments);
     std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> argumentsParsed;
-    while (stream.good ()) {
+    while(stream.good()) {
         string current;
-        getline (stream, current, ',');
-        argumentsParsed.emplace_back (current);
+        getline(stream, current, ',');
+        argumentsParsed.emplace_back(current);
     }
     return { predicateName, argumentsParsed };
 }

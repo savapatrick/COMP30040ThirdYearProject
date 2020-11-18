@@ -12,22 +12,22 @@
 namespace utils {
 class Tokenizer {
     private:
-    Tokenizer (){};
+    Tokenizer(){};
 
-    Tokenizer (Tokenizer const&);
+    Tokenizer(Tokenizer const&);
 
-    void operator= (Tokenizer const&);
+    void operator=(Tokenizer const&);
 
     public:
-    static Tokenizer& getInstance () {
+    static Tokenizer& getInstance() {
         static Tokenizer instance;
         return instance;
     }
 
-    [[nodiscard]] std::vector<std::string> tokenize (const std::string& seq) const;
+    [[nodiscard]] std::vector<std::string> tokenize(const std::string& seq) const;
 
     static std::pair<std::string, std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>>
-    decomposePredicate (const std::string& seq);
+    decomposePredicate(const std::string& seq);
 };
 }; // namespace utils
 

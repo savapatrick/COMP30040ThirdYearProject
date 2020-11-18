@@ -19,31 +19,30 @@ class Literal {
     std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> arguments;
 
     public:
-    Literal (bool _isNegated,
+    Literal(bool _isNegated,
     std::string _predicateName,
     std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> _arguments)
-    : isNegated (_isNegated), predicateName (std::move (_predicateName)), arguments (std::move (_arguments)) {
+    : isNegated(_isNegated), predicateName(std::move(_predicateName)), arguments(std::move(_arguments)) {
     }
 
-    static bool isLiteral (const std::string& seq);
+    static bool isLiteral(const std::string& seq);
 
-    [[nodiscard]] const bool getIsNegated () const;
+    [[nodiscard]] bool getIsNegated() const;
 
-    [[nodiscard]] const std::string& getPredicateName () const;
+    [[nodiscard]] const std::string& getPredicateName() const;
 
-    [[nodiscard]] const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& getArguments () const;
+    [[nodiscard]] const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& getArguments() const;
 
-    [[nodiscard]] static std::string getArgumentString (
+    [[nodiscard]] static std::string getArgumentString(
     const std::variant<std::string, std::pair<std::string, std::vector<std::string>>>& argument);
 
-    [[nodiscard]] std::string getString () const;
+    [[nodiscard]] std::string getString() const;
 
-    void negate ();
+    void negate();
 
-    void setArguments (const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& arguments);
+    void setArguments(const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& arguments);
 
-    void substitute (
-    const std::map<std::string, std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& skolem);
+    void substitute(std::map<std::string, std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& skolem);
 };
 }; // namespace utils
 

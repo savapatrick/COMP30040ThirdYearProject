@@ -18,59 +18,59 @@ class Reducer {
     ParseTree& parseTree;
     std::set<std::string> reservedVariableNames;
 
-    void disposeNode (int node);
+    void disposeNode(int node);
 
-    int addNodeWithOperator (const std::string& which);
+    int addNodeWithOperator(const std::string& which);
 
-    int addImplication (const int& nodeOne, const int& nodeTwo);
+    int addImplication(const int& nodeOne, const int& nodeTwo);
 
-    int addOrClause (const int& nodeOne, const int& nodeTwo);
+    int addOrClause(const int& nodeOne, const int& nodeTwo);
 
-    int addNegationToFormula (const int& nodeOne);
+    int addNegationToFormula(const int& nodeOne);
 
-    bool applyParanthesesToConjunctions (int node);
+    bool applyParanthesesToConjunctions(int node);
 
-    bool applyParanthesesToDisjunctions (int node);
+    bool applyParanthesesToDisjunctions(int node);
 
-    bool applyParanthesesToImplications (int node);
+    bool applyParanthesesToImplications(int node);
 
-    bool eliminateDoubleImplicationOrImplication (bool isDoubleImplication, int node);
+    bool eliminateDoubleImplicationOrImplication(bool isDoubleImplication, int node);
 
-    bool resolveRightAssociativityForImplications (int node);
+    bool resolveRightAssociativityForImplications(int node);
 
-    bool applyParanthesesToOperators (int node, const std::string& targetOperator, const std::vector<std::string>& lowerOperators);
+    bool applyParanthesesToOperators(int node, const std::string& targetOperator, const std::vector<std::string>& lowerOperators);
 
-    bool reduceImplicationStep (int node);
+    bool reduceImplicationStep(int node);
 
-    bool reduceDoubleImplicationStep (int node);
+    bool reduceDoubleImplicationStep(int node);
 
-    bool pushNOTStep (int node);
+    bool pushNOTStep(int node);
 
-    bool skolemizationStep (int node,
+    bool skolemizationStep(int node,
     std::set<std::string>& variablesSoFar,
     std::vector<std::string>& variablesInUniversalQuantifiers,
     std::map<std::string, std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& skolem);
 
-    bool convertToCNFStep (int node);
+    bool convertToCNFStep(int node);
 
-    std::string extractClauseForm ();
+    std::string extractClauseForm();
 
-    Entity mergeSameNormalFormEntities (const Entity& first, const Entity& second);
+    Entity mergeSameNormalFormEntities(const Entity& first, const Entity& second);
 
-    static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable (const std::string& which);
+    static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string& which);
 
-    std::string getRandomFunctionOrConstantName ();
+    std::string getRandomFunctionOrConstantName();
 
     public:
-    explicit Reducer (ParseTree& _parseTree);
+    explicit Reducer(ParseTree& _parseTree);
 
-    void basicReduce ();
+    void basicReduce();
 
-    void skolemization ();
+    void skolemization();
 
-    void convertToCNF ();
+    void convertToCNF();
 
-    std::string getClauseForm ();
+    std::string getClauseForm();
 };
 }; // namespace utils
 

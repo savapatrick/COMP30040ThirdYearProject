@@ -38,32 +38,31 @@ class Entity {
     EntityStorage entity;
 
     public:
-    Entity () = default;
+    Entity() = default;
 
-    explicit Entity (const EntityType& _type, const std::string& _entity) : type (_type), entity (_entity) {
-        if (type and type != 2) {
-            throw std::invalid_argument ("Type for Entity has to be 0 or 2 but given " + std::to_string (type));
+    explicit Entity(const EntityType& _type, const std::string& _entity) : type(_type), entity(_entity) {
+        if(type and type != 2) {
+            throw std::invalid_argument("Type for Entity has to be 0 or 2 but given " + std::to_string(type));
         }
     };
 
-    explicit Entity (const EntityType& _type, const NormalFormStorage& _entity) : type (_type), entity (_entity) {
-        if (type != 3) {
-            throw std::invalid_argument ("Type for Entity has to be 3 but given " + std::to_string (type));
+    explicit Entity(const EntityType& _type, const NormalFormStorage& _entity) : type(_type), entity(_entity) {
+        if(type != 3) {
+            throw std::invalid_argument("Type for Entity has to be 3 but given " + std::to_string(type));
         }
     };
 
-    explicit Entity (const EntityType& _type, const std::shared_ptr<Literal>& _entity)
-    : type (_type), entity (_entity) {
-        if (type != 1) {
-            throw std::invalid_argument ("Type for Entity has to be 1 but given " + std::to_string (type));
+    explicit Entity(const EntityType& _type, const std::shared_ptr<Literal>& _entity) : type(_type), entity(_entity) {
+        if(type != 1) {
+            throw std::invalid_argument("Type for Entity has to be 1 but given " + std::to_string(type));
         }
     };
 
-    [[nodiscard]] EntityType getType () const;
+    [[nodiscard]] EntityType getType() const;
 
-    template <typename Value> Value getEntity () const;
+    template <typename Value> Value getEntity() const;
 
-    [[nodiscard]] std::string getString () const;
+    [[nodiscard]] std::string getString() const;
 };
 }; // namespace utils
 
