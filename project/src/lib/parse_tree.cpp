@@ -23,9 +23,7 @@ ParseTree::ParseTree(const std::string& formula) {
     Root                  = 1;
     const int bufferOrder = 100;
     highestNodeLabel      = 100;
-    for(int nodeLabel = 2; nodeLabel <= bufferOrder; ++nodeLabel) {
-        spareNodesBuffer.push_back(nodeLabel);
-    }
+    for(int nodeLabel = 2; nodeLabel <= bufferOrder; ++nodeLabel) { spareNodesBuffer.push_back(nodeLabel); }
     buildTree(tokens);
 }
 
@@ -81,9 +79,7 @@ void ParseTree::buildTree(const vector<std::string>& tokens) {
                 while(!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
                     auto target = operatorPrecedenceNOTQuant.top().first;
                     operatorPrecedenceNOTQuant.pop();
-                    while(fatherChain.size() > target) {
-                        fatherChain.pop();
-                    }
+                    while(fatherChain.size() > target) { fatherChain.pop(); }
                 }
             } else if(operators.isQuantifierAndVariable(token)) {
                 auto node = getNextNode();
@@ -113,9 +109,7 @@ void ParseTree::buildTree(const vector<std::string>& tokens) {
             while(!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
                 auto target = operatorPrecedenceNOTQuant.top().first;
                 operatorPrecedenceNOTQuant.pop();
-                while(fatherChain.size() > target) {
-                    fatherChain.pop();
-                }
+                while(fatherChain.size() > target) { fatherChain.pop(); }
             }
         }
     }
@@ -129,9 +123,7 @@ std::string ParseTree::getEulerTraversal(int node) {
         result += "$none$";
     }
     if(graph.find(node) != graph.end()) {
-        for(auto& neighbour : graph[node]) {
-            result += getEulerTraversal(neighbour);
-        }
+        for(auto& neighbour : graph[node]) { result += getEulerTraversal(neighbour); }
     }
     if(information.find(node) != information.end()) {
         result += information[node]->getString();

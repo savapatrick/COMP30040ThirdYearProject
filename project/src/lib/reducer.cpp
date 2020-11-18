@@ -48,9 +48,7 @@ std::string Reducer::getRandomFunctionOrConstantName() {
     do {
         result.clear();
         int length = rand() % 15 + 1; /// 26^15 is huge
-        for(int ind = 1; ind <= length; ++ind) {
-            result += alphabet[rand() % sizeOfAlphabet];
-        }
+        for(int ind = 1; ind <= length; ++ind) { result += alphabet[rand() % sizeOfAlphabet]; }
     } while(reservedVariableNames.find(result) != reservedVariableNames.end());
     reservedVariableNames.insert(result);
     return result;
@@ -61,9 +59,7 @@ void Reducer::disposeNode(int node) {
         parseTree.graph.erase(parseTree.graph.find(node));
         parseTree.information.erase(parseTree.information.find(node));
         parseTree.redundantNodes.push_back(node);
-    } catch(...) {
-        throw invalid_argument("dispose node failed to dispose node " + to_string(node));
-    }
+    } catch(...) { throw invalid_argument("dispose node failed to dispose node " + to_string(node)); }
 }
 
 std::shared_ptr<Entity> Reducer::getEntityWithFlippedQuantifierAndVariable(const string& which) {
@@ -349,9 +345,7 @@ bool Reducer::pushNOTStep(int node) {
         parseTree.information.erase(parseTree.information.find(node));
         parseTree.graph[node] = newNodes;
     }
-    for(auto& neighbour : parseTree.graph[node]) {
-        wasModified |= pushNOTStep(neighbour);
-    }
+    for(auto& neighbour : parseTree.graph[node]) { wasModified |= pushNOTStep(neighbour); }
     return wasModified;
 }
 
@@ -374,7 +368,7 @@ void Reducer::basicReduce() {
 bool Reducer::skolemizationStep(int node,
 std::set<std::string>& variablesSoFar,
 std::vector<std::string>& variablesInUniversalQuantifiers,
-map<string, variant<string, pair<string, vector<string>>>>& skolem) {
+map<string, Literal::arg>& skolem) {
     Operators& operators = Operators::getInstance();
     if(parseTree.information.find(node) != parseTree.information.end()) {
         if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
@@ -393,8 +387,6 @@ map<string, variant<string, pair<string, vector<string>>>>& skolem) {
                 } else {
                     skolem[variable] = make_pair(getRandomFunctionOrConstantName(), variablesInUniversalQuantifiers);
                 }
-                /// here we delete the information for this node
-                parseTree.information.erase(parseTree.information.find(node));
             } else {
                 if(quantifier != operators.VQuantifier) {
                     throw logic_error("the quantifier should be either existential or universal");
@@ -402,8 +394,24 @@ map<string, variant<string, pair<string, vector<string>>>>& skolem) {
                 variablesInUniversalQuantifiers.push_back(variable);
             }
         } else if(parseTree.information[node]->getType() == EntityType::LITERAL) {
-            auto literal   = parseTree.information[node]->getEntity<shared_ptr<Literal>>();
-            auto arguments = literal->getArguments();
+            auto literal = parseTree.information[node]->getEntity<shared_ptr<Literal>>();
+            literal->substituteSkolem(skolem);
+        }
+    }
+    for(auto& neighbour : parseTree.graph[node]) { skolemizationStep(neighbour); }
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
+            auto variable    = operators.getVariableFromQuantifierAndVariable(information);
+            variablesSoFar.erase(variablesSoFar.find(variable));
+            if(quantifier == operators.EQuantifier) {
+                skolem.erase(skolem.find(variable));
+                /// here we delete the information for this node
+                parseTree.information.erase(parseTree.information.find(node));
+            } else {
+                variablesInUniversalQuantifiers.pop_back();
+            }
         }
     }
 }
@@ -412,8 +420,7 @@ void Reducer::skolemization() {
     set<std::string> variablesSoFar;
     vector<std::string> variablesInUniversalQuantifiers;
     map<string, variant<string, pair<string, vector<string>>>> skolem;
-    while(skolemizationStep(parseTree.Root, variablesSoFar, variablesInUniversalQuantifiers, skolem))
-        ;
+    while(skolemizationStep(parseTree.Root, variablesSoFar, variablesInUniversalQuantifiers, skolem)) {}
 }
 
 Entity Reducer::mergeSameNormalFormEntities(const Entity& first, const Entity& second) {
@@ -423,9 +430,7 @@ Entity Reducer::mergeSameNormalFormEntities(const Entity& first, const Entity& s
         if(firstStorage.first == secondStorage.first) {
             vector<Literal> result(first.getEntity<Entity::NormalFormStorage>().second);
             vector<Literal> aux(second.getEntity<Entity::NormalFormStorage>().second);
-            for(auto& elem : aux) {
-                result.emplace_back(elem);
-            }
+            for(auto& elem : aux) { result.emplace_back(elem); }
             return Entity(NORMALForms, Entity::NormalFormStorage(firstStorage.first, result));
         } else {
             throw invalid_argument("Both of the Entities provided have to be in CNF(both) or in DNF(both)");
@@ -439,8 +444,7 @@ bool Reducer::convertToCNFStep(int node) {
 }
 
 void Reducer::convertToCNF() {
-    while(convertToCNFStep(parseTree.Root))
-        ;
+    while(convertToCNFStep(parseTree.Root)) {}
 }
 
 std::string Reducer::extractClauseForm() {

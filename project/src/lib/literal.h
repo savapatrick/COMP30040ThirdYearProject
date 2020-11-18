@@ -13,15 +13,16 @@
 
 namespace utils {
 class Literal {
+    public:
+    typedef std::variant<std::string, std::pair<std::string, std::vector<std::string>>> arg;
+
     private:
     bool isNegated;
     std::string predicateName;
-    std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> arguments;
+    std::vector<arg> arguments;
 
     public:
-    Literal(bool _isNegated,
-    std::string _predicateName,
-    std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> _arguments)
+    Literal(bool _isNegated, std::string _predicateName, std::vector<arg> _arguments)
     : isNegated(_isNegated), predicateName(std::move(_predicateName)), arguments(std::move(_arguments)) {
     }
 
@@ -31,18 +32,17 @@ class Literal {
 
     [[nodiscard]] const std::string& getPredicateName() const;
 
-    [[nodiscard]] const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& getArguments() const;
+    [[nodiscard]] const std::vector<arg>& getArguments() const;
 
-    [[nodiscard]] static std::string getArgumentString(
-    const std::variant<std::string, std::pair<std::string, std::vector<std::string>>>& argument);
+    [[nodiscard]] static std::string getArgumentString(const arg& argument);
 
     [[nodiscard]] std::string getString() const;
 
     void negate();
 
-    void setArguments(const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& arguments);
+    void setArguments(const std::vector<arg>& args);
 
-    void substitute(std::map<std::string, std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& skolem);
+    void substituteSkolem(std::map<std::string, arg>& skolem);
 };
 }; // namespace utils
 

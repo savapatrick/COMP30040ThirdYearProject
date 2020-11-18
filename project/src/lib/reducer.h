@@ -49,7 +49,7 @@ class Reducer {
     bool skolemizationStep(int node,
     std::set<std::string>& variablesSoFar,
     std::vector<std::string>& variablesInUniversalQuantifiers,
-    std::map<std::string, std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& skolem);
+    std::map<std::string, Literal::arg>& skolem);
 
     bool convertToCNFStep(int node);
 

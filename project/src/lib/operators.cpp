@@ -35,9 +35,7 @@ string Operators::whichOperator(const int& position, const std::string& seq) {
 string Operators::advanceOperator(int& position, const string& seq, const string& result) {
     string answer;
     if(mapping.find(result) != mapping.end()) {
-        for(int ind = position; ind < position + mapping[result].size(); ++ind) {
-            answer += seq[ind];
-        }
+        for(int ind = position; ind < position + mapping[result].size(); ++ind) { answer += seq[ind]; }
         position += mapping[result].size();
     } else {
         if(result == "none") {

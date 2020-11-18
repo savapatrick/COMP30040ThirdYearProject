@@ -107,7 +107,7 @@ AllowAllParametersOfDeclarationOnNextLine: false
 
 # AllowShortBlocksOnASingleLine (bool)
 # Allows contracting simple braced statements to a single line.
-AllowShortBlocksOnASingleLine: false
+AllowShortBlocksOnASingleLine: true
 
 # AllowShortCaseLabelsOnASingleLine (bool)
 # If true, short case labels will be contracted to a single line.
@@ -128,7 +128,7 @@ AllowShortIfStatementsOnASingleLine: false
 
 # AllowShortLoopsOnASingleLine (bool)
 # If true, while (true) continue; can be put on a single line.
-AllowShortLoopsOnASingleLine: false
+AllowShortLoopsOnASingleLine: true
 
 # AlwaysBreakBeforeMultilineStrings (bool)
 # If true, always break before multiline string literals.

@@ -22,7 +22,7 @@ bool Literal::isLiteral(const std::string& seq) {
     return (i < (int)seq.size() and isupper(seq[i]));
 }
 
-std::string Literal::getArgumentString(const std::variant<std::string, std::pair<std::string, std::vector<std::string>>>& argument) {
+std::string Literal::getArgumentString(const arg& argument) {
     if(argument.index() == 0) {
         return get<0>(argument);
     }
@@ -30,9 +30,7 @@ std::string Literal::getArgumentString(const std::variant<std::string, std::pair
     auto function = get<1>(argument);
     result += function.first;
     result += "(";
-    for(auto& functionArgument : function.second) {
-        result += functionArgument + ",";
-    }
+    for(auto& functionArgument : function.second) { result += functionArgument + ","; }
     result.pop_back();
     result += ")";
     return result;
@@ -64,7 +62,7 @@ const string& Literal::getPredicateName() const {
     return predicateName;
 }
 
-const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& Literal::getArguments() const {
+const std::vector<Literal::arg>& Literal::getArguments() const {
     return arguments;
 }
 
@@ -72,14 +70,15 @@ void Literal::negate() {
     isNegated ^= true;
 }
 
-void Literal::setArguments(const vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& arguments) {
-    Literal::arguments = arguments;
+void Literal::setArguments(const vector<Literal::arg>& args) {
+    Literal::arguments = args;
 }
 
-void Literal::substitute(std::map<std::string, std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& skolem) {
+void Literal::substituteSkolem(std::map<std::string, Literal::arg>& skolem) {
     for(auto& argument : arguments) {
         if(argument.index() == 0) {
             // this is variable
+            // only raw variables could be substituted
             auto variable = get<0>(argument);
             if(skolem.find(variable) != skolem.end()) {
                 argument = skolem[variable];

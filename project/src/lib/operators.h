@@ -39,9 +39,7 @@ class Operators {
         mapping["DOUBLEImply"] = DOUBLEImply;
         mapping["E"]           = EQuantifier;
         mapping["@"]           = VQuantifier;
-        for(auto& elem : mapping) {
-            inv[elem.second] = elem.first;
-        }
+        for(auto& elem : mapping) { inv[elem.second] = elem.first; }
     }
 
     Operators(Operators const&);
