@@ -9,14 +9,17 @@
 #include <vector>
 
 namespace utils {
-    class Verifier {
+class Verifier {
     public:
-        Verifier(){}
-        // function which matches if the sequence is balanced
-        // parantheses-wise
-        static bool isBalanced(const std::vector<std::string> &seq);
-        static bool areAllDNFs(const std::vector <std::vector<std::string>> &terms);
-    };
-};
+    Verifier () {
+    }
 
-#endif //PROJECT_VERIFIER_H
+    // function which matches if the sequence is balanced
+    // parantheses-wise
+    static bool isBalanced (const std::vector<std::string>& seq);
+
+    static bool areAllDNFs (const std::vector<std::vector<std::string>>& terms);
+};
+}; // namespace utils
+
+#endif // PROJECT_VERIFIER_H

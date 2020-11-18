@@ -3,79 +3,80 @@
 //
 
 #include "literal.h"
-#include <stdexcept>
 #include "operators.h"
+#include <stdexcept>
 
 using namespace std;
 
 namespace utils {
 
-    bool Literal::isLiteral(const std::string &seq) {
-        if (seq.empty()) {
-            throw invalid_argument("cannot check whether the empty string is predicate");
+bool Literal::isLiteral (const std::string& seq) {
+    if (seq.empty ()) {
+        throw invalid_argument ("cannot check whether the empty string is predicate");
+    }
+    Operators& operators = Operators::getInstance ();
+    int i                = 0;
+    if (operators.whichOperator (i, seq) == "NOT") {
+        operators.advanceOperator (i, seq, "NOT");
+    }
+    return (i < (int)seq.size () and isupper (seq[i]));
+}
+
+std::string Literal::getArgumentString (const std::variant<std::string, std::pair<std::string, std::vector<std::string>>>& argument) {
+    if (argument.index () == 0) {
+        return get<0> (argument);
+    }
+    string result;
+    auto function = get<1> (argument);
+    result += function.first;
+    result += "(";
+    for (auto& functionArgument : function.second) {
+        result += functionArgument + ",";
+    }
+    result.pop_back ();
+    result += ")";
+    return result;
+}
+
+std::string Literal::getString () const {
+    string result;
+    Operators& operators = Operators::getInstance ();
+    if (isNegated) {
+        result += operators.NOT;
+    }
+    result += predicateName;
+    result += "(";
+    for (int ind = 0; ind < (int)arguments.size (); ++ind) {
+        if (ind + 1 == arguments.size ()) {
+            result += getArgumentString (arguments[ind]) + ")";
+        } else {
+            result += getArgumentString (arguments[ind]) + ",";
         }
-        Operators &operators = Operators::getInstance();
-        int i = 0;
-        if (operators.whichOperator(i, seq) == "NOT") {
-            operators.advanceOperator(i, seq, "NOT");
-        }
-        return (i < (int) seq.size() and isupper(seq[i]));
     }
+    return result;
+}
 
-    std::string Literal::getArgumentString(
-            const std::variant<std::string, std::pair<std::string, std::vector<std::string>>> &argument) {
-        if(argument.index() == 0) {
-            return get<0>(argument);
-        }
-        string result;
-        auto function = get<1>(argument);
-        result += function.first;
-        result += "(";
-        for (auto &functionArgument: function.second) {
-            result += functionArgument + ",";
-        }
-        result.pop_back();
-        result += ")";
-        return result;
-    }
+const bool Literal::getIsNegated () const {
+    return isNegated;
+}
 
-    std::string Literal::getString() const {
-        string result;
-        Operators& operators = Operators::getInstance();
-        if (isNegated) {
-            result += operators.NOT;
-        }
-        result += predicateName;
-        result += "(";
-        for (int ind = 0; ind < (int)arguments.size(); ++ ind) {
-            if (ind + 1 == arguments.size()) {
-                result += getArgumentString(arguments[ind]) + ")";
-            }
-            else {
-                result += getArgumentString(arguments[ind]) + ",";
-            }
-        }
-        return result;
-    }
+const string& Literal::getPredicateName () const {
+    return predicateName;
+}
 
-    const bool Literal::getIsNegated() const {
-        return isNegated;
-    }
+const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& Literal::getArguments () const {
+    return arguments;
+}
 
-    const string &Literal::getPredicateName() const {
-        return predicateName;
-    }
+void Literal::negate () {
+    isNegated ^= true;
+}
 
-    const std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> &Literal::getArguments() const {
-        return arguments;
-    }
+void Literal::setArguments (const vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& arguments) {
+    Literal::arguments = arguments;
+}
 
-    void Literal::negate() {
-        isNegated ^= true;
-    }
-
-    void Literal::setArguments(
-            const vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>> &arguments) {
-        Literal::arguments = arguments;
-    }
-};
+void Literal::substitute (
+const std::map<std::string, std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>& skolem) {
+}
+}; // namespace utils

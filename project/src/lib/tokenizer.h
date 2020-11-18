@@ -6,26 +6,29 @@
 #define PROJECT_TOKENIZER_H
 
 #include <string>
-#include <vector>
 #include <variant>
+#include <vector>
 
 namespace utils {
-    class Tokenizer {
+class Tokenizer {
     private:
-        Tokenizer(){};
-        Tokenizer(Tokenizer const&);
-        void operator=(Tokenizer const&);
-    public:
-        static Tokenizer &getInstance() {
-            static Tokenizer instance;
-            return instance;
-        }
-        [[nodiscard]] std::vector <std::string> tokenize(const std::string& seq) const;
-        static
-        std::pair<std::string,
-        std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>>
-        decomposePredicate(const std::string& seq);
-    };
-};
+    Tokenizer (){};
 
-#endif //PROJECT_TOKENIZER_H
+    Tokenizer (Tokenizer const&);
+
+    void operator= (Tokenizer const&);
+
+    public:
+    static Tokenizer& getInstance () {
+        static Tokenizer instance;
+        return instance;
+    }
+
+    [[nodiscard]] std::vector<std::string> tokenize (const std::string& seq) const;
+
+    static std::pair<std::string, std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>>
+    decomposePredicate (const std::string& seq);
+};
+}; // namespace utils
+
+#endif // PROJECT_TOKENIZER_H
