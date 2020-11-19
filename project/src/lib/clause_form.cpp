@@ -13,10 +13,10 @@ namespace utils {
 std::string ClauseForm::getString(const Clause& clause) {
     Operators& operators = Operators::getInstance();
     string result;
-    for (int ind = 0; ind < (int)clause.size(); ++ ind) {
+    for(int ind = 0; ind < (int)clause.size(); ++ind) {
         auto literal = clause[ind];
         result += literal->getString();
-        if (ind + 1 < (int)clause.size()) {
+        if(ind + 1 < (int)clause.size()) {
             result += operators.OR;
         }
     }
@@ -28,7 +28,7 @@ std::string utils::ClauseForm::getString() const {
     string result;
     for(int ind = 0; ind < (int)literals.size(); ++ind) {
         result += getString(literals[ind]);
-        if (ind + 1 < (int)literals.size()) {
+        if(ind + 1 < (int)literals.size()) {
             result += operators.AND;
         }
     }
@@ -39,4 +39,4 @@ const vector<ClauseForm::Clause>& ClauseForm::getClauseForm() const {
     return literals;
 }
 
-};
+}; // namespace utils

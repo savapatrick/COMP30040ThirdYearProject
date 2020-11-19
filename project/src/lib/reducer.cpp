@@ -492,53 +492,74 @@ void Reducer::skolemization() {
     }
 }
 
-shared_ptr<ClauseForm> Reducer::unifyTwoNormalForms(const shared_ptr<ClauseForm>& first, const shared_ptr<ClauseForm>& second) {
-    /*if (first->type == NormalFormType::EMPTY) {
-        return make_shared<ClauseForm>(second->type, second->literals);
+int Reducer::countVariablesAndConstants() {
+    unordered_set<string> variables;
+    Operators& operators = Operators::getInstance();
+    for (auto &information : parseTree.information) {
+        auto value = information.second;
+        if (value->getType() == EntityType::LITERAL) {
+            auto literal = value->getEntity<shared_ptr<Literal>>();
+            auto arguments = literal->getArguments();
+            for (auto &argument : arguments) {
+                if (argument.index() == 0) {
+                    variables.insert(get<0>(argument));
+                }
+            }
+        }
+        else if (value->getType() == EntityType::BOUNDVariable) {
+            auto boundVariable = value->getEntity<string>();
+            auto variable = operators.getVariableFromQuantifierAndVariable(boundVariable);
+            variables.insert(variable);
+        }
+        else if (information.first == EntityType::NORMALForms) {
+            throw logic_error("At this point we don't expect any NORMALForms in the ParseTree");
+        }
     }
-    if (second->type == NormalFormType::EMPTY) {
-        return make_shared<ClauseForm>(first->type, first->literals);
-    }
-    if (first->type == second->type) {
-        vector <shared_ptr<Literal>> resultingLiterals(first->literals);
-        resultingLiterals.insert(end(resultingLiterals), begin(second->literals), end(second->literals));
-        return make_shared<ClauseForm>(first->type, resultingLiterals);
-    }
-    if (first->type == NormalFormType::CNF) {
-
-    }*/
+    return variables.size();
 }
 
-bool Reducer::unifyNormalForms(shared_ptr<ClauseForm> &result, int node) {
+shared_ptr<ClauseForm> Reducer::unifyTwoNormalFormsOnOperator(const shared_ptr<ClauseForm>& first,
+const shared_ptr<ClauseForm>& second,
+bool isAnd,
+int fakePredicateArity) {
+    if(first->isEmpty) {
+        return make_shared<ClauseForm>(second->literals);
+    }
+    if(second->isEmpty) {
+        return make_shared<ClauseForm>(first->literals);
+    }
+}
+
+bool Reducer::unifyNormalForms(shared_ptr<ClauseForm>& result, int node, int fakePredicateArity) {
     return false;
 }
 
-template <typename T>
-T getClauseForm() {
+template <typename T> T getClauseForm() {
     throw logic_error("not implemented");
 }
 
 template <> std::vector<ClauseForm::Clause> Reducer::getClauseForm() {
     static bool executed = false;
     static std::vector<ClauseForm::Clause> clauseForm;
-    if (!executed) {
+    if(!executed) {
         basicReduce();
         skolemization();
         shared_ptr<ClauseForm> result = make_shared<ClauseForm>();
-        unifyNormalForms(result, parseTree.Root);
+        int fakePredicateArity        = countVariablesAndConstants();
+        unifyNormalForms(result, parseTree.Root, fakePredicateArity);
         clauseForm = result->getClauseForm();
-        executed = true;
+        executed   = true;
     }
     return clauseForm;
 }
 
-template<> string Reducer::getClauseForm() {
+template <> string Reducer::getClauseForm() {
     std::vector<ClauseForm::Clause> clauseForm = getClauseForm<std::vector<ClauseForm::Clause>>();
-    string result = "{";
-    for (int ind = 0; ind <(int)clauseForm.size(); ++ ind) {
+    string result                              = "{";
+    for(int ind = 0; ind < (int)clauseForm.size(); ++ind) {
         auto clause = clauseForm[ind];
         result += ClauseForm::getString(clause);
-        if (ind + 1 < (int)clauseForm.size()) {
+        if(ind + 1 < (int)clauseForm.size()) {
             result += ", ";
         }
     }

@@ -16,8 +16,10 @@ namespace utils {
 class ClauseForm {
     public:
     typedef std::vector<std::shared_ptr<Literal>> Clause;
+
     private:
     friend class Reducer;
+
     private:
     bool isEmpty;
     std::vector<Clause> literals;
@@ -29,12 +31,11 @@ class ClauseForm {
     ClauseForm() : isEmpty(true) {
         literals.clear();
     }
-    ClauseForm(std::vector<Clause>  _literals)
-    {
-        isEmpty = _literals.empty();
+    ClauseForm(std::vector<Clause> _literals) {
+        isEmpty  = _literals.empty();
         literals = std::move(_literals);
     }
-    [[nodiscard]] static std::string getString(const Clause& clause) ;
+    [[nodiscard]] static std::string getString(const Clause& clause);
     [[nodiscard]] std::string getString() const;
 };
 }; // namespace utils

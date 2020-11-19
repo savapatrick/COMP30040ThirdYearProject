@@ -25,7 +25,7 @@ enum EntityType {
 class Entity {
     public:
     typedef std::variant<std::string, /*type 0 or type 2*/
-    std::shared_ptr<Literal>,
+    std::shared_ptr<Literal> /*type 1*/,
     std::shared_ptr<ClauseForm> /*type 3*/>
     EntityStorage;
 
@@ -42,7 +42,8 @@ class Entity {
         }
     };
 
-    explicit Entity(const EntityType& _type, const std::shared_ptr<ClauseForm>& _entity) : type(_type), entity(_entity) {
+    explicit Entity(const EntityType& _type, const std::shared_ptr<ClauseForm>& _entity)
+    : type(_type), entity(_entity) {
         if(type != 3) {
             throw std::invalid_argument("Type for Entity has to be 3 but given " + std::to_string(type));
         }
