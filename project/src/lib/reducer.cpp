@@ -17,13 +17,15 @@ Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
     for(auto& info : parseTree.information) {
         auto value = info.second;
         if(value->getType() == EntityType::LITERAL) {
-            auto arguments = value->getEntity<shared_ptr<Literal>>()->getArguments();
+            auto literal   = value->getEntity<shared_ptr<Literal>>();
+            auto arguments = literal->getArguments();
             for(auto& argument : arguments) {
                 if(argument.index() == 1) {
                     throw invalid_argument("given a non-raw parse tree to the Reducer constructor");
                 }
                 reservedVariableNames.insert(Literal::getArgumentString(argument));
             }
+            reservedPredicateNames.insert(literal->getPredicateName());
         } else if(value->getType() == EntityType::BOUNDVariable) {
             reservedVariableNames.insert(operators.getVariableFromQuantifierAndVariable(value->getString()));
         } else if(value->getType() == EntityType::NORMALForms) {
@@ -50,6 +52,23 @@ std::string Reducer::getRandomFunctionOrConstantName() {
         for(int ind = 1; ind <= length; ++ind) { result += alphabet[rand() % sizeOfAlphabet]; }
     } while(reservedVariableNames.find(result) != reservedVariableNames.end());
     reservedVariableNames.insert(result);
+    return result;
+}
+
+std::string Reducer::getRandomPredicateName() {
+    static std::string startingLetterAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static std::string alphabet               = "abcdefghijklmnopqrstuvwxyz";
+    const int sizeOfAlphabet                  = 26;
+    // TODO: consider whether we want the C++11 random generator
+    std::srand(std::time(nullptr));
+    string result;
+    do {
+        result.clear();
+        int length = rand() % 15 + 1; /// 26^15 is huge
+        result += startingLetterAlphabet[rand() % sizeOfAlphabet];
+        for(int ind = 2; ind <= length; ++ind) { result += alphabet[rand() % sizeOfAlphabet]; }
+    } while(reservedPredicateNames.find(result) != reservedPredicateNames.end());
+    reservedPredicateNames.insert(result);
     return result;
 }
 
@@ -492,45 +511,56 @@ void Reducer::skolemization() {
     }
 }
 
-int Reducer::countVariablesAndConstants() {
+unordered_set<string> Reducer::countVariablesAndConstants() {
     unordered_set<string> variables;
     Operators& operators = Operators::getInstance();
-    for (auto &information : parseTree.information) {
+    for(auto& information : parseTree.information) {
         auto value = information.second;
-        if (value->getType() == EntityType::LITERAL) {
-            auto literal = value->getEntity<shared_ptr<Literal>>();
+        if(value->getType() == EntityType::LITERAL) {
+            auto literal   = value->getEntity<shared_ptr<Literal>>();
             auto arguments = literal->getArguments();
-            for (auto &argument : arguments) {
-                if (argument.index() == 0) {
+            for(auto& argument : arguments) {
+                if(argument.index() == 0) {
                     variables.insert(get<0>(argument));
                 }
             }
-        }
-        else if (value->getType() == EntityType::BOUNDVariable) {
+        } else if(value->getType() == EntityType::BOUNDVariable) {
             auto boundVariable = value->getEntity<string>();
-            auto variable = operators.getVariableFromQuantifierAndVariable(boundVariable);
+            auto variable      = operators.getVariableFromQuantifierAndVariable(boundVariable);
             variables.insert(variable);
-        }
-        else if (information.first == EntityType::NORMALForms) {
+        } else if(information.first == EntityType::NORMALForms) {
             throw logic_error("At this point we don't expect any NORMALForms in the ParseTree");
         }
     }
-    return variables.size();
+    return variables;
 }
 
 shared_ptr<ClauseForm> Reducer::unifyTwoNormalFormsOnOperator(const shared_ptr<ClauseForm>& first,
 const shared_ptr<ClauseForm>& second,
 bool isAnd,
-int fakePredicateArity) {
+const std::vector<Literal::arg>& arguments) {
     if(first->isEmpty) {
         return make_shared<ClauseForm>(second->literals);
     }
     if(second->isEmpty) {
         return make_shared<ClauseForm>(first->literals);
     }
+    std::vector<ClauseForm::Clause> firstClauses(first->getClauseForm());
+    std::vector<ClauseForm::Clause> secondClauses(second->getClauseForm());
+    if(isAnd) {
+        firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
+        return make_shared<ClauseForm>(firstClauses);
+    }
+    std::string fakePredicateName         = getRandomPredicateName();
+    shared_ptr<Literal> newLiteral        = make_shared<Literal>(false, fakePredicateName, arguments);
+    shared_ptr<Literal> newLiteralNegated = make_shared<Literal>(true, fakePredicateName, arguments);
+    for(auto& clause : firstClauses) { clause.push_back(newLiteral); }
+    for(auto& clause : secondClauses) { clause.push_back(newLiteralNegated); }
+    firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
+    return make_shared<ClauseForm>(firstClauses);
 }
 
-bool Reducer::unifyNormalForms(shared_ptr<ClauseForm>& result, int node, int fakePredicateArity) {
+bool Reducer::unifyNormalForms(shared_ptr<ClauseForm>& result, int node, const std::vector<Literal::arg>& arguments) {
     return false;
 }
 
@@ -545,8 +575,10 @@ template <> std::vector<ClauseForm::Clause> Reducer::getClauseForm() {
         basicReduce();
         skolemization();
         shared_ptr<ClauseForm> result = make_shared<ClauseForm>();
-        int fakePredicateArity        = countVariablesAndConstants();
-        unifyNormalForms(result, parseTree.Root, fakePredicateArity);
+        auto allVariables             = countVariablesAndConstants();
+        std::vector<Literal::arg> arguments;
+        for(auto& variable : allVariables) { arguments.push_back(variable); }
+        unifyNormalForms(result, parseTree.Root, arguments);
         clauseForm = result->getClauseForm();
         executed   = true;
     }
