@@ -544,7 +544,7 @@ void Reducer::removeUniversalQuantifiers() {
             universalQuantifiersNodes.emplace_back(key);
         }
     }
-    for(auto& elem : universalQuantifiersNodes) { parseTree.information.erase(parseTree.find(elem)); }
+    for(auto& elem : universalQuantifiersNodes) { parseTree.information.erase(parseTree.information.find(elem)); }
 }
 
 shared_ptr<ClauseForm> Reducer::unifyTwoNormalFormsOnOperator(const shared_ptr<ClauseForm>& first,
@@ -622,18 +622,19 @@ shared_ptr<ClauseForm> Reducer::unifyNormalForms(int node, const std::vector<Lit
             if(parseTree.information.find(neighbour) == parseTree.information.end()) {
                 continue;
             } else {
-                if(parseTree.information[neighbour] == EntityType::LITERAL) {
+                if(parseTree.information[neighbour]->getType() == EntityType::LITERAL) {
                     throw logic_error("at this point it should be no literal in the parse tree");
-                } else if(parseTree.information[neighbour] == EntityType::NORMALForms) {
-                    parseTree.information[node] = unifyTwoNormalFormsOnOperator(parseTree.information[node],
-                    parseTree.information[neighbour]->getEntity<shared_ptr<ClauseForm>>(), isAnd, arguments);
-                } else if(parseTree.information[neighbour] == EntityType::SIMPLIFIEDOperator) {
+                } else if(parseTree.information[neighbour]->getType() == EntityType::NORMALForms) {
+                    parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms,
+                    unifyTwoNormalFormsOnOperator(parseTree.information[node]->getEntity<shared_ptr<ClauseForm>>(),
+                    parseTree.information[neighbour]->getEntity<shared_ptr<ClauseForm>>(), isAnd, arguments));
+                } else if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
                     isAnd = operators.isAnd(parseTree.information[neighbour]->getEntity<string>());
                 }
             }
         }
     }
-    return parseTree.information[node];
+    return parseTree.information[node]->getEntity<shared_ptr<ClauseForm>>();
 }
 
 template <typename T> T getClauseForm() {
