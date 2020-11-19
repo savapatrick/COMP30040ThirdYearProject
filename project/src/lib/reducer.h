@@ -56,12 +56,6 @@ class Reducer {
     std::vector<std::string>& variablesInUniversalQuantifiers,
     std::unordered_map<std::string, Literal::arg>& skolem);
 
-    shared_ptr<ClauseForm> unifyTwoNormalFormsOnOperator(const shared_ptr<ClauseForm>& first,
-    const shared_ptr<ClauseForm>& second,
-    bool isAnd,
-    const std::vector<Literal::arg>& arguments);
-    bool unifyNormalForms(shared_ptr<ClauseForm>& result, int node, const std::vector<Literal::arg>& arguments);
-
     static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string& which);
 
     std::string getRandomFunctionOrConstantName();
@@ -72,6 +66,14 @@ class Reducer {
     void skolemization();
 
     std::unordered_set<std::string> countVariablesAndConstants();
+
+    void removeUniversalQuantifiers();
+
+    shared_ptr<ClauseForm> unifyTwoNormalFormsOnOperator(const shared_ptr<ClauseForm>& first,
+                                                         const shared_ptr<ClauseForm>& second,
+                                                         bool isAnd,
+                                                         const std::vector<Literal::arg>& arguments);
+    bool unifyNormalForms(shared_ptr<ClauseForm>& result, int node, const std::vector<Literal::arg>& arguments);
 
     public:
     explicit Reducer(ParseTree& _parseTree);
