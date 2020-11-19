@@ -1,5 +1,5 @@
 link_directories(lib)
 add_subdirectory(lib)
-set(SOURCES clause_form.cpp)
-add_executable(clauseForm clause_form.cpp)
+set(SOURCES main.cpp)
+add_executable(clauseForm main.cpp)
 target_link_libraries(clauseForm utils)

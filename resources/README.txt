@@ -18,3 +18,8 @@ http://www-verimag.imag.fr/~monin/EnseignementPublic/Misc/L2/INF242/Slides/cours
 
 read about heterogeneous containers:
 https://gieseanw.wordpress.com/2017/05/03/a-true-heterogeneous-container-in-c/
+
+https://www.mpi-inf.mpg.de/fileadmin/inf/rg1/script4ws1617.pdf
+https://leanprover.github.io/logic_and_proof/first_order_logic.html
+
+http://web.cs.ucla.edu/~rosen/161/notes/cnf.html
