@@ -16,7 +16,7 @@ int main() {
         cout << "for the formula " + formula << "\nthe clause form is\n";
         utils::ParseTree tree(formula);
         utils::Reducer reducer(tree);
-        cout << reducer.getClauseForm() << '\n';
+        cout << reducer.getClauseForm<string>() << '\n';
         cout << "\n";
     }
     return 0;

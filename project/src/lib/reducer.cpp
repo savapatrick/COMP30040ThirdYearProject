@@ -537,16 +537,14 @@ unordered_set<string> Reducer::countVariablesAndConstants() {
 
 void Reducer::removeUniversalQuantifiers() {
     vector<int> universalQuantifiersNodes;
-    for (auto &information : parseTree.information) {
-        auto key = information.first;
+    for(auto& information : parseTree.information) {
+        auto key   = information.first;
         auto value = information.second;
-        if (value->getType() == BOUNDVariable) {
+        if(value->getType() == BOUNDVariable) {
             universalQuantifiersNodes.emplace_back(key);
         }
     }
-    for(auto &elem : universalQuantifiersNodes) {
-        parseTree.information.erase(parseTree.find(elem));
-    }
+    for(auto& elem : universalQuantifiersNodes) { parseTree.information.erase(parseTree.find(elem)); }
 }
 
 shared_ptr<ClauseForm> Reducer::unifyTwoNormalFormsOnOperator(const shared_ptr<ClauseForm>& first,
@@ -574,67 +572,68 @@ const std::vector<Literal::arg>& arguments) {
     return make_shared<ClauseForm>(firstClauses);
 }
 
-bool Reducer::unifyNormalForms(shared_ptr<ClauseForm>& result,
-int node, const std::vector<Literal::arg>& arguments) {
+shared_ptr<ClauseForm> Reducer::unifyNormalForms(int node, const std::vector<Literal::arg>& arguments) {
     bool isNormalForm = false;
     string whichOperator;
     vector<shared_ptr<Literal>> literals;
-    for (auto &neighbour : parseTree.graph[node]) {
-        unifyNormalForms(result, neighbour, arguments);
-        if (parseTree.information.find(neighbour) != parseTree.information.end()) {
-            if (parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
-                if (whichOperator.empty()) {
+    for(auto& neighbour : parseTree.graph[node]) {
+        unifyNormalForms(neighbour, arguments);
+        if(parseTree.information.find(neighbour) != parseTree.information.end()) {
+            if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
+                if(whichOperator.empty()) {
                     whichOperator = parseTree.information[neighbour]->getEntity<string>();
-                }
-                else {
-                    if (whichOperator != parseTree.information[neighbour]->getEntity<string>()) {
+                } else {
+                    if(whichOperator != parseTree.information[neighbour]->getEntity<string>()) {
                         throw logic_error("it should be the same operator on the same level at this point");
                     }
                 }
-            }
-            else if (parseTree.information[neighbour]->getType() == EntityType::LITERAL) {
+            } else if(parseTree.information[neighbour]->getType() == EntityType::LITERAL) {
                 literals.push_back(parseTree.information[neighbour]->getEntity<shared_ptr<Literal>>());
-            }
-            else {
+            } else {
                 isNormalForm = false;
             }
-        }
-        else {
+        } else {
             isNormalForm = false;
         }
     }
-    if (isNormalForm) {
+    Operators& operators = Operators::getInstance();
+    if(isNormalForm) {
         vector<ClauseForm::Clause> clauses;
-        Operators& operators = Operators::getInstance();
         bool isAnd = true;
-        if (operators.isOr(whichOperator)) {
+        if(operators.isOr(whichOperator)) {
             isAnd = false;
         }
-        if (isAnd) {
-            for (auto &literal : literals) {
-                clauses.push_back({literal});
-            }
-        }
-        else {
+        if(isAnd) {
+            for(auto& literal : literals) { clauses.push_back({ literal }); }
+        } else {
             clauses.push_back(literals);
         }
         shared_ptr<ClauseForm> normalForm = make_shared<ClauseForm>(clauses);
-        parseTree.information[node] = make_shared<Entity>(normalForm);
-        vector <int> nodesToBeDisposed;
-        for (auto &neighbour : parseTree.graph[node]) {
-            nodesToBeDisposed.emplace_back(neighbour);
-        }
+        parseTree.information[node]       = make_shared<Entity>(EntityType::NORMALForms, normalForm);
+        vector<int> nodesToBeDisposed;
+        for(auto& neighbour : parseTree.graph[node]) { nodesToBeDisposed.emplace_back(neighbour); }
         parseTree.graph[node].clear();
-        for (auto &node : nodesToBeDisposed) {
-            disposeNode(node);
+        for(auto& currentNode : nodesToBeDisposed) { disposeNode(currentNode); }
+    } else if(parseTree.information.find(node) == parseTree.information.end()) {
+        parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms, make_shared<ClauseForm>());
+        bool isAnd                  = false;
+        int cnt                     = 0;
+        for(auto& neighbour : parseTree.graph[node]) {
+            if(parseTree.information.find(neighbour) == parseTree.information.end()) {
+                continue;
+            } else {
+                if(parseTree.information[neighbour] == EntityType::LITERAL) {
+                    throw logic_error("at this point it should be no literal in the parse tree");
+                } else if(parseTree.information[neighbour] == EntityType::NORMALForms) {
+                    parseTree.information[node] = unifyTwoNormalFormsOnOperator(parseTree.information[node],
+                    parseTree.information[neighbour]->getEntity<shared_ptr<ClauseForm>>(), isAnd, arguments);
+                } else if(parseTree.information[neighbour] == EntityType::SIMPLIFIEDOperator) {
+                    isAnd = operators.isAnd(parseTree.information[neighbour]->getEntity<string>());
+                }
+            }
         }
     }
-    else {
-        ve
-        for (auto &neighbours : parseTree.graph[node]) {
-
-        }
-    }
+    return parseTree.information[node];
 }
 
 template <typename T> T getClauseForm() {
@@ -650,9 +649,9 @@ template <> std::vector<ClauseForm::Clause> Reducer::getClauseForm() {
         shared_ptr<ClauseForm> result = make_shared<ClauseForm>();
         auto allVariables             = countVariablesAndConstants();
         std::vector<Literal::arg> arguments;
-        for(auto& variable : allVariables) { arguments.push_back(variable); }
+        for(auto& variable : allVariables) { arguments.emplace_back(variable); }
         removeUniversalQuantifiers();
-        unifyNormalForms(result, parseTree.Root, arguments);
+        result     = unifyNormalForms(parseTree.Root, arguments);
         clauseForm = result->getClauseForm();
         executed   = true;
     }

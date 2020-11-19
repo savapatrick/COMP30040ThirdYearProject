@@ -69,11 +69,11 @@ class Reducer {
 
     void removeUniversalQuantifiers();
 
-    shared_ptr<ClauseForm> unifyTwoNormalFormsOnOperator(const shared_ptr<ClauseForm>& first,
-                                                         const shared_ptr<ClauseForm>& second,
-                                                         bool isAnd,
-                                                         const std::vector<Literal::arg>& arguments);
-    bool unifyNormalForms(shared_ptr<ClauseForm>& result, int node, const std::vector<Literal::arg>& arguments);
+    std::shared_ptr<ClauseForm> unifyTwoNormalFormsOnOperator(const std::shared_ptr<ClauseForm>& first,
+    const std::shared_ptr<ClauseForm>& second,
+    bool isAnd,
+    const std::vector<Literal::arg>& arguments);
+    std::shared_ptr<ClauseForm> unifyNormalForms(int node, const std::vector<Literal::arg>& arguments);
 
     public:
     explicit Reducer(ParseTree& _parseTree);
