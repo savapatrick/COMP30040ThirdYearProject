@@ -492,68 +492,57 @@ void Reducer::skolemization() {
     }
 }
 
-Entity Reducer::mergeSameNormalFormEntities(const Entity& first, const Entity& second) {
-    if(first.getType() == NORMALForms and second.getType() == NORMALForms) {
-        auto firstStorage  = first.getEntity<Entity::NormalFormStorage>();
-        auto secondStorage = second.getEntity<Entity::NormalFormStorage>();
-        if(firstStorage.first == secondStorage.first) {
-            vector<Literal> result(first.getEntity<Entity::NormalFormStorage>().second);
-            vector<Literal> aux(second.getEntity<Entity::NormalFormStorage>().second);
-            for(auto& elem : aux) { result.emplace_back(elem); }
-            return Entity(NORMALForms, Entity::NormalFormStorage(firstStorage.first, result));
-        } else {
-            throw invalid_argument("Both of the Entities provided have to be in CNF(both) or in DNF(both)");
-        }
+shared_ptr<ClauseForm> Reducer::unifyTwoNormalForms(const shared_ptr<ClauseForm>& first, const shared_ptr<ClauseForm>& second) {
+    /*if (first->type == NormalFormType::EMPTY) {
+        return make_shared<ClauseForm>(second->type, second->literals);
     }
-    throw invalid_argument("at least of the Entities provided are not in NormalForm");
+    if (second->type == NormalFormType::EMPTY) {
+        return make_shared<ClauseForm>(first->type, first->literals);
+    }
+    if (first->type == second->type) {
+        vector <shared_ptr<Literal>> resultingLiterals(first->literals);
+        resultingLiterals.insert(end(resultingLiterals), begin(second->literals), end(second->literals));
+        return make_shared<ClauseForm>(first->type, resultingLiterals);
+    }
+    if (first->type == NormalFormType::CNF) {
+
+    }*/
 }
 
-bool Reducer::convertToCNFStep(int node) {
+bool Reducer::unifyNormalForms(shared_ptr<ClauseForm> &result, int node) {
     return false;
 }
 
-void Reducer::convertToCNF() {
-    while(convertToCNFStep(parseTree.Root)) {}
+template <typename T>
+T getClauseForm() {
+    throw logic_error("not implemented");
 }
 
-std::string Reducer::extractClauseForm() {
-    string result;
-    result += "{";
-    Operators& operators = Operators::getInstance();
-    for(int ind = 0; ind < (int)parseTree.graph[parseTree.Root].size(); ++ind) {
-        auto child = parseTree.graph[parseTree.Root][ind];
-        if(ind % 2 == 0) {
-            if(parseTree.information[child]->getType() != EntityType::NORMALForms) {
-                throw logic_error("malformed tree --- cannot extract it in clause form");
-            } else {
-                auto entity = parseTree.information[child]->getEntity<Entity::NormalFormStorage>();
-                if(entity.first != NormalFormType::DNF) {
-                    throw logic_error("malformed tree --- cannot extract it in clause form");
-                }
-            }
-        } else {
-            if(parseTree.information[child]->getType() != EntityType::SIMPLIFIEDOperator) {
-                throw logic_error("malformed tree --- cannot extract it in clause form");
-            } else {
-                if(operators.whichOperator(0, parseTree.information[child]->getString()) != "AND") {
-                    throw logic_error("malformed tree --- cannot extract it in clause form");
-                }
-            }
-        }
-        result += parseTree.information[child]->getString();
-        if(ind + 1 == parseTree.graph[parseTree.Root].size()) {
-            result += "}";
-        } else {
+template <> std::vector<ClauseForm::Clause> Reducer::getClauseForm() {
+    static bool executed = false;
+    static std::vector<ClauseForm::Clause> clauseForm;
+    if (!executed) {
+        basicReduce();
+        skolemization();
+        shared_ptr<ClauseForm> result = make_shared<ClauseForm>();
+        unifyNormalForms(result, parseTree.Root);
+        clauseForm = result->getClauseForm();
+        executed = true;
+    }
+    return clauseForm;
+}
+
+template<> string Reducer::getClauseForm() {
+    std::vector<ClauseForm::Clause> clauseForm = getClauseForm<std::vector<ClauseForm::Clause>>();
+    string result = "{";
+    for (int ind = 0; ind <(int)clauseForm.size(); ++ ind) {
+        auto clause = clauseForm[ind];
+        result += ClauseForm::getString(clause);
+        if (ind + 1 < (int)clauseForm.size()) {
             result += ", ";
         }
     }
+    result += "}";
     return result;
-}
-
-string Reducer::getClauseForm() {
-    basicReduce();
-    skolemization();
-    convertToCNF();
-    return extractClauseForm();
 }
 } // namespace utils

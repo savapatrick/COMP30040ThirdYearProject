@@ -7,6 +7,7 @@
 
 #include "entity.h"
 #include "parse_tree.h"
+#include <unordered_set>
 #include <set>
 #include <unordered_map>
 
@@ -16,7 +17,7 @@ class ParseTree;
 class Reducer {
     private:
     ParseTree& parseTree;
-    std::set<std::string> reservedVariableNames;
+    std::unordered_set<std::string> reservedVariableNames;
 
     void disposeNode(int node);
 
@@ -54,11 +55,8 @@ class Reducer {
     std::vector<std::string>& variablesInUniversalQuantifiers,
     std::unordered_map<std::string, Literal::arg>& skolem);
 
-    bool convertToCNFStep(int node);
-
-    std::string extractClauseForm();
-
-    Entity mergeSameNormalFormEntities(const Entity& first, const Entity& second);
+    shared_ptr<ClauseForm> unifyTwoNormalForms(const shared_ptr<ClauseForm>& first, const shared_ptr<ClauseForm>& second);
+    bool unifyNormalForms(shared_ptr<ClauseForm> &result, int node);
 
     static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string& which);
 
@@ -71,9 +69,8 @@ class Reducer {
 
     void skolemization();
 
-    void convertToCNF();
-
-    std::string getClauseForm();
+    template <typename T>
+    T getClauseForm();
 };
 }; // namespace utils
 

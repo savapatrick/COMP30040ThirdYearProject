@@ -5,6 +5,7 @@
 #ifndef PROJECT_ENTITY_H
 #define PROJECT_ENTITY_H
 
+#include "clause_form.h"
 #include "literal.h"
 #include <memory>
 #include <stdexcept>
@@ -20,17 +21,12 @@ enum EntityType {
     SIMPLIFIEDOperator, /*AND, OR, NOT, IMPLY, DOUBLEImply*/
     NORMALForms,        /*e.g CNF or DNF, so either ~P(a) ^ B(d), or ~P(d) | P(f) could be good examples*/
 };
-enum NormalFormType {
-    CNF = 0,
-    DNF,
-};
 
 class Entity {
     public:
-    typedef std::pair<NormalFormType, std::vector<Literal>> NormalFormStorage;
     typedef std::variant<std::string, /*type 0 or type 2*/
     std::shared_ptr<Literal>,
-    NormalFormStorage /*type 3*/>
+    std::shared_ptr<ClauseForm> /*type 3*/>
     EntityStorage;
 
     private:
@@ -46,7 +42,7 @@ class Entity {
         }
     };
 
-    explicit Entity(const EntityType& _type, const NormalFormStorage& _entity) : type(_type), entity(_entity) {
+    explicit Entity(const EntityType& _type, const std::shared_ptr<ClauseForm>& _entity) : type(_type), entity(_entity) {
         if(type != 3) {
             throw std::invalid_argument("Type for Entity has to be 3 but given " + std::to_string(type));
         }
