@@ -115,20 +115,20 @@ void ParseTree::buildTree(const vector<std::string>& tokens) {
     }
 }
 
-std::string ParseTree::getEulerTraversal(int node) {
+std::string ParseTree::getEulerTraversal(int node, bool isLabeled = false) {
     string result;
     if(information.find(node) != information.end()) {
-        result += information[node]->getString();
+        result += information[node]->getString() + (isLabeled ? to_string(node) : "");
     } else {
-        result += "$none$";
+        result += "$none$" + (isLabeled ? to_string(node) : "");
     }
     if(graph.find(node) != graph.end()) {
         for(auto& neighbour : graph[node]) { result += getEulerTraversal(neighbour); }
     }
     if(information.find(node) != information.end()) {
-        result += information[node]->getString();
+        result += information[node]->getString() + (isLabeled ? to_string(node) : "");
     } else {
-        result += "$none$";
+        result += "$none$" + (isLabeled ? to_string(node) : "");
     }
     return result;
 }

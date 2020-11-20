@@ -4,20 +4,22 @@
 
 #include "lib/parse_tree.h"
 #include "lib/tokenizer.h"
-#include <iostream>
+#include <fstream>
 
 // C++ 17, because it uses variant
 
 using namespace std;
 
 int main() {
+    ifstream input("input.txt");
+    ofstream output("output.txt");
     string formula;
-    while(getline(cin, formula)) {
-        cout << "for the formula " + formula << "\nthe clause form is\n";
+    while(getline(input, formula)) {
+        output << "for the formula " + formula << "\nthe clause form is\n";
         utils::ParseTree tree(formula);
         utils::Reducer reducer(tree);
-        cout << reducer.getClauseForm<string>() << '\n';
-        cout << "\n";
+        output << reducer.getClauseForm<string>() << '\n';
+        output << "\n";
     }
     return 0;
 }
