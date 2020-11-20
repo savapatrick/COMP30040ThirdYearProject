@@ -23,3 +23,4 @@ https://www.mpi-inf.mpg.de/fileadmin/inf/rg1/script4ws1617.pdf
 https://leanprover.github.io/logic_and_proof/first_order_logic.html
 
 http://web.cs.ucla.edu/~rosen/161/notes/cnf.html
+https://www.cs.jhu.edu/~jason/tutorials/convert-to-CNF.html

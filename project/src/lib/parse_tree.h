@@ -28,7 +28,7 @@ class ParseTree {
 
     void buildTree(const std::vector<std::string>& tokens);
 
-    std::string getEulerTraversal(int node);
+    std::string getEulerTraversal(int node, bool isLabeled);
 
     public:
     ParseTree() = default;

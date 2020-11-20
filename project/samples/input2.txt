@@ -1,0 +1,1 @@
+@x(Bkpr(x) -> ?y(Artst(y) & Hate(x, y)))

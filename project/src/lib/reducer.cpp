@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cassert>
 #include <ctime>
+#include <iostream>
 
 using namespace std;
 
@@ -44,7 +45,7 @@ std::string Reducer::getRandomFunctionOrConstantName() {
     static std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
     const int sizeOfAlphabet    = 26;
     // TODO: consider whether we want the C++11 random generator
-    std::srand(std::time(nullptr));
+    std::srand(13);
     string result;
     do {
         result.clear();
@@ -60,7 +61,7 @@ std::string Reducer::getRandomPredicateName() {
     static std::string alphabet               = "abcdefghijklmnopqrstuvwxyz";
     const int sizeOfAlphabet                  = 26;
     // TODO: consider whether we want the C++11 random generator
-    std::srand(std::time(nullptr));
+    std::srand(14);
     string result;
     do {
         result.clear();
@@ -155,10 +156,6 @@ bool Reducer::applyParanthesesToOperators(int node, const std::string& targetOpe
                     pile.push_back(keep);
                     andInside = false;
                 }
-            } else if(operators.whichOperator(0, parseTree.information[neigh]->getString()) != "none") {
-                throw invalid_argument("the reduction of paranthesis went wrong because there are still"
-                                       "operators which are having higher priority than " +
-                targetOperator);
             }
         }
     }
@@ -225,6 +222,7 @@ bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, 
     wasModified |= (parseTree.graph[node] != pile);
     if(!isDoubleImplication) {
         // this is because we have to revert the correct order for implication
+        reverse(parseTree.graph[node].begin(), parseTree.graph[node].end());
         reverse(pile.begin(), pile.end());
     }
     parseTree.graph[node] = pile;
@@ -237,36 +235,41 @@ bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, 
 
 // warm-up for step 1.1)
 bool Reducer::reduceDoubleImplicationStep(int node) {
-    bool wasModified = false;
+    bool isDone = true;
+    cerr << "beginning " << parseTree.getEulerTraversal() << '\n';
     if(applyParanthesesToConjunctions(node)) {
         if(applyParanthesesToConjunctions(node)) {
             throw logic_error("it should not get modified twice when "
                               "applying applyParanthesesToConjunctions");
         }
-        wasModified = true;
+        isDone = false;
     }
+    cerr << "after parantheses to conjunctions " << parseTree.getEulerTraversal() << '\n';
     if(applyParanthesesToDisjunctions(node)) {
         if(applyParanthesesToDisjunctions(node)) {
             throw logic_error("it should not get modified twice when "
                               "applying applyParanthesesToDisjunctions");
         }
-        wasModified = true;
+        isDone = false;
     }
+    cerr << "after parantheses to disjunctions " << parseTree.getEulerTraversal() << '\n';
     if(applyParanthesesToImplications(node)) {
         if(applyParanthesesToImplications(node)) {
             throw logic_error("it should not get modified twice when "
                               "applying applyParanthesesToImplications");
         }
-        wasModified = true;
+        isDone = false;
     }
+    cerr << "after parantheses to implications " << parseTree.getEulerTraversal() << '\n';
     if(eliminateDoubleImplicationOrImplication(true, node)) {
         if(eliminateDoubleImplicationOrImplication(true, node)) {
             throw logic_error("it should not get modified twice when "
                               "applying eliminateDoubleImplication");
         }
-        wasModified = true;
+        isDone = false;
     }
-    return wasModified;
+    cerr << "after parantheses to double implications " << parseTree.getEulerTraversal() << '\n';
+    return isDone;
 }
 
 bool Reducer::resolveRightAssociativityForImplications(int node) {
@@ -278,6 +281,7 @@ bool Reducer::reduceImplicationStep(int node) {
     bool wasModified = false;
     while(!reduceDoubleImplicationStep(node)) { wasModified = true; }
     if(resolveRightAssociativityForImplications(node)) {
+        cerr << "after removing implications " << parseTree.getEulerTraversal() << '\n';
         if(resolveRightAssociativityForImplications(node)) {
             throw logic_error("it should not get modified twice when "
                               "applying resolveRightAssociativityForImplications");
@@ -289,12 +293,10 @@ bool Reducer::reduceImplicationStep(int node) {
 
 // does step 1.2) - 1.6)
 bool Reducer::pushNOTStep(int node) {
-    bool isNot           = false;
     Operators& operators = Operators::getInstance();
+    bool isNot           = false;
     if(parseTree.information.find(node) != parseTree.information.end()) {
-        if(operators.whichOperator(0, parseTree.information[node]->getString()) == "NOT") {
-            isNot = true;
-        }
+        isNot = operators.isNot(parseTree.information[node]->getString());
     }
     string operatorOnTheLevel;
     for(auto& neighbour : parseTree.graph[node]) {
@@ -302,11 +304,11 @@ bool Reducer::pushNOTStep(int node) {
             if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDOperator) {
                 if(operatorOnTheLevel.empty()) {
                     operatorOnTheLevel = parseTree.information[node]->getString();
-                    if(operatorOnTheLevel == "NOT") {
+                    if(operatorOnTheLevel == operators.NOT) {
                         // that's not unary
                         // then reset
                         operatorOnTheLevel.clear();
-                    } else if(operatorOnTheLevel != "AND" and operatorOnTheLevel != "OR") {
+                    } else if(operatorOnTheLevel != operators.AND and operatorOnTheLevel != operators.OR) {
                         // at this point the tree should have only AND, OR and NOT + quantifiers
                         throw logic_error("at this point the tree should have only AND, OR and NOT + quantifiers");
                     }
@@ -564,6 +566,12 @@ const std::vector<Literal::arg>& arguments) {
         return make_shared<ClauseForm>(firstClauses);
     }
     std::string fakePredicateName         = getRandomPredicateName();
+    // uncomment here if you want to escape from the optimization
+    if (firstClauses.size() == 1 and secondClauses.size() == 1) {
+        /// trivial case
+        firstClauses[0].insert(end(firstClauses[0]), begin(secondClauses[0]), end(secondClauses[0]));
+        return make_shared<ClauseForm>(firstClauses);
+    }
     shared_ptr<Literal> newLiteral        = make_shared<Literal>(false, fakePredicateName, arguments);
     shared_ptr<Literal> newLiteralNegated = make_shared<Literal>(true, fakePredicateName, arguments);
     for(auto& clause : firstClauses) { clause.push_back(newLiteral); }
@@ -572,52 +580,50 @@ const std::vector<Literal::arg>& arguments) {
     return make_shared<ClauseForm>(firstClauses);
 }
 
-shared_ptr<ClauseForm> Reducer::unifyNormalForms(int node, const std::vector<Literal::arg>& arguments) {
-    bool isNormalForm = false;
-    string whichOperator;
-    vector<shared_ptr<Literal>> literals;
+void Reducer::unifyNormalForms(int node, const std::vector<Literal::arg>& arguments) {
+    int cnt = 0;
+    int whichNeighbour;
     for(auto& neighbour : parseTree.graph[node]) {
         unifyNormalForms(neighbour, arguments);
         if(parseTree.information.find(neighbour) != parseTree.information.end()) {
+            cnt += 1;
+            whichNeighbour = neighbour;
+        }
+    }
+    if(cnt == 1) {
+        if(parseTree.information.find(node) != parseTree.information.end()) {
+            throw logic_error("two instances cannot be in a relationship father-son");
+        }
+        swap(parseTree.information[node], parseTree.information[whichNeighbour]);
+        for (auto &x : parseTree.graph[node]) {
+            disposeNode(x);
+        }
+        parseTree.graph[node].clear();
+    }
+    int totalNumberOfOperators = 0;
+    int totalNumberOfClauses = 0;
+    for(auto& neighbour : parseTree.graph[node]) {
+        if(parseTree.information.find(neighbour) != parseTree.information.end()) {
             if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
-                if(whichOperator.empty()) {
-                    whichOperator = parseTree.information[neighbour]->getEntity<string>();
-                } else {
-                    if(whichOperator != parseTree.information[neighbour]->getEntity<string>()) {
-                        throw logic_error("it should be the same operator on the same level at this point");
-                    }
-                }
-            } else if(parseTree.information[neighbour]->getType() == EntityType::LITERAL) {
-                literals.push_back(parseTree.information[neighbour]->getEntity<shared_ptr<Literal>>());
-            } else {
-                isNormalForm = false;
+                totalNumberOfOperators += 1;
+            } else if(parseTree.information[neighbour]->getType() == EntityType::NORMALForms) {
+                totalNumberOfClauses += 1;
             }
-        } else {
-            isNormalForm = false;
         }
     }
     Operators& operators = Operators::getInstance();
-    if(isNormalForm) {
+    if(parseTree.graph[node].empty() and parseTree.information.find(node) != parseTree.information.end() and
+    parseTree.information[node]->getType() == EntityType::LITERAL) {
+        /// simple leaf which is literal
         vector<ClauseForm::Clause> clauses;
-        bool isAnd = true;
-        if(operators.isOr(whichOperator)) {
-            isAnd = false;
-        }
-        if(isAnd) {
-            for(auto& literal : literals) { clauses.push_back({ literal }); }
-        } else {
-            clauses.push_back(literals);
-        }
+        clauses.push_back({ parseTree.information[node]->getEntity<shared_ptr<Literal>>() });
         shared_ptr<ClauseForm> normalForm = make_shared<ClauseForm>(clauses);
         parseTree.information[node]       = make_shared<Entity>(EntityType::NORMALForms, normalForm);
-        vector<int> nodesToBeDisposed;
-        for(auto& neighbour : parseTree.graph[node]) { nodesToBeDisposed.emplace_back(neighbour); }
-        parseTree.graph[node].clear();
-        for(auto& currentNode : nodesToBeDisposed) { disposeNode(currentNode); }
-    } else if(parseTree.information.find(node) == parseTree.information.end()) {
+    }
+    else if(totalNumberOfClauses and totalNumberOfOperators) {
+        // we are in a node and that one is having the sons forming a normal form
         parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms, make_shared<ClauseForm>());
         bool isAnd                  = false;
-        int cnt                     = 0;
         for(auto& neighbour : parseTree.graph[node]) {
             if(parseTree.information.find(neighbour) == parseTree.information.end()) {
                 continue;
@@ -634,7 +640,6 @@ shared_ptr<ClauseForm> Reducer::unifyNormalForms(int node, const std::vector<Lit
             }
         }
     }
-    return parseTree.information[node]->getEntity<shared_ptr<ClauseForm>>();
 }
 
 template <typename T> T getClauseForm() {
@@ -645,16 +650,21 @@ template <> std::vector<ClauseForm::Clause> Reducer::getClauseForm() {
     static bool executed = false;
     static std::vector<ClauseForm::Clause> clauseForm;
     if(!executed) {
+        cerr << "before everything : " << parseTree.getEulerTraversal() << endl;
         basicReduce();
+        cerr << "after basic reduction : " << parseTree.getEulerTraversal() << endl;
         skolemization();
-        shared_ptr<ClauseForm> result = make_shared<ClauseForm>();
+        cerr << "after skolemization : " << parseTree.getEulerTraversal() << endl;
         auto allVariables             = countVariablesAndConstants();
         std::vector<Literal::arg> arguments;
+        arguments.reserve(allVariables.size());
         for(auto& variable : allVariables) { arguments.emplace_back(variable); }
+        cerr << parseTree.getEulerTraversal() << endl;
         removeUniversalQuantifiers();
-        result     = unifyNormalForms(parseTree.Root, arguments);
-        clauseForm = result->getClauseForm();
+        unifyNormalForms(parseTree.Root, arguments);
+        clauseForm = parseTree.information[parseTree.Root]->getEntity<shared_ptr<ClauseForm>>()->getClauseForm();
         executed   = true;
+        cerr << parseTree.getEulerTraversal() << endl;
     }
     return clauseForm;
 }
