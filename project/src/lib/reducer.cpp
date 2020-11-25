@@ -565,9 +565,9 @@ const std::vector<Literal::arg>& arguments) {
         firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
         return make_shared<ClauseForm>(firstClauses);
     }
-    std::string fakePredicateName         = getRandomPredicateName();
+    std::string fakePredicateName = getRandomPredicateName();
     // uncomment here if you want to escape from the optimization
-    if (firstClauses.size() == 1 and secondClauses.size() == 1) {
+    if(firstClauses.size() == 1 and secondClauses.size() == 1) {
         /// trivial case
         firstClauses[0].insert(end(firstClauses[0]), begin(secondClauses[0]), end(secondClauses[0]));
         return make_shared<ClauseForm>(firstClauses);
@@ -595,13 +595,11 @@ void Reducer::unifyNormalForms(int node, const std::vector<Literal::arg>& argume
             throw logic_error("two instances cannot be in a relationship father-son");
         }
         swap(parseTree.information[node], parseTree.information[whichNeighbour]);
-        for (auto &x : parseTree.graph[node]) {
-            disposeNode(x);
-        }
+        for(auto& x : parseTree.graph[node]) { disposeNode(x); }
         parseTree.graph[node].clear();
     }
     int totalNumberOfOperators = 0;
-    int totalNumberOfClauses = 0;
+    int totalNumberOfClauses   = 0;
     for(auto& neighbour : parseTree.graph[node]) {
         if(parseTree.information.find(neighbour) != parseTree.information.end()) {
             if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
@@ -619,8 +617,7 @@ void Reducer::unifyNormalForms(int node, const std::vector<Literal::arg>& argume
         clauses.push_back({ parseTree.information[node]->getEntity<shared_ptr<Literal>>() });
         shared_ptr<ClauseForm> normalForm = make_shared<ClauseForm>(clauses);
         parseTree.information[node]       = make_shared<Entity>(EntityType::NORMALForms, normalForm);
-    }
-    else if(totalNumberOfClauses and totalNumberOfOperators) {
+    } else if(totalNumberOfClauses and totalNumberOfOperators) {
         // we are in a node and that one is having the sons forming a normal form
         parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms, make_shared<ClauseForm>());
         bool isAnd                  = false;
@@ -655,7 +652,7 @@ template <> std::vector<ClauseForm::Clause> Reducer::getClauseForm() {
         cerr << "after basic reduction : " << parseTree.getEulerTraversal() << endl;
         skolemization();
         cerr << "after skolemization : " << parseTree.getEulerTraversal() << endl;
-        auto allVariables             = countVariablesAndConstants();
+        auto allVariables = countVariablesAndConstants();
         std::vector<Literal::arg> arguments;
         arguments.reserve(allVariables.size());
         for(auto& variable : allVariables) { arguments.emplace_back(variable); }

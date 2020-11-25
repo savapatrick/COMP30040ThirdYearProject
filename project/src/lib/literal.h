@@ -5,6 +5,7 @@
 #ifndef PROJECT_LITERAL_H
 #define PROJECT_LITERAL_H
 
+#include "dual_hash_ascii.h"
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -13,6 +14,8 @@
 
 namespace utils {
 class Literal {
+    friend class DualHashASCII;
+
     public:
     typedef std::variant<std::string, std::pair<std::string, std::vector<std::string>>> arg;
 
