@@ -24,3 +24,9 @@ https://leanprover.github.io/logic_and_proof/first_order_logic.html
 
 http://web.cs.ucla.edu/~rosen/161/notes/cnf.html
 https://www.cs.jhu.edu/~jason/tutorials/convert-to-CNF.html
+
+https://www.cs.unc.edu/~plaisted/Propositional.ppt
+https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-825-techniques-in-artificial-intelligence-sma-5504-fall-2002/lecture-notes/Lecture8FinalPart1.pdf
+
+most useful so far for the basic theorem prover:
+https://people.clarkson.edu/~clynch/isr2019/tp1.pdf

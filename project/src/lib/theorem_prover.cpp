@@ -84,19 +84,21 @@ map<DualHashASCII::HashType, shared_ptr<Literal>> TheoremProver::getLiteralsInst
     for(auto& literal : first) { literalInstances[DualHashASCII::getHash(literal)] = literal; }
     return literalInstances;
 }
-std::pair<ClauseForm::Clause, ClauseForm::Clause>
+std::pair<bool, std::pair<ClauseForm::Clause, ClauseForm::Clause>>
 TheoremProver::applyResolution(const ClauseForm::Clause& first, const ClauseForm::Clause& second) {
     // This method assumes that none of the clauses have a literal and its complement in the same clause
     auto literalsInstancesFirst  = getLiteralsInstances(first);
     auto literalsInstancesSecond = getLiteralsInstances(second);
     auto literalsFirst           = getLiteralsMap(first);
     auto literalsSecond          = getLiteralsMap(second);
+    bool isReduced               = false;
     for(auto& elem : literalsFirst) {
         if(literalsSecond.find(elem.first) != literalsSecond.end()) {
             if((elem.second.first and literalsSecond[elem.first].second) or
             (elem.second.second and literalsSecond[elem.first].first)) {
                 literalsFirst.erase(literalsFirst.find(elem.first));
                 literalsSecond.erase(literalsSecond.find(elem.first));
+                isReduced = true;
             }
         }
     }
@@ -106,6 +108,6 @@ TheoremProver::applyResolution(const ClauseForm::Clause& first, const ClauseForm
     vector<shared_ptr<Literal>> resultSecond;
     transform(literalsInstancesSecond.begin(), literalsInstancesSecond.end(), back_inserter(resultSecond),
     [](auto& keyValue) { return keyValue.second; });
-    return { resultFirst, resultSecond };
+    return { isReduced, { resultFirst, resultSecond } };
 }
 }; // namespace utils

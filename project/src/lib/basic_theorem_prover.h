@@ -16,7 +16,7 @@ class BasicTheoremProver : public TheoremProver {
     BasicTheoremProver(std::vector<ClauseForm::Clause> _clauseForm, std::ofstream& _outputStream)
     : TheoremProver(std::move(_clauseForm), _outputStream) {
     }
-    virtual bool isSatisfiable() override;
+    virtual bool isValid() override;
 };
 } // namespace utils
 

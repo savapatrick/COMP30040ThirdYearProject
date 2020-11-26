@@ -18,7 +18,7 @@ class TheoremProver {
     std::ofstream& outputStream;
     bool hasLiteralAndNegatedLiteralInClause(const ClauseForm::Clause& clause);
     bool applyFactoringOnClauseIfPossible(ClauseForm::Clause* result, const ClauseForm::Clause& clause);
-    std::map<DualHashASCII::HashType, std::pair<bool, bool>> getLiteralsMap(const ClauseForm::Clause& first) const;
+    [[nodiscard]] std::map<DualHashASCII::HashType, std::pair<bool, bool>> getLiteralsMap(const ClauseForm::Clause& first) const;
     [[nodiscard]] std::map<DualHashASCII::HashType, std::shared_ptr<Literal>> getLiteralsInstances(
     const ClauseForm::Clause& first) const;
 
@@ -28,9 +28,9 @@ class TheoremProver {
     }
     bool checkForLiteralAndNegatedLiteralInClauses();
     bool applyFactoringOnClausesIfPossible();
-    std::pair<ClauseForm::Clause, ClauseForm::Clause>
+    std::pair<bool, std::pair<ClauseForm::Clause, ClauseForm::Clause>>
     applyResolution(const ClauseForm::Clause& first, const ClauseForm::Clause& second);
-    virtual bool isSatisfiable() = 0;
+    virtual bool isValid() = 0;
 };
 } // namespace utils
 
