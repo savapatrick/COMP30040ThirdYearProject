@@ -67,7 +67,11 @@ DualHashASCII::HashType DualHashASCII::getHashArguments(const std::shared_ptr<Li
 }
 DualHashASCII::HashType DualHashASCII::getHash(const std::shared_ptr<Literal>& literal) {
     HashType newHash(0, 0);
-    newHash = appendString(newHash, "{" + literal->getPredicateName());
+    string prefix;
+    if(literal->isNegated) {
+        prefix = "~";
+    }
+    newHash = appendString(newHash, "{" + prefix + literal->getPredicateName());
     newHash = appendArguments(newHash, literal);
     newHash = appendString(newHash, "}");
     return newHash;

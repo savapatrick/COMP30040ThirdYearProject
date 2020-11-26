@@ -16,6 +16,8 @@ class DualHashASCII {
     typedef std::pair<int, int> HashType;
 
     private:
+    DualHashASCII() {
+    }
     static const int ModuloOne = 1000000007;
     static const int ModuloTwo = 1000000009;
     static const int Base      = 197;
