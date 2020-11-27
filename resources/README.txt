@@ -30,3 +30,8 @@ https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-825-te
 
 most useful so far for the basic theorem prover:
 https://people.clarkson.edu/~clynch/isr2019/tp1.pdf
+
+quite useful as well:
+https://www.cl.cam.ac.uk/teaching/1516/LogicProof/logic-notes.pdf
+
+https://www.cs.cornell.edu/courses/cs4700/2011fa/lectures/16_FirstOrderLogic.pdf
