@@ -513,19 +513,22 @@ void Reducer::skolemization() {
     }
 }
 
-unordered_set<string> Reducer::countVariablesAndConstants() {
+unordered_set<string> Reducer::getAllVariables() {
     unordered_set<string> variables;
     Operators& operators = Operators::getInstance();
     for(auto& information : parseTree.information) {
         auto value = information.second;
         if(value->getType() == EntityType::LITERAL) {
-            auto literal   = value->getEntity<shared_ptr<Literal>>();
-            auto arguments = literal->getArguments();
-            for(auto& argument : arguments) {
-                if(argument.index() == 0) {
-                    variables.insert(get<0>(argument));
-                }
-            }
+            // TODO: delete eventually
+            // auto literal   = value->getEntity<shared_ptr<Literal>>();
+            // auto arguments = literal->getArguments();
+            // for(auto& argument : arguments) {
+            //     if(argument.index() == 0) {
+            //        variables.insert(get<0>(argument));
+            //     }
+            // }
+            // here we do continue because we don't want to count the constants
+            continue;
         } else if(value->getType() == EntityType::BOUNDVariable) {
             auto boundVariable = value->getEntity<string>();
             auto variable      = operators.getVariableFromQuantifierAndVariable(boundVariable);
@@ -652,7 +655,7 @@ template <> std::vector<ClauseForm::Clause> Reducer::getClauseForm() {
         cerr << "after basic reduction : " << parseTree.getEulerTraversal() << endl;
         skolemization();
         cerr << "after skolemization : " << parseTree.getEulerTraversal() << endl;
-        auto allVariables = countVariablesAndConstants();
+        auto allVariables = getAllVariables();
         std::vector<Literal::arg> arguments;
         arguments.reserve(allVariables.size());
         for(auto& variable : allVariables) { arguments.emplace_back(variable); }

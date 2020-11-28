@@ -20,7 +20,6 @@ int main() {
         utils::Reducer reducer(tree);
         output << "clause form is " << reducer.getClauseForm<string>() << '\n';
         output << "\n";
-
     }
     return 0;
 }

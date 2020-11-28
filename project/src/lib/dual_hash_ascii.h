@@ -22,7 +22,7 @@ class DualHashASCII {
     static const int ModuloTwo = 1000000009;
     static const int Base      = 197;
     static bool isASCII(const char& character);
-    static HashType appendCharacter(const HashType& currentHash, const char newChar);
+    static HashType appendCharacter(const HashType& currentHash, char newChar);
     static HashType appendString(const HashType& currentHash, const std::string& sequence);
     static HashType appendArgument(const HashType& currentHash, const Literal::arg& argument);
     static HashType appendArguments(const HashType& currentHash, const std::shared_ptr<Literal>& literal);

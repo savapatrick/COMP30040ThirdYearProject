@@ -5,7 +5,8 @@
 #ifndef PROJECT_THEOREM_PROVER_H
 #define PROJECT_THEOREM_PROVER_H
 
-#include "../../../../../../../Program Files/CodeBlocks/MinGW/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/unordered_map"
+#include "dual_hash_ascii.h"
+#include "unordered_map"
 #include "clause_form.h"
 #include <map>
 #include <utility>

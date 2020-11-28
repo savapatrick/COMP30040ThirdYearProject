@@ -65,7 +65,7 @@ class Reducer {
 
     void skolemization();
 
-    std::unordered_set<std::string> countVariablesAndConstants();
+    std::unordered_set<std::string> getAllVariables();
 
     void removeUniversalQuantifiers();
 

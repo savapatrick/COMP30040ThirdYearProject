@@ -5,7 +5,6 @@
 #ifndef PROJECT_LITERAL_H
 #define PROJECT_LITERAL_H
 
-#include "dual_hash_ascii.h"
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -13,6 +12,7 @@
 #include <vector>
 
 namespace utils {
+class DualHashASCII;
 class Literal {
     friend class DualHashASCII;
 
