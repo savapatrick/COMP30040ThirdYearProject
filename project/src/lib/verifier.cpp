@@ -3,8 +3,8 @@
 //
 
 #include "verifier.h"
-#include "literal.h"
 #include "operators.h"
+#include "simplified_literal.h"
 #include <stdexcept>
 
 using namespace std;
@@ -35,7 +35,7 @@ bool Verifier::areAllDNFs(const vector<std::vector<std::string>>& terms) {
                         return false;
                     }
                 } else {
-                    if(!Literal::isLiteral(term[ind])) {
+                    if(!SimplifiedLiteral::isSimplifiedLiteral(term[ind])) {
                         return false;
                     }
                 }

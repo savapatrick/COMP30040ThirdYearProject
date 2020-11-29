@@ -54,7 +54,7 @@ class Reducer {
 
     bool skolemizationStep(int node,
     std::vector<std::string>& variablesInUniversalQuantifiers,
-    std::unordered_map<std::string, Literal::arg>& skolem);
+    std::unordered_map<std::string, SimplifiedLiteral::arg>& skolem);
 
     static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string& which);
 
@@ -69,16 +69,16 @@ class Reducer {
 
     void removeUniversalQuantifiers();
 
-    std::shared_ptr<ClauseForm> unifyTwoNormalFormsOnOperator(const std::shared_ptr<ClauseForm>& first,
-    const std::shared_ptr<ClauseForm>& second,
+    std::shared_ptr<SimplifiedClauseForm> unifyTwoNormalFormsOnOperator(const std::shared_ptr<SimplifiedClauseForm>& first,
+    const std::shared_ptr<SimplifiedClauseForm>& second,
     bool isAnd,
-    const std::vector<Literal::arg>& arguments);
-    void unifyNormalForms(int node, const std::vector<Literal::arg>& arguments);
+    const std::vector<SimplifiedLiteral::arg>& arguments);
+    void unifyNormalForms(int node, const std::vector<SimplifiedLiteral::arg>& arguments);
 
     public:
     explicit Reducer(ParseTree& _parseTree);
 
-    template <typename T> T getClauseForm();
+    template <typename T> T getSimplifiedClauseForm();
 };
 }; // namespace utils
 

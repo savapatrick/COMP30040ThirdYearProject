@@ -18,7 +18,7 @@ int main() {
         output << "for the formula " + formula << "\nthe clause form is\n";
         utils::ParseTree tree(formula);
         utils::Reducer reducer(tree);
-        output << "clause form is " << reducer.getClauseForm<string>() << '\n';
+        output << "clause form is " << reducer.getSimplifiedClauseForm<string>() << '\n';
         output << "\n";
     }
     return 0;

@@ -5,7 +5,7 @@
 #ifndef PROJECT_DUAL_HASH_ASCII_H
 #define PROJECT_DUAL_HASH_ASCII_H
 
-#include "literal.h"
+#include "simplified_literal.h"
 #include <memory>
 #include <string>
 #include <utility>
@@ -24,13 +24,13 @@ class DualHashASCII {
     static bool isASCII(const char& character);
     static HashType appendCharacter(const HashType& currentHash, char newChar);
     static HashType appendString(const HashType& currentHash, const std::string& sequence);
-    static HashType appendArgument(const HashType& currentHash, const Literal::arg& argument);
-    static HashType appendArguments(const HashType& currentHash, const std::shared_ptr<Literal>& literal);
+    static HashType appendArgument(const HashType& currentHash, const SimplifiedLiteral::arg& argument);
+    static HashType appendArguments(const HashType& currentHash, const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral);
 
     public:
-    static HashType getHashPredicateName(const std::shared_ptr<Literal>& literal);
-    static HashType getHashArguments(const std::shared_ptr<Literal>& literal);
-    static HashType getHash(const std::shared_ptr<Literal>& literal);
+    static HashType getHashPredicateName(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral);
+    static HashType getHashArguments(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral);
+    static HashType getHash(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral);
 };
 } // namespace utils
 

@@ -5,8 +5,8 @@
 #ifndef PROJECT_ENTITY_H
 #define PROJECT_ENTITY_H
 
-#include "clause_form.h"
-#include "literal.h"
+#include "simplified_clause_form.h"
+#include "simplified_literal.h"
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -17,7 +17,7 @@
 namespace utils {
 enum EntityType {
     BOUNDVariable = 0,  /*e.g @x, ?y, etc*/
-    LITERAL,            /*e.g ~P(a), ~P(f(x)), ~P(a, x, f(y))*/
+    SIMPLIFIEDLiteral,  /*e.g ~P(a), ~P(f(x)), ~P(a, x, f(y))*/
     SIMPLIFIEDOperator, /*AND, OR, NOT, IMPLY, DOUBLEImply*/
     NORMALForms,        /*e.g CNF or DNF, so either ~P(a) ^ B(d), or ~P(d) | P(f) could be good examples*/
 };
@@ -25,8 +25,8 @@ enum EntityType {
 class Entity {
     public:
     typedef std::variant<std::string, /*type 0 or type 2*/
-    std::shared_ptr<Literal> /*type 1*/,
-    std::shared_ptr<ClauseForm> /*type 3*/>
+    std::shared_ptr<SimplifiedLiteral> /*type 1*/,
+    std::shared_ptr<SimplifiedClauseForm> /*type 3*/>
     EntityStorage;
 
     private:
@@ -42,14 +42,15 @@ class Entity {
         }
     };
 
-    explicit Entity(const EntityType& _type, const std::shared_ptr<ClauseForm>& _entity)
+    explicit Entity(const EntityType& _type, const std::shared_ptr<SimplifiedClauseForm>& _entity)
     : type(_type), entity(_entity) {
         if(type != 3) {
             throw std::invalid_argument("Type for Entity has to be 3 but given " + std::to_string(type));
         }
     };
 
-    explicit Entity(const EntityType& _type, const std::shared_ptr<Literal>& _entity) : type(_type), entity(_entity) {
+    explicit Entity(const EntityType& _type, const std::shared_ptr<SimplifiedLiteral>& _entity)
+    : type(_type), entity(_entity) {
         if(type != 1) {
             throw std::invalid_argument("Type for Entity has to be 1 but given " + std::to_string(type));
         }

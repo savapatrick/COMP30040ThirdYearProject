@@ -23,7 +23,8 @@ DualHashASCII::HashType DualHashASCII::appendString(const DualHashASCII::HashTyp
     for(auto& currentCharacter : sequence) { newHash = appendCharacter(newHash, currentCharacter); }
     return newHash;
 }
-DualHashASCII::HashType DualHashASCII::appendArgument(const DualHashASCII::HashType& currentHash, const Literal::arg& argument) {
+DualHashASCII::HashType
+DualHashASCII::appendArgument(const DualHashASCII::HashType& currentHash, const SimplifiedLiteral::arg& argument) {
     if(argument.index() == 0) {
         return appendString(currentHash, get<0>(argument));
     }
@@ -43,9 +44,9 @@ DualHashASCII::HashType DualHashASCII::appendArgument(const DualHashASCII::HashT
     return newHash;
 }
 
-DualHashASCII::HashType
-DualHashASCII::appendArguments(const DualHashASCII::HashType& currentHash, const std::shared_ptr<Literal>& literal) {
-    auto& arguments = literal->arguments;
+DualHashASCII::HashType DualHashASCII::appendArguments(const DualHashASCII::HashType& currentHash,
+const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral) {
+    auto& arguments = simplifiedLiteral->arguments;
     HashType newHash(currentHash);
     newHash = appendString(newHash, "[");
     for(int index = 0; index < (int)arguments.size(); ++index) {
@@ -59,20 +60,20 @@ DualHashASCII::appendArguments(const DualHashASCII::HashType& currentHash, const
     return newHash;
 }
 
-DualHashASCII::HashType DualHashASCII::getHashPredicateName(const std::shared_ptr<Literal>& literal) {
-    return appendString({ 0, 0 }, literal->predicateName);
+DualHashASCII::HashType DualHashASCII::getHashPredicateName(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral) {
+    return appendString({ 0, 0 }, simplifiedLiteral->predicateName);
 }
-DualHashASCII::HashType DualHashASCII::getHashArguments(const std::shared_ptr<Literal>& literal) {
-    return appendArguments({ 0, 0 }, literal);
+DualHashASCII::HashType DualHashASCII::getHashArguments(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral) {
+    return appendArguments({ 0, 0 }, simplifiedLiteral);
 }
-DualHashASCII::HashType DualHashASCII::getHash(const std::shared_ptr<Literal>& literal) {
+DualHashASCII::HashType DualHashASCII::getHash(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral) {
     HashType newHash(0, 0);
     string prefix;
-    if(literal->isNegated) {
+    if(simplifiedLiteral->isNegated) {
         prefix = "~";
     }
-    newHash = appendString(newHash, "{" + prefix + literal->getPredicateName());
-    newHash = appendArguments(newHash, literal);
+    newHash = appendString(newHash, "{" + prefix + simplifiedLiteral->getPredicateName());
+    newHash = appendArguments(newHash, simplifiedLiteral);
     newHash = appendString(newHash, "}");
     return newHash;
 }

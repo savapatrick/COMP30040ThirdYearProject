@@ -8,13 +8,13 @@
 
 using namespace std;
 namespace utils {
-bool TheoremProver::hasLiteralAndNegatedLiteralInClause(const utils::ClauseForm::Clause& clause) {
+bool TheoremProver::hasLiteralAndNegatedLiteralInClause(const utils::SimplifiedClauseForm::SimplifiedClause& clause) {
     map<DualHashASCII::HashType, int> info; // 1 negative, 2 positive, 3 both negative and positive
-    for(auto& literal : clause) {
-        if(literal->getIsNegated()) {
-            info[DualHashASCII::getHashPredicateName(literal)] ^= 1;
+    for(auto& simplifiedLiteral : clause) {
+        if(simplifiedLiteral->getIsNegated()) {
+            info[DualHashASCII::getHashPredicateName(simplifiedLiteral)] ^= 1;
         } else {
-            info[DualHashASCII::getHashPredicateName(literal)] ^= 2;
+            info[DualHashASCII::getHashPredicateName(simplifiedLiteral)] ^= 2;
         }
     }
     for(auto& keyValue : info) {
@@ -25,19 +25,22 @@ bool TheoremProver::hasLiteralAndNegatedLiteralInClause(const utils::ClauseForm:
     return false;
 }
 bool TheoremProver::checkForLiteralAndNegatedLiteralInClauses() {
-    return all_of(begin(clauseForm), end(clauseForm),
-    [&](const ClauseForm::Clause& clause) -> bool { return !hasLiteralAndNegatedLiteralInClause(clause); });
+    return all_of(begin(simplifiedClauseForm), end(simplifiedClauseForm),
+    [&](const SimplifiedClauseForm::SimplifiedClause& clause) -> bool {
+        return !hasLiteralAndNegatedLiteralInClause(clause);
+    });
 }
-bool TheoremProver::applyFactoringOnClauseIfPossible(ClauseForm::Clause* result, const ClauseForm::Clause& clause) {
+bool TheoremProver::applyFactoringOnClauseIfPossible(SimplifiedClauseForm::SimplifiedClause* result,
+const SimplifiedClauseForm::SimplifiedClause& clause) {
     bool changed = false;
-    map<DualHashASCII::HashType, shared_ptr<Literal>> literals;
+    map<DualHashASCII::HashType, shared_ptr<SimplifiedLiteral>> literals;
     for(auto& literal : clause) {
-        auto literalHash = DualHashASCII::getHash(literal);
-        if(literals.find(literalHash) != literals.end()) {
+        auto simplifiedLiteralHash = DualHashASCII::getHash(literal);
+        if(literals.find(simplifiedLiteralHash) != literals.end()) {
             // it already exists
             changed = true;
         } else {
-            literals[literalHash] = literal;
+            literals[simplifiedLiteralHash] = literal;
         }
     }
     result->clear();
@@ -46,11 +49,11 @@ bool TheoremProver::applyFactoringOnClauseIfPossible(ClauseForm::Clause* result,
     return changed;
 }
 bool TheoremProver::applyFactoringOnClausesIfPossible() {
-    vector<ClauseForm::Clause> newClauseForm;
-    newClauseForm.reserve(clauseForm.size());
+    vector<SimplifiedClauseForm::SimplifiedClause> newClauseForm;
+    newClauseForm.reserve(simplifiedClauseForm.size());
     bool changed = false;
-    for(auto& clause : clauseForm) {
-        ClauseForm::Clause newClause;
+    for(auto& clause : simplifiedClauseForm) {
+        SimplifiedClauseForm::SimplifiedClause newClause;
         if(applyFactoringOnClauseIfPossible(&newClause, clause)) {
             newClauseForm.push_back(newClause);
             changed = true;
@@ -59,55 +62,57 @@ bool TheoremProver::applyFactoringOnClausesIfPossible() {
         }
     }
     if(changed) {
-        clauseForm = newClauseForm;
+        simplifiedClauseForm = newClauseForm;
     }
     return changed;
 }
-map<DualHashASCII::HashType, pair<bool, bool>> TheoremProver::getLiteralsMap(const ClauseForm::Clause& first) const {
+map<DualHashASCII::HashType, pair<bool, bool>> TheoremProver::getLiteralsMap(const SimplifiedClauseForm::SimplifiedClause& first) const {
     map<DualHashASCII::HashType, pair<bool, bool>> literalsFirst;
     for(auto& literal : first) {
         pair<bool, bool> aux(false, false);
-        auto literalHash = DualHashASCII::getHashPredicateName(literal);
-        if(literalsFirst.find(literalHash) != literalsFirst.end()) {
-            aux = literalsFirst[literalHash];
+        auto simplifiedLiteralHash = DualHashASCII::getHashPredicateName(literal);
+        if(literalsFirst.find(simplifiedLiteralHash) != literalsFirst.end()) {
+            aux = literalsFirst[simplifiedLiteralHash];
         }
         if(literal->getIsNegated()) {
-            literalsFirst[literalHash] = { aux.first, true };
+            literalsFirst[simplifiedLiteralHash] = { aux.first, true };
         } else {
-            literalsFirst[literalHash] = { true, aux.second };
+            literalsFirst[simplifiedLiteralHash] = { true, aux.second };
         }
     }
     return literalsFirst;
 }
-map<DualHashASCII::HashType, shared_ptr<Literal>> TheoremProver::getLiteralsInstances(const ClauseForm::Clause& first) const {
-    map<DualHashASCII::HashType, shared_ptr<Literal>> literalInstances;
+map<DualHashASCII::HashType, shared_ptr<SimplifiedLiteral>> TheoremProver::getLiteralsInstances(
+const SimplifiedClauseForm::SimplifiedClause& first) const {
+    map<DualHashASCII::HashType, shared_ptr<SimplifiedLiteral>> literalInstances;
     for(auto& literal : first) { literalInstances[DualHashASCII::getHash(literal)] = literal; }
     return literalInstances;
 }
-std::pair<bool, std::pair<ClauseForm::Clause, ClauseForm::Clause>>
-TheoremProver::applyResolution(const ClauseForm::Clause& first, const ClauseForm::Clause& second) {
-    // This method assumes that none of the clauses have a literal and its complement in the same clause
-    auto literalsInstancesFirst  = getLiteralsInstances(first);
-    auto literalsInstancesSecond = getLiteralsInstances(second);
-    auto literalsFirst           = getLiteralsMap(first);
-    auto literalsSecond          = getLiteralsMap(second);
-    bool isReduced               = false;
-    for(auto& elem : literalsFirst) {
-        if(literalsSecond.find(elem.first) != literalsSecond.end()) {
-            if((elem.second.first and literalsSecond[elem.first].second) or
-            (elem.second.second and literalsSecond[elem.first].first)) {
-                literalsFirst.erase(literalsFirst.find(elem.first));
-                literalsSecond.erase(literalsSecond.find(elem.first));
+std::pair<bool, std::pair<SimplifiedClauseForm::SimplifiedClause, SimplifiedClauseForm::SimplifiedClause>>
+TheoremProver::applyResolution(const SimplifiedClauseForm::SimplifiedClause& first,
+const SimplifiedClauseForm::SimplifiedClause& second) {
+    // This method assumes that none of the clauses have a simplifiedLiteral and its complement in the same clause
+    auto simplifiedLiteralsInstancesFirst  = getLiteralsInstances(first);
+    auto simplifiedLiteralsInstancesSecond = getLiteralsInstances(second);
+    auto simplifiedLiteralsFirst           = getLiteralsMap(first);
+    auto simplifiedLiteralsSecond          = getLiteralsMap(second);
+    bool isReduced                         = false;
+    for(auto& elem : simplifiedLiteralsFirst) {
+        if(simplifiedLiteralsSecond.find(elem.first) != simplifiedLiteralsSecond.end()) {
+            if((elem.second.first and simplifiedLiteralsSecond[elem.first].second) or
+            (elem.second.second and simplifiedLiteralsSecond[elem.first].first)) {
+                simplifiedLiteralsFirst.erase(simplifiedLiteralsFirst.find(elem.first));
+                simplifiedLiteralsSecond.erase(simplifiedLiteralsSecond.find(elem.first));
                 isReduced = true;
             }
         }
     }
-    vector<shared_ptr<Literal>> resultFirst;
-    transform(literalsInstancesFirst.begin(), literalsInstancesFirst.end(), back_inserter(resultFirst),
-    [](auto& keyValue) { return keyValue.second; });
-    vector<shared_ptr<Literal>> resultSecond;
-    transform(literalsInstancesSecond.begin(), literalsInstancesSecond.end(), back_inserter(resultSecond),
-    [](auto& keyValue) { return keyValue.second; });
+    vector<shared_ptr<SimplifiedLiteral>> resultFirst;
+    transform(simplifiedLiteralsInstancesFirst.begin(), simplifiedLiteralsInstancesFirst.end(),
+    back_inserter(resultFirst), [](auto& keyValue) { return keyValue.second; });
+    vector<shared_ptr<SimplifiedLiteral>> resultSecond;
+    transform(simplifiedLiteralsInstancesSecond.begin(), simplifiedLiteralsInstancesSecond.end(),
+    back_inserter(resultSecond), [](auto& keyValue) { return keyValue.second; });
     return { isReduced, { resultFirst, resultSecond } };
 }
 }; // namespace utils

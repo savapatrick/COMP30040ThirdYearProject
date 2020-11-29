@@ -2,7 +2,7 @@
 // Created by Patrick Sava on 11/5/2020.
 //
 
-#include "literal.h"
+#include "simplified_literal.h"
 #include "operators.h"
 #include <stdexcept>
 
@@ -10,7 +10,7 @@ using namespace std;
 
 namespace utils {
 
-bool Literal::isLiteral(const std::string& seq) {
+bool SimplifiedLiteral::isSimplifiedLiteral(const std::string& seq) {
     if(seq.empty()) {
         throw invalid_argument("cannot check whether the empty string is predicate");
     }
@@ -22,7 +22,7 @@ bool Literal::isLiteral(const std::string& seq) {
     return (i < (int)seq.size() and isupper(seq[i]));
 }
 
-std::string Literal::getArgumentString(const arg& argument) {
+std::string SimplifiedLiteral::getArgumentString(const arg& argument) {
     if(argument.index() == 0) {
         return get<0>(argument);
     }
@@ -36,7 +36,7 @@ std::string Literal::getArgumentString(const arg& argument) {
     return result;
 }
 
-std::string Literal::getString() const {
+std::string SimplifiedLiteral::getString() const {
     string result;
     Operators& operators = Operators::getInstance();
     if(isNegated) {
@@ -54,27 +54,27 @@ std::string Literal::getString() const {
     return result;
 }
 
-bool Literal::getIsNegated() const {
+bool SimplifiedLiteral::getIsNegated() const {
     return isNegated;
 }
 
-const string& Literal::getPredicateName() const {
+const string& SimplifiedLiteral::getPredicateName() const {
     return predicateName;
 }
 
-const std::vector<Literal::arg>& Literal::getArguments() const {
+const std::vector<SimplifiedLiteral::arg>& SimplifiedLiteral::getArguments() const {
     return arguments;
 }
 
-void Literal::negate() {
+void SimplifiedLiteral::negate() {
     isNegated ^= true;
 }
 
-void Literal::setArguments(const vector<Literal::arg>& args) {
-    Literal::arguments = args;
+void SimplifiedLiteral::setArguments(const vector<SimplifiedLiteral::arg>& args) {
+    SimplifiedLiteral::arguments = args;
 }
 
-bool Literal::substituteSkolem(std::unordered_map<std::string, Literal::arg>& skolem) {
+bool SimplifiedLiteral::substituteSkolem(std::unordered_map<std::string, SimplifiedLiteral::arg>& skolem) {
     bool wasModified = false;
     for(auto& argument : arguments) {
         if(argument.index() == 0) {
@@ -89,7 +89,7 @@ bool Literal::substituteSkolem(std::unordered_map<std::string, Literal::arg>& sk
     }
     return wasModified;
 }
-void Literal::simpleSubstitution(unordered_map<std::string, std::string>& substitution) {
+void SimplifiedLiteral::simpleSubstitution(unordered_map<std::string, std::string>& substitution) {
     for(auto& argument : arguments) {
         if(argument.index() == 0) {
             // this is variable

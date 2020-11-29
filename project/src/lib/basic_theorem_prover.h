@@ -13,7 +13,7 @@ namespace utils {
 class BasicTheoremProver : public TheoremProver {
     private:
     public:
-    BasicTheoremProver(std::vector<ClauseForm::Clause> _clauseForm, std::ofstream& _outputStream)
+    BasicTheoremProver(std::vector<SimplifiedClauseForm::SimplifiedClause> _clauseForm, std::ofstream& _outputStream)
     : TheoremProver(std::move(_clauseForm), _outputStream) {
     }
     virtual bool isValid() override;
