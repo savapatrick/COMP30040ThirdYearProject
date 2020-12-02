@@ -5,9 +5,9 @@
 #ifndef PROJECT_REDUCER_H
 #define PROJECT_REDUCER_H
 
+#include "clause_form.h"
 #include "entity.h"
 #include "parse_tree.h"
-#include "clause_form.h"
 #include <set>
 #include <unordered_map>
 #include <unordered_set>

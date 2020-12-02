@@ -418,7 +418,7 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
         } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
             auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
             auto arguments         = simplifiedLiteral->getArguments();
-            vector <string> freeVariables;
+            vector<string> freeVariables;
             for(auto& argument : arguments) {
                 if(argument.index()) {
                     throw logic_error("The current implementation for constantRenaming function "
@@ -436,10 +436,8 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
                     }
                 }
             }
-            unordered_map <string, string> localSubstitution;
-            for (auto &freeVariable : freeVariables) {
-                localSubstitution[freeVariable] = substitution[freeVariable];
-            }
+            unordered_map<string, string> localSubstitution;
+            for(auto& freeVariable : freeVariables) { localSubstitution[freeVariable] = substitution[freeVariable]; }
             simplifiedLiteral->simpleSubstitution(localSubstitution);
         }
     }
@@ -561,8 +559,8 @@ bool isAnd) {
     // initial formula is a constant
     auto allArgumentsSecond = second->getAllArguments();
     vector<SimplifiedLiteral::arg> arguments;
-    set_union(allBoundVariables.begin(), allBoundVariables.end(),
-    allArgumentsSecond.begin(), allArgumentsSecond.end(), back_inserter(arguments));
+    set_union(allBoundVariables.begin(), allBoundVariables.end(), allArgumentsSecond.begin(), allArgumentsSecond.end(),
+    back_inserter(arguments));
     if(arguments.empty()) {
         // we'll introduce a constant here, in order to do not allow predicates of arity 0
         arguments.emplace_back(getRandomTermName());
@@ -676,10 +674,10 @@ template <> string Reducer::getSimplifiedClauseForm() {
 std::shared_ptr<ClauseForm> Reducer::getClauseForm() {
     std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseForm =
     getSimplifiedClauseForm<std::vector<SimplifiedClauseForm::SimplifiedClause>>();
-    vector <string> constantNamesVector;
-    set_union(allBoundVariables.begin(), allBoundVariables.end(),
-    reservedTermNames.begin(), reservedTermNames.end(), back_inserter(constantNamesVector));
-    unordered_set<string> constantNames (constantNamesVector.begin(), constantNamesVector.end());
+    vector<string> constantNamesVector;
+    set_union(allBoundVariables.begin(), allBoundVariables.end(), reservedTermNames.begin(), reservedTermNames.end(),
+    back_inserter(constantNamesVector));
+    unordered_set<string> constantNames(constantNamesVector.begin(), constantNamesVector.end());
     return make_shared<ClauseForm>(simplifiedClauseForm, reservedFunctionNames, allBoundVariables, constantNames);
 }
 

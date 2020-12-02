@@ -6,9 +6,9 @@
 #define PROJECT_SIMPLIFIED_CLAUSE_FORM_H
 
 #include "simplified_literal.h"
-#include <unordered_set>
 #include <memory>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -31,10 +31,10 @@ class SimplifiedClauseForm {
         allArguments.clear();
     }
     SimplifiedClauseForm(std::vector<SimplifiedClause> _simplifiedLiterals) {
-        isEmpty            = _simplifiedLiterals.empty();
+        isEmpty              = _simplifiedLiterals.empty();
         simplifiedClauseForm = std::move(_simplifiedLiterals);
-        for (auto &simplifiedClause : simplifiedClauseForm) {
-            for (auto &simplifiedLiteral : simplifiedClause) {
+        for(auto& simplifiedClause : simplifiedClauseForm) {
+            for(auto& simplifiedLiteral : simplifiedClause) {
                 auto args = simplifiedLiteral->getAllVariablesAndConstants();
                 allArguments.insert(args.begin(), args.end());
             }

@@ -11,6 +11,6 @@ class Clause {
     private:
     public:
 };
-};
+}; // namespace utils
 
 #endif // PROJECT_CLAUSE_H

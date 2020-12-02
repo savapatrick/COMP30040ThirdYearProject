@@ -42,7 +42,7 @@ class SimplifiedLiteral {
 
     [[nodiscard]] std::string getString() const;
 
-    [[nodiscard]] std::unordered_set <std::string> getAllVariablesAndConstants() const;
+    [[nodiscard]] std::unordered_set<std::string> getAllVariablesAndConstants() const;
 
     void negate();
 

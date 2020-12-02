@@ -11,9 +11,9 @@ class ClauseForm {
     private:
     public:
     ClauseForm(const std::vector<SimplifiedClauseForm::SimplifiedClause>& simplifiedClauseForm,
-    const std::unordered_set <std::string>& functionNames,
-    const std::unordered_set <std::string>& variableNames,
-    const std::unordered_set <std::string>& constantNames) {
+    const std::unordered_set<std::string>& functionNames,
+    const std::unordered_set<std::string>& variableNames,
+    const std::unordered_set<std::string>& constantNames) {
     }
 };
 }; // namespace utils
