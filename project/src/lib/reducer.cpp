@@ -4,8 +4,8 @@
 
 #include "reducer.h"
 #include "operators.h"
+#include "random_factory.h"
 #include <algorithm>
-#include <cassert>
 #include <ctime>
 #include <iostream>
 
@@ -24,11 +24,14 @@ Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
                 if(argument.index() == 1) {
                     throw invalid_argument("given a non-raw parse tree to the Reducer constructor");
                 }
-                reservedVariableNames.insert(SimplifiedLiteral::getArgumentString(argument));
+                reservedTermNames.insert(SimplifiedLiteral::getArgumentString(argument));
             }
             reservedPredicateNames.insert(simplifiedLiteral->getPredicateName());
         } else if(value->getType() == EntityType::BOUNDVariable) {
-            reservedVariableNames.insert(operators.getVariableFromQuantifierAndVariable(value->getString()));
+            auto boundVariable = value->getEntity<string>();
+            auto variable      = operators.getVariableFromQuantifierAndVariable(boundVariable);
+            reservedTermNames.insert(variable);
+            allBoundVariables.insert(variable);
         } else if(value->getType() == EntityType::NORMALForms) {
             // for the intended purpose of this class, we should never enter on this branch
             // because we expect the Reducer class to always get the raw parseTree
@@ -41,36 +44,14 @@ Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
     }
 }
 
-std::string Reducer::getRandomFunctionOrConstantName() {
-    static std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
-    const int sizeOfAlphabet    = 26;
-    // TODO: consider whether we want the C++11 random generator
-    std::srand(13);
-    string result;
-    do {
-        result.clear();
-        int length = rand() % 15 + 1; /// 26^15 is huge
-        for(int ind = 1; ind <= length; ++ind) { result += alphabet[rand() % sizeOfAlphabet]; }
-    } while(reservedVariableNames.find(result) != reservedVariableNames.end());
-    reservedVariableNames.insert(result);
-    return result;
+std::string Reducer::getRandomTermName() {
+    RandomFactory& randomFactory = RandomFactory::getInstance();
+    return randomFactory.getRandomTermName(reservedTermNames);
 }
 
 std::string Reducer::getRandomPredicateName() {
-    static std::string startingLetterAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    static std::string alphabet               = "abcdefghijklmnopqrstuvwxyz";
-    const int sizeOfAlphabet                  = 26;
-    // TODO: consider whether we want the C++11 random generator
-    std::srand(14);
-    string result;
-    do {
-        result.clear();
-        int length = rand() % 15 + 1; /// 26^15 is huge
-        result += startingLetterAlphabet[rand() % sizeOfAlphabet];
-        for(int ind = 2; ind <= length; ++ind) { result += alphabet[rand() % sizeOfAlphabet]; }
-    } while(reservedPredicateNames.find(result) != reservedPredicateNames.end());
-    reservedPredicateNames.insert(result);
-    return result;
+    RandomFactory& randomFactory = RandomFactory::getInstance();
+    return randomFactory.getRandomPredicateName(reservedPredicateNames);
 }
 
 void Reducer::disposeNode(int node) {
@@ -391,33 +372,7 @@ void Reducer::basicReduce() {
     } while(doIt);
 }
 
-bool Reducer::checkNonAmbiguousScope(int node, set<std::string>& variablesInCurrentStack, string* result) {
-    Operators& operators = Operators::getInstance();
-    string toRemove;
-    if(parseTree.information.find(node) != parseTree.information.end()) {
-        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
-            auto information = parseTree.information[node]->getEntity<string>();
-            auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
-            auto variable    = operators.getVariableFromQuantifierAndVariable(information);
-            if(variablesInCurrentStack.find(variable) != variablesInCurrentStack.end()) {
-                *result = variable;
-                return false;
-            }
-            variablesInCurrentStack.insert(variable);
-            toRemove = variable;
-        }
-    }
-    bool isOk = true;
-    for(auto& neighbour : parseTree.graph[node]) {
-        isOk &= checkNonAmbiguousScope(neighbour, variablesInCurrentStack, result);
-    }
-    if(!toRemove.empty()) {
-        variablesInCurrentStack.erase(variablesInCurrentStack.find(toRemove));
-    }
-    return isOk;
-}
-
-void Reducer::variableRenaming(int node, set<std::string>& accumulator, unordered_map<std::string, std::string>& substitution) {
+void Reducer::variableRenaming(int node, unordered_set<std::string>& accumulator, unordered_map<std::string, std::string>& substitution) {
     string whichVariable;
     bool wasSubstitution = false;
     Operators& operators = Operators::getInstance();
@@ -428,7 +383,7 @@ void Reducer::variableRenaming(int node, set<std::string>& accumulator, unordere
             string variable  = operators.getVariableFromQuantifierAndVariable(information);
             if(accumulator.find(variable) != accumulator.end()) {
                 // we want then to rename it
-                substitution[variable] = getRandomFunctionOrConstantName();
+                substitution[variable] = getRandomTermName();
                 accumulator.insert(substitution[variable]);
                 wasSubstitution = true;
                 whichVariable   = variable;
@@ -442,6 +397,44 @@ void Reducer::variableRenaming(int node, set<std::string>& accumulator, unordere
     if(wasSubstitution) {
         substitution.erase(substitution.find(whichVariable));
     }
+}
+
+void Reducer::constantRenaming(int node, unordered_set<string> &variablesInQuantifiers, unordered_map<string, string> &substitution) {
+    Operators& operators = Operators::getInstance();
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            string variable  = operators.getVariableFromQuantifierAndVariable(information);
+            variablesInQuantifiers.insert(variable);
+        } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
+            auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
+            auto arguments = simplifiedLiteral->getArguments();
+            for (auto &argument : arguments) {
+                if (argument.index()) {
+                    throw logic_error("The current implementation for constantRenaming function "
+                                      "assumes that there are no functions in the formula");
+                }
+                auto term = get<0>(argument);
+                if (variablesInQuantifiers.find(term) == variablesInQuantifiers.end()) {
+                    // this is a free-variable
+                    if (allBoundVariables.find(term) != allBoundVariables.end()) {
+                        // this free-variable share a name with a bound variable
+                        if (substitution.find(term) == substitution.end()) {
+                            substitution[term] = getRandomTermName();
+                        }
+                    }
+                }
+            }
+            simplifiedLiteral->simpleSubstitution(substitution);
+        }
+    }
+    for(auto& neighbour : parseTree.graph[node]) { constantRenaming(neighbour, variablesInQuantifiers, substitution); }
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            string variable  = operators.getVariableFromQuantifierAndVariable(information);
+            variablesInQuantifiers.erase(variablesInQuantifiers.find(variable));
+        }
 }
 
 bool Reducer::skolemizationStep(int node,
@@ -459,9 +452,9 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             auto variable    = operators.getVariableFromQuantifierAndVariable(information);
             if(quantifier == operators.EQuantifier) {
                 if(variablesInUniversalQuantifiers.empty()) {
-                    skolem[variable] = getRandomFunctionOrConstantName();
+                    skolem[variable] = getRandomTermName();
                 } else {
-                    skolem[variable] = make_pair(getRandomFunctionOrConstantName(), variablesInUniversalQuantifiers);
+                    skolem[variable] = make_pair(getRandomTermName(), variablesInUniversalQuantifiers);
                 }
                 wasModified |= true;
                 wasEQuantifier = true;
@@ -492,20 +485,19 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
     return wasModified;
 }
 
-void Reducer::skolemization() {
-    set<std::string> variablesSoFar;
-    string violatingVariable;
-    if(!checkNonAmbiguousScope(parseTree.Root, variablesSoFar, &violatingVariable)) {
-        throw logic_error("the given formula has ambiguities in variable namings; "
-                          "the variable " +
-        violatingVariable + " apears multiple times in a chain of quantifiers");
-    }
-    if(!variablesSoFar.empty()) {
-        throw logic_error("something went wrong with checkNonAmbiguousScope function; content partially disposed");
-    }
-    // in order to disambiguate the formula, make the variables unique
+void Reducer::disambiguateFormula() {
+    unordered_set<std::string> variablesSoFar;
     unordered_map<string, string> simpleSubstitution;
     variableRenaming(parseTree.Root, variablesSoFar, simpleSubstitution);
+    allBoundVariables = variablesSoFar;
+    unordered_set<std::string> boundVariables;
+    simpleSubstitution.clear();
+    constantRenaming(parseTree.Root, boundVariables, simpleSubstitution);
+}
+
+void Reducer::skolemization() {
+    // in order to disambiguate the formula, make the variables unique
+    disambiguateFormula();
     vector<std::string> variablesInUniversalQuantifiers;
     unordered_map<string, variant<string, pair<string, vector<string>>>> skolem;
     while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, skolem)) {
@@ -513,33 +505,6 @@ void Reducer::skolemization() {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }
     }
-}
-
-unordered_set<string> Reducer::getAllVariables() {
-    unordered_set<string> variables;
-    Operators& operators = Operators::getInstance();
-    for(auto& information : parseTree.information) {
-        auto value = information.second;
-        if(value->getType() == EntityType::SIMPLIFIEDLiteral) {
-            // TODO: delete eventually
-            // auto simplifiedLiteral = value->getEntity<shared_ptr<Literal>>();
-            // auto arguments         = simplifiedLiteral->getArguments();
-            // for(auto& argument : arguments) {
-            //     if(argument.index() == 0) {
-            //        variables.insert(get<0>(argument));
-            //     }
-            // }
-            // here we do continue because we don't want to count the constants
-            continue;
-        } else if(value->getType() == EntityType::BOUNDVariable) {
-            auto boundVariable = value->getEntity<string>();
-            auto variable      = operators.getVariableFromQuantifierAndVariable(boundVariable);
-            variables.insert(variable);
-        } else if(information.first == EntityType::NORMALForms) {
-            throw logic_error("At this point we don't expect any NORMALForms in the ParseTree");
-        }
-    }
-    return variables;
 }
 
 void Reducer::removeUniversalQuantifiers() {
@@ -657,13 +622,12 @@ template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimp
         cerr << "after basic reduction : " << parseTree.getEulerTraversal() << endl;
         skolemization();
         cerr << "after skolemization : " << parseTree.getEulerTraversal() << endl;
-        auto allVariables = getAllVariables();
         std::vector<SimplifiedLiteral::arg> arguments;
-        arguments.reserve(allVariables.size());
-        for(auto& variable : allVariables) { arguments.emplace_back(variable); }
+        arguments.reserve(allBoundVariables.size());
+        for(auto& variable : allBoundVariables) { arguments.emplace_back(variable); }
         if(arguments.empty()) {
             // we'll introduce a constant here, in order to do not allow predicates of arity 0
-            arguments.emplace_back(getRandomFunctionOrConstantName());
+            arguments.emplace_back(getRandomTermName());
         }
         cerr << parseTree.getEulerTraversal() << endl;
         removeUniversalQuantifiers();

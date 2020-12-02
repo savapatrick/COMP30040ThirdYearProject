@@ -17,7 +17,8 @@ class ParseTree;
 class Reducer {
     private:
     ParseTree& parseTree;
-    std::unordered_set<std::string> reservedVariableNames;
+    std::unordered_set<std::string> allBoundVariables;
+    std::unordered_set<std::string> reservedTermNames;
     std::unordered_set<std::string> reservedPredicateNames;
 
     void disposeNode(int node);
@@ -48,9 +49,10 @@ class Reducer {
 
     bool pushNOTStep(int node);
 
-    bool checkNonAmbiguousScope(int node, std::set<std::string>& variablesInCurrentStack, std::string* result);
+    void variableRenaming(int node, std::unordered_set<std::string>& accumulator, std::unordered_map<std::string, std::string>& substitution);
+    void constantRenaming(int node, std::unordered_set<std::string> &variablesInQuantifiers, std::unordered_map<std::string, std::string> &substitution);
 
-    void variableRenaming(int node, std::set<std::string>& accumulator, std::unordered_map<std::string, std::string>& substitution);
+    void disambiguateFormula();
 
     bool skolemizationStep(int node,
     std::vector<std::string>& variablesInUniversalQuantifiers,
@@ -58,14 +60,12 @@ class Reducer {
 
     static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string& which);
 
-    std::string getRandomFunctionOrConstantName();
+    std::string getRandomTermName();
     std::string getRandomPredicateName();
 
     void basicReduce();
 
     void skolemization();
-
-    std::unordered_set<std::string> getAllVariables();
 
     void removeUniversalQuantifiers();
 
