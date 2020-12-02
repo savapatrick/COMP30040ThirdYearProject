@@ -4,6 +4,4 @@
 
 #include "clause_form.h"
 
-namespace utils {
-
-};
+namespace utils {};

@@ -4,6 +4,4 @@
 
 #include "term.h"
 
-namespace utils {
-
-};
+namespace utils {};

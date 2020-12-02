@@ -4,6 +4,4 @@
 
 #include "literal.h"
 
-namespace utils {
-
-};
+namespace utils {};

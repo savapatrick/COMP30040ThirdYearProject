@@ -50,7 +50,9 @@ class Reducer {
     bool pushNOTStep(int node);
 
     void variableRenaming(int node, std::unordered_set<std::string>& accumulator, std::unordered_map<std::string, std::string>& substitution);
-    void constantRenaming(int node, std::unordered_set<std::string> &variablesInQuantifiers, std::unordered_map<std::string, std::string> &substitution);
+    void constantRenaming(int node,
+    std::unordered_set<std::string>& variablesInQuantifiers,
+    std::unordered_map<std::string, std::string>& substitution);
 
     void disambiguateFormula();
 

@@ -5,8 +5,6 @@
 #ifndef PROJECT_CLAUSE_H
 #define PROJECT_CLAUSE_H
 
-namespace utils {
-
-};
+namespace utils {};
 
 #endif // PROJECT_CLAUSE_H

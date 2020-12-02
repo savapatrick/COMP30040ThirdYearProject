@@ -6,10 +6,10 @@
 #define PROJECT_TERM_H
 
 namespace utils {
-    class Term {
-        private:
-        public:
-    };
+class Term {
+    private:
+    public:
 };
+}; // namespace utils
 
 #endif // PROJECT_TERM_H

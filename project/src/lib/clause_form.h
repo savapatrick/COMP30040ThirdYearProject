@@ -6,13 +6,12 @@
 #define PROJECT_CLAUSE_FORM_H
 
 namespace utils {
-    class ClauseForm {
-        private:
-        public:
-        ClauseForm(std::vector<std::shared_ptr<SimplifiedLiteral>> SimplifiedClause, ){
-
-        }
-    };
+class ClauseForm {
+    private:
+    public:
+    ClauseForm(std::vector<std::shared_ptr<SimplifiedLiteral>> SimplifiedClause, ) {
+    }
 };
+}; // namespace utils
 
 #endif // PROJECT_CLAUSE_FORM_H

@@ -23,7 +23,7 @@ class RandomFactory {
     static std::string getRandomTermName(std::unordered_set<std::string>& reservedTermNames);
     static std::string getRandomPredicateName(std::unordered_set<std::string>& reservedPredicateNames);
 };
-}
+} // namespace utils
 
 
 #endif // PROJECT_RANDOM_FACTORY_H

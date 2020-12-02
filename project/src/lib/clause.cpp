@@ -4,6 +4,4 @@
 
 #include "clause.h"
 
-namespace utils {
-
-};
+namespace utils {};

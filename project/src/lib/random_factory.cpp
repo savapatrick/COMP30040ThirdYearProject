@@ -38,4 +38,4 @@ std::string RandomFactory::getRandomPredicateName(std::unordered_set<std::string
     reservedPredicateNames.insert(result);
     return result;
 }
-}
+} // namespace utils

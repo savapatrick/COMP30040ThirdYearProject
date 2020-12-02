@@ -5,8 +5,6 @@
 #ifndef PROJECT_LITERAL_H
 #define PROJECT_LITERAL_H
 
-namespace utils {
-
-};
+namespace utils {};
 
 #endif // PROJECT_LITERAL_H
