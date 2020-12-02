@@ -7,6 +7,7 @@
 
 #include "entity.h"
 #include "parse_tree.h"
+#include "clause_form.h"
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
@@ -19,6 +20,7 @@ class Reducer {
     ParseTree& parseTree;
     std::unordered_set<std::string> allBoundVariables;
     std::unordered_set<std::string> reservedTermNames;
+    std::unordered_set<std::string> reservedFunctionNames;
     std::unordered_set<std::string> reservedPredicateNames;
 
     void disposeNode(int node);
@@ -63,6 +65,7 @@ class Reducer {
     static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string& which);
 
     std::string getRandomTermName();
+    std::string getRandomFunctionName();
     std::string getRandomPredicateName();
 
     void basicReduce();
@@ -80,6 +83,7 @@ class Reducer {
     explicit Reducer(ParseTree& _parseTree);
 
     template <typename T> T getSimplifiedClauseForm();
+    std::shared_ptr<ClauseForm> getClauseForm();
 };
 }; // namespace utils
 

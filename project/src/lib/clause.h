@@ -5,6 +5,12 @@
 #ifndef PROJECT_CLAUSE_H
 #define PROJECT_CLAUSE_H
 
-namespace utils {};
+namespace utils {
+
+class Clause {
+    private:
+    public:
+};
+};
 
 #endif // PROJECT_CLAUSE_H

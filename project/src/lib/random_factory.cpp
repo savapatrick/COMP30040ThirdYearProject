@@ -7,7 +7,7 @@
 using namespace std;
 
 namespace utils {
-std::string RandomFactory::getRandomTermName(std::unordered_set<std::string>& reservedTermNames) {
+std::string RandomFactory::getRandomTermOrFunctionName(std::unordered_set<std::string>& reservedTermNames) {
     static std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
     const int sizeOfAlphabet    = 26;
     // TODO: consider whether we want the C++11 random generator
@@ -38,4 +38,5 @@ std::string RandomFactory::getRandomPredicateName(std::unordered_set<std::string
     reservedPredicateNames.insert(result);
     return result;
 }
+
 } // namespace utils

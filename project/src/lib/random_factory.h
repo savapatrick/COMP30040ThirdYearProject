@@ -20,7 +20,7 @@ class RandomFactory {
         return instance;
     }
 
-    static std::string getRandomTermName(std::unordered_set<std::string>& reservedTermNames);
+    static std::string getRandomTermOrFunctionName(std::unordered_set<std::string>& reservedTermNames);
     static std::string getRandomPredicateName(std::unordered_set<std::string>& reservedPredicateNames);
 };
 } // namespace utils

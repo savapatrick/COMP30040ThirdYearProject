@@ -14,6 +14,10 @@ using namespace std;
 namespace utils {
 
 Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
+    allBoundVariables.clear();
+    reservedTermNames.clear();
+    reservedFunctionNames.clear();
+    reservedPredicateNames.clear();
     Operators& operators = Operators::getInstance();
     for(auto& info : parseTree.information) {
         auto value = info.second;
@@ -46,7 +50,12 @@ Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
 
 std::string Reducer::getRandomTermName() {
     RandomFactory& randomFactory = RandomFactory::getInstance();
-    return randomFactory.getRandomTermName(reservedTermNames);
+    return randomFactory.getRandomTermOrFunctionName(reservedTermNames);
+}
+
+std::string Reducer::getRandomFunctionName() {
+    RandomFactory& randomFactory = RandomFactory::getInstance();
+    return randomFactory.getRandomTermOrFunctionName(reservedFunctionNames);
 }
 
 std::string Reducer::getRandomPredicateName() {
@@ -461,7 +470,7 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
                 if(variablesInUniversalQuantifiers.empty()) {
                     skolem[variable] = getRandomTermName();
                 } else {
-                    skolem[variable] = make_pair(getRandomTermName(), variablesInUniversalQuantifiers);
+                    skolem[variable] = make_pair(getRandomFunctionName(), variablesInUniversalQuantifiers);
                 }
                 wasModified |= true;
                 wasEQuantifier = true;
@@ -650,17 +659,28 @@ template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimp
 }
 
 template <> string Reducer::getSimplifiedClauseForm() {
-    std::vector<SimplifiedClauseForm::SimplifiedClause> clauseForm =
+    std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseForm =
     getSimplifiedClauseForm<std::vector<SimplifiedClauseForm::SimplifiedClause>>();
     string result = "{";
-    for(int ind = 0; ind < (int)clauseForm.size(); ++ind) {
-        auto clause = clauseForm[ind];
+    for(int ind = 0; ind < (int)simplifiedClauseForm.size(); ++ind) {
+        auto clause = simplifiedClauseForm[ind];
         result += SimplifiedClauseForm::getString(clause);
-        if(ind + 1 < (int)clauseForm.size()) {
+        if(ind + 1 < (int)simplifiedClauseForm.size()) {
             result += ", ";
         }
     }
     result += "}";
     return result;
 }
+
+std::shared_ptr<ClauseForm> Reducer::getClauseForm() {
+    std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseForm =
+    getSimplifiedClauseForm<std::vector<SimplifiedClauseForm::SimplifiedClause>>();
+    vector <string> constantNamesVector;
+    set_union(allBoundVariables.begin(), allBoundVariables.end(),
+    reservedTermNames.begin(), reservedTermNames.end(), back_inserter(constantNamesVector));
+    unordered_set<string> constantNames (constantNamesVector.begin(), constantNamesVector.end());
+    return make_shared<ClauseForm>(simplifiedClauseForm, reservedFunctionNames, allBoundVariables, constantNames);
+}
+
 } // namespace utils
