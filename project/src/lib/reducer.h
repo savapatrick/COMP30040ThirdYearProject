@@ -73,9 +73,8 @@ class Reducer {
 
     std::shared_ptr<SimplifiedClauseForm> unifyTwoNormalFormsOnOperator(const std::shared_ptr<SimplifiedClauseForm>& first,
     const std::shared_ptr<SimplifiedClauseForm>& second,
-    bool isAnd,
-    const std::vector<SimplifiedLiteral::arg>& arguments);
-    void unifyNormalForms(int node, const std::vector<SimplifiedLiteral::arg>& arguments);
+    bool isAnd);
+    void unifyNormalForms(int node);
 
     public:
     explicit Reducer(ParseTree& _parseTree);

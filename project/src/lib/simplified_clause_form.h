@@ -6,6 +6,7 @@
 #define PROJECT_SIMPLIFIED_CLAUSE_FORM_H
 
 #include "simplified_literal.h"
+#include <unordered_set>
 #include <memory>
 #include <string>
 #include <utility>
@@ -20,23 +21,30 @@ class SimplifiedClauseForm {
     private:
     friend class Reducer;
 
-    private:
     bool isEmpty;
-    std::vector<SimplifiedClause> simplifiedLiterals;
-
-    public:
-    [[nodiscard]] const std::vector<SimplifiedClause>& getSimplifiedClauseForm() const;
+    std::vector<SimplifiedClause> simplifiedClauseForm;
+    std::unordered_set<std::string> allArguments;
 
     public:
     SimplifiedClauseForm() : isEmpty(true) {
-        simplifiedLiterals.clear();
+        simplifiedClauseForm.clear();
+        allArguments.clear();
     }
     SimplifiedClauseForm(std::vector<SimplifiedClause> _simplifiedLiterals) {
         isEmpty            = _simplifiedLiterals.empty();
-        simplifiedLiterals = std::move(_simplifiedLiterals);
+        simplifiedClauseForm = std::move(_simplifiedLiterals);
+        for (auto &simplifiedClause : simplifiedClauseForm) {
+            for (auto &simplifiedLiteral : simplifiedClause) {
+                auto args = simplifiedLiteral->getAllVariablesAndConstants();
+                allArguments.insert(args.begin(), args.end());
+            }
+        }
     }
+
     [[nodiscard]] static std::string getString(const SimplifiedClause& clause);
     [[nodiscard]] std::string getString() const;
+    [[nodiscard]] std::unordered_set<std::string> getAllArguments() const;
+    [[nodiscard]] const std::vector<SimplifiedClause>& getSimplifiedClauseForm() const;
 };
 }; // namespace utils
 

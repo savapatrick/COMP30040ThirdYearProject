@@ -409,6 +409,7 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
         } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
             auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
             auto arguments         = simplifiedLiteral->getArguments();
+            vector <string> freeVariables;
             for(auto& argument : arguments) {
                 if(argument.index()) {
                     throw logic_error("The current implementation for constantRenaming function "
@@ -422,10 +423,15 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
                         if(substitution.find(term) == substitution.end()) {
                             substitution[term] = getRandomTermName();
                         }
+                        freeVariables.emplace_back(term);
                     }
                 }
             }
-            simplifiedLiteral->simpleSubstitution(substitution);
+            unordered_map <string, string> localSubstitution;
+            for (auto &freeVariable : freeVariables) {
+                localSubstitution[freeVariable] = substitution[freeVariable];
+            }
+            simplifiedLiteral->simpleSubstitution(localSubstitution);
         }
     }
     for(auto& neighbour : parseTree.graph[node]) { constantRenaming(neighbour, variablesInQuantifiers, substitution); }
@@ -522,13 +528,12 @@ void Reducer::removeUniversalQuantifiers() {
 
 shared_ptr<SimplifiedClauseForm> Reducer::unifyTwoNormalFormsOnOperator(const shared_ptr<SimplifiedClauseForm>& first,
 const shared_ptr<SimplifiedClauseForm>& second,
-bool isAnd,
-const std::vector<SimplifiedLiteral::arg>& arguments) {
+bool isAnd) {
     if(first->isEmpty) {
-        return make_shared<SimplifiedClauseForm>(second->simplifiedLiterals);
+        return make_shared<SimplifiedClauseForm>(second->simplifiedClauseForm);
     }
     if(second->isEmpty) {
-        return make_shared<SimplifiedClauseForm>(first->simplifiedLiterals);
+        return make_shared<SimplifiedClauseForm>(first->simplifiedClauseForm);
     }
     std::vector<SimplifiedClauseForm::SimplifiedClause> firstClauses(first->getSimplifiedClauseForm());
     std::vector<SimplifiedClauseForm::SimplifiedClause> secondClauses(second->getSimplifiedClauseForm());
@@ -543,6 +548,16 @@ const std::vector<SimplifiedLiteral::arg>& arguments) {
         firstClauses[0].insert(end(firstClauses[0]), begin(secondClauses[0]), end(secondClauses[0]));
         return make_shared<SimplifiedClauseForm>(firstClauses);
     }
+    // TODO: bear in mind that here we made the assumption that any free-variable in the
+    // initial formula is a constant
+    auto allArgumentsSecond = second->getAllArguments();
+    vector<SimplifiedLiteral::arg> arguments;
+    set_union(allBoundVariables.begin(), allBoundVariables.end(),
+    allArgumentsSecond.begin(), allArgumentsSecond.end(), back_inserter(arguments));
+    if(arguments.empty()) {
+        // we'll introduce a constant here, in order to do not allow predicates of arity 0
+        arguments.emplace_back(getRandomTermName());
+    }
     shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, arguments);
     shared_ptr<SimplifiedLiteral> newLiteralNegated = make_shared<SimplifiedLiteral>(true, fakePredicateName, arguments);
     for(auto& clause : firstClauses) { clause.push_back(newLiteral); }
@@ -551,11 +566,11 @@ const std::vector<SimplifiedLiteral::arg>& arguments) {
     return make_shared<SimplifiedClauseForm>(firstClauses);
 }
 
-void Reducer::unifyNormalForms(int node, const std::vector<SimplifiedLiteral::arg>& arguments) {
+void Reducer::unifyNormalForms(int node) {
     int cnt = 0;
     int whichNeighbour;
     for(auto& neighbour : parseTree.graph[node]) {
-        unifyNormalForms(neighbour, arguments);
+        unifyNormalForms(neighbour);
         if(parseTree.information.find(neighbour) != parseTree.information.end()) {
             cnt += 1;
             whichNeighbour = neighbour;
@@ -601,7 +616,7 @@ void Reducer::unifyNormalForms(int node, const std::vector<SimplifiedLiteral::ar
                 } else if(parseTree.information[neighbour]->getType() == EntityType::NORMALForms) {
                     parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms,
                     unifyTwoNormalFormsOnOperator(parseTree.information[node]->getEntity<shared_ptr<SimplifiedClauseForm>>(),
-                    parseTree.information[neighbour]->getEntity<shared_ptr<SimplifiedClauseForm>>(), isAnd, arguments));
+                    parseTree.information[neighbour]->getEntity<shared_ptr<SimplifiedClauseForm>>(), isAnd));
                 } else if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
                     isAnd = operators.isAnd(parseTree.information[neighbour]->getEntity<string>());
                 }
@@ -623,16 +638,9 @@ template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimp
         cerr << "after basic reduction : " << parseTree.getEulerTraversal() << endl;
         skolemization();
         cerr << "after skolemization : " << parseTree.getEulerTraversal() << endl;
-        std::vector<SimplifiedLiteral::arg> arguments;
-        arguments.reserve(allBoundVariables.size());
-        for(auto& variable : allBoundVariables) { arguments.emplace_back(variable); }
-        if(arguments.empty()) {
-            // we'll introduce a constant here, in order to do not allow predicates of arity 0
-            arguments.emplace_back(getRandomTermName());
-        }
         cerr << parseTree.getEulerTraversal() << endl;
         removeUniversalQuantifiers();
-        unifyNormalForms(parseTree.Root, arguments);
+        unifyNormalForms(parseTree.Root);
         clauseForm =
         parseTree.information[parseTree.Root]->getEntity<shared_ptr<SimplifiedClauseForm>>()->getSimplifiedClauseForm();
         executed = true;

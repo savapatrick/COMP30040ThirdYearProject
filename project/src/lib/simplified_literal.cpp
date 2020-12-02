@@ -101,4 +101,19 @@ void SimplifiedLiteral::simpleSubstitution(unordered_map<std::string, std::strin
         }
     }
 }
+std::unordered_set<std::string> SimplifiedLiteral::getAllVariablesAndConstants() const {
+    unordered_set<string> variablesAndConstants;
+    for (auto &argument : arguments) {
+        if (argument.index() == 0) {
+            variablesAndConstants.insert(get<0>(argument));
+        }
+        else {
+            auto args = get<1>(argument).second;
+            for (auto &arg : args) {
+                variablesAndConstants.insert(arg);
+            }
+        }
+    }
+    return variablesAndConstants;
+}
 }; // namespace utils

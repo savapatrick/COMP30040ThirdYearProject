@@ -9,7 +9,6 @@ using namespace std;
 
 namespace utils {
 
-
 std::string SimplifiedClauseForm::getString(const SimplifiedClause& clause) {
     Operators& operators = Operators::getInstance();
     string result;
@@ -26,9 +25,9 @@ std::string SimplifiedClauseForm::getString(const SimplifiedClause& clause) {
 std::string utils::SimplifiedClauseForm::getString() const {
     Operators& operators = Operators::getInstance();
     string result;
-    for(int ind = 0; ind < (int)simplifiedLiterals.size(); ++ind) {
-        result += getString(simplifiedLiterals[ind]);
-        if(ind + 1 < (int)simplifiedLiterals.size()) {
+    for(int ind = 0; ind < (int)simplifiedClauseForm.size(); ++ind) {
+        result += getString(simplifiedClauseForm[ind]);
+        if(ind + 1 < (int)simplifiedClauseForm.size()) {
             result += operators.AND;
         }
     }
@@ -36,7 +35,10 @@ std::string utils::SimplifiedClauseForm::getString() const {
 }
 
 const vector<SimplifiedClauseForm::SimplifiedClause>& SimplifiedClauseForm::getSimplifiedClauseForm() const {
-    return simplifiedLiterals;
+    return simplifiedClauseForm;
+}
+std::unordered_set<std::string> SimplifiedClauseForm::getAllArguments() const {
+    return allArguments;
 }
 
 }; // namespace utils

@@ -7,6 +7,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <variant>
 #include <vector>
@@ -40,6 +41,8 @@ class SimplifiedLiteral {
     [[nodiscard]] static std::string getArgumentString(const arg& argument);
 
     [[nodiscard]] std::string getString() const;
+
+    [[nodiscard]] std::unordered_set <std::string> getAllVariablesAndConstants() const;
 
     void negate();
 
