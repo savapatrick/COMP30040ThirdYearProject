@@ -5,7 +5,4 @@
 #include "basic_theorem_prover.h"
 
 namespace utils {
-bool BasicTheoremProver::isValid() {
-    return false;
-}
 }; // namespace utils

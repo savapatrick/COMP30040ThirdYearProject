@@ -13,9 +13,7 @@
 #include <vector>
 
 namespace utils {
-class DualHashASCII;
 class SimplifiedLiteral {
-    friend class DualHashASCII;
 
     public:
     typedef std::variant<std::string, std::pair<std::string, std::vector<std::string>>> arg;
