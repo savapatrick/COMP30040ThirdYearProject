@@ -4,4 +4,8 @@
 
 #include "clause_form.h"
 
-namespace utils {};
+using namespace std;
+namespace utils {
+std::vector<SimplifiedClauseForm::SimplifiedClause> ClauseForm::makeVariableNamesUniquePerClause(const std::shared_ptr<SimplifiedClauseForm>& simplifiedClauseForm) {
+}
+};

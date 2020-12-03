@@ -3,6 +3,7 @@
 //
 
 #include "reducer.h"
+#include "ad_hoc_templated.h"
 #include "operators.h"
 #include "random_factory.h"
 #include <algorithm>
@@ -558,9 +559,7 @@ bool isAnd) {
     // TODO: bear in mind that here we made the assumption that any free-variable in the
     // initial formula is a constant
     auto allArgumentsSecond = second->getAllArguments();
-    vector<SimplifiedLiteral::arg> arguments;
-    set_union(allBoundVariables.begin(), allBoundVariables.end(), allArgumentsSecond.begin(), allArgumentsSecond.end(),
-    back_inserter(arguments));
+    auto arguments = AdHocTemplated<SimplifiedLiteral::arg>::unionIterablesVector(allBoundVariables, allArgumentsSecond);
     if(arguments.empty()) {
         // we'll introduce a constant here, in order to do not allow predicates of arity 0
         arguments.emplace_back(getRandomTermName());
@@ -656,6 +655,12 @@ template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimp
     return clauseForm;
 }
 
+template <> std::shared_ptr<SimplifiedClauseForm> Reducer::getSimplifiedClauseForm() {
+    std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseForm =
+    getSimplifiedClauseForm<std::vector<SimplifiedClauseForm::SimplifiedClause>>();
+    return make_shared<SimplifiedClauseForm>(simplifiedClauseForm);
+}
+
 template <> string Reducer::getSimplifiedClauseForm() {
     std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseForm =
     getSimplifiedClauseForm<std::vector<SimplifiedClauseForm::SimplifiedClause>>();
@@ -672,13 +677,9 @@ template <> string Reducer::getSimplifiedClauseForm() {
 }
 
 std::shared_ptr<ClauseForm> Reducer::getClauseForm() {
-    std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseForm =
-    getSimplifiedClauseForm<std::vector<SimplifiedClauseForm::SimplifiedClause>>();
-    vector<string> constantNamesVector;
-    set_union(allBoundVariables.begin(), allBoundVariables.end(), reservedTermNames.begin(), reservedTermNames.end(),
-    back_inserter(constantNamesVector));
-    unordered_set<string> constantNames(constantNamesVector.begin(), constantNamesVector.end());
-    return make_shared<ClauseForm>(simplifiedClauseForm, reservedFunctionNames, allBoundVariables, constantNames);
+    auto simplifiedClauseForm = getSimplifiedClauseForm<std::shared_ptr<SimplifiedClauseForm>>();
+    return make_shared<ClauseForm>(simplifiedClauseForm, reservedFunctionNames, allBoundVariables,
+                                   AdHocTemplated<string>::unionIterablesUnorderedSet(allBoundVariables, reservedTermNames));
 }
 
 } // namespace utils

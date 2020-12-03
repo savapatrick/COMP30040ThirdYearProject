@@ -25,14 +25,17 @@ class SimplifiedClauseForm {
     std::vector<SimplifiedClause> simplifiedClauseForm;
     std::unordered_set<std::string> allArguments;
 
+
+    [[nodiscard]] std::unordered_set<std::string> unionAllArgumentsWith(const std::unordered_set<std::string>& terms) const;
+
     public:
     SimplifiedClauseForm() : isEmpty(true) {
         simplifiedClauseForm.clear();
         allArguments.clear();
     }
-    SimplifiedClauseForm(std::vector<SimplifiedClause> _simplifiedLiterals) {
-        isEmpty              = _simplifiedLiterals.empty();
-        simplifiedClauseForm = std::move(_simplifiedLiterals);
+    SimplifiedClauseForm(std::vector<SimplifiedClause> _simplifiedClauseForm) {
+        isEmpty              = _simplifiedClauseForm.empty();
+        simplifiedClauseForm = std::move(_simplifiedClauseForm);
         for(auto& simplifiedClause : simplifiedClauseForm) {
             for(auto& simplifiedLiteral : simplifiedClause) {
                 auto args = simplifiedLiteral->getAllVariablesAndConstants();
@@ -40,7 +43,8 @@ class SimplifiedClauseForm {
             }
         }
     }
-
+    std::unordered_set<std::string> makeVariableNamesUniquePerClause(const std::unordered_set<std::string>& variables);
+    std::shared_ptr<SimplifiedClauseForm> clone() const;
     [[nodiscard]] static std::string getString(const SimplifiedClause& clause);
     [[nodiscard]] std::string getString() const;
     [[nodiscard]] std::unordered_set<std::string> getAllArguments() const;

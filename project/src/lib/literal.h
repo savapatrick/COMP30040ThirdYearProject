@@ -5,6 +5,16 @@
 #ifndef PROJECT_LITERAL_H
 #define PROJECT_LITERAL_H
 
-namespace utils {};
+#include "term.h"
+
+namespace utils {
+
+class Literal {
+    private:
+    public:
+
+};
+
+};
 
 #endif // PROJECT_LITERAL_H

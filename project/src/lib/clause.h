@@ -5,11 +5,14 @@
 #ifndef PROJECT_CLAUSE_H
 #define PROJECT_CLAUSE_H
 
+#include "literal.h"
+
 namespace utils {
 
 class Clause {
     private:
     public:
+    Clause()
 };
 }; // namespace utils
 
