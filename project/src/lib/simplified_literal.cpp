@@ -99,6 +99,14 @@ void SimplifiedLiteral::simpleSubstitution(unordered_map<std::string, std::strin
                 argument = substitution[variable];
             }
         }
+        else {
+            auto& variables = get<1>(argument).second;
+            for (auto &variable: variables) {
+                if (substitution.find(variable) != substitution.end()) {
+                    variable = substitution[variable];
+                }
+            }
+        }
     }
 }
 std::unordered_set<std::string> SimplifiedLiteral::getAllVariablesAndConstants() const {

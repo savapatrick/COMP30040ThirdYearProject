@@ -2,6 +2,8 @@
 // Created by Patrick Sava on 11/18/2020.
 //
 
+#include "ad_hoc_templated.h"
+#include "random_factory.h"
 #include "simplified_clause_form.h"
 #include "operators.h"
 #include <algorithm>
@@ -55,27 +57,37 @@ std::shared_ptr<SimplifiedClauseForm> SimplifiedClauseForm::clone() const {
     }
     return make_shared<SimplifiedClauseForm>(simplifiedClauseFormCopy);
 }
-std::unordered_set<std::string> SimplifiedClauseForm::unionAllArgumentsWith(const unordered_set<std::string>& terms) const {
-    vector <std::string> resultVector;
-    set_union(allArguments.begin(), allArguments.end(), terms.begin(), terms.end(),
-    back_inserter(resultVector));
-    unordered_set<std::string> result(resultVector.begin(), resultVector.end());
-    return result;
-}
+
 unordered_set<std::string> SimplifiedClauseForm::makeVariableNamesUniquePerClause(const unordered_set<std::string>& variables) {
     unordered_set<string> soFar;
     for (auto &simplifiedClause : simplifiedClauseForm) {
         unordered_map<string, string> localSubstitution;
+        vector <string> allVarsForClause;
         for (auto &simplifiedLiteral : simplifiedClause) {
             auto args = simplifiedLiteral -> getAllVariablesAndConstants();
-            auto vars = unionAllArgumentsWith()
-            for (auto &arg : args) {
-                if (soFar.find(arg) != soFar.end()) {
-
+            auto vars = AdHocTemplated<std::string>::unionIterablesVector(args, variables);
+            for (auto &var : vars) {
+                if (soFar.find(var) != soFar.end()) {
+                    if (localSubstitution.find(var) == localSubstitution.end()) {
+                        localSubstitution[var] = RandomFactory::getRandomTermOrFunctionName(allArguments);
+                    }
+                }
+                else {
+                    allVarsForClause.push_back(var);
                 }
             }
         }
+        for (auto &simplifiedLiteral : simplifiedClause) {
+            simplifiedLiteral->simpleSubstitution(localSubstitution);
+        }
+        for (auto &keyValue : localSubstitution) {
+            allVarsForClause.push_back(keyValue.second);
+        }
+        for (auto &variable : allVarsForClause) {
+            soFar.insert(variable);
+        }
     }
+    return soFar;
 }
 
 }; // namespace utils

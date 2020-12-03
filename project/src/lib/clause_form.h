@@ -15,7 +15,7 @@ class ClauseForm {
     std::unordered_set<std::string> allFunctionNames; // to do not be used
     std::unordered_set<std::string> allVariableNames;
     std::unordered_set<std::string> allConstantNames;
-    std::vector<SimplifiedClauseForm::SimplifiedClause> makeVariableNamesUniquePerClause(const std::shared_ptr<SimplifiedClauseForm>& simplifiedClauseForm);
+
     public:
     ClauseForm(const std::shared_ptr<SimplifiedClauseForm>& simplifiedClauseForm,
     const std::unordered_set<std::string>& functionNames,
@@ -25,6 +25,12 @@ class ClauseForm {
         allVariableNames = variableNames;
         allConstantNames = constantNames;
         auto deepCopy = simplifiedClauseForm->clone();
+        allVariableNames = deepCopy->makeVariableNamesUniquePerClause(allVariableNames);
+        auto simplifiedClauseFormDeepCopy = deepCopy->getSimplifiedClauseForm();
+        clauseForm.reserve(simplifiedClauseFormDeepCopy.size());
+        for (auto &simplifiedClause : simplifiedClauseFormDeepCopy) {
+            clauseForm.push_back(std::make_shared<Clause>(simplifiedClause, variableNames, constantNames));
+        }
     }
 };
 }; // namespace utils

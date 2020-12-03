@@ -25,9 +25,6 @@ class SimplifiedClauseForm {
     std::vector<SimplifiedClause> simplifiedClauseForm;
     std::unordered_set<std::string> allArguments;
 
-
-    [[nodiscard]] std::unordered_set<std::string> unionAllArgumentsWith(const std::unordered_set<std::string>& terms) const;
-
     public:
     SimplifiedClauseForm() : isEmpty(true) {
         simplifiedClauseForm.clear();

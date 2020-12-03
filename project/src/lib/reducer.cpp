@@ -50,18 +50,15 @@ Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
 }
 
 std::string Reducer::getRandomTermName() {
-    RandomFactory& randomFactory = RandomFactory::getInstance();
-    return randomFactory.getRandomTermOrFunctionName(reservedTermNames);
+    return RandomFactory::getRandomTermOrFunctionName(reservedTermNames);
 }
 
 std::string Reducer::getRandomFunctionName() {
-    RandomFactory& randomFactory = RandomFactory::getInstance();
-    return randomFactory.getRandomTermOrFunctionName(reservedFunctionNames);
+    return RandomFactory::getRandomTermOrFunctionName(reservedFunctionNames);
 }
 
 std::string Reducer::getRandomPredicateName() {
-    RandomFactory& randomFactory = RandomFactory::getInstance();
-    return randomFactory.getRandomPredicateName(reservedPredicateNames);
+    return RandomFactory::getRandomPredicateName(reservedPredicateNames);
 }
 
 void Reducer::disposeNode(int node) {

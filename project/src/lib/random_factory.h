@@ -10,15 +10,7 @@
 namespace utils {
 class RandomFactory {
     private:
-    RandomFactory(){};
-    RandomFactory(RandomFactory const&);
-    void operator=(RandomFactory const&);
-
     public:
-    static RandomFactory& getInstance() {
-        static RandomFactory instance;
-        return instance;
-    }
 
     static std::string getRandomTermOrFunctionName(std::unordered_set<std::string>& reservedTermNames);
     static std::string getRandomPredicateName(std::unordered_set<std::string>& reservedPredicateNames);
