@@ -2,10 +2,10 @@
 // Created by Patrick Sava on 11/18/2020.
 //
 
-#include "ad_hoc_templated.h"
-#include "random_factory.h"
 #include "simplified_clause_form.h"
+#include "ad_hoc_templated.h"
 #include "operators.h"
+#include "random_factory.h"
 #include <algorithm>
 
 using namespace std;
@@ -46,12 +46,12 @@ std::unordered_set<std::string> SimplifiedClauseForm::getAllArguments() const {
 std::shared_ptr<SimplifiedClauseForm> SimplifiedClauseForm::clone() const {
     std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseFormCopy;
     simplifiedClauseFormCopy.reserve(simplifiedClauseForm.size());
-    for (auto &simplifiedClause : simplifiedClauseForm) {
+    for(auto& simplifiedClause : simplifiedClauseForm) {
         SimplifiedClauseForm::SimplifiedClause simplifiedClauseCopy;
         simplifiedClauseCopy.reserve(simplifiedClause.size());
-        for (auto &simplifiedLiteral : simplifiedClause) {
+        for(auto& simplifiedLiteral : simplifiedClause) {
             simplifiedClauseCopy.push_back(make_shared<SimplifiedLiteral>(simplifiedLiteral->getIsNegated(),
-                                                                          simplifiedLiteral->getPredicateName(), simplifiedLiteral->getArguments()));
+            simplifiedLiteral->getPredicateName(), simplifiedLiteral->getArguments()));
         }
         simplifiedClauseFormCopy.push_back(simplifiedClauseCopy);
     }
@@ -60,32 +60,25 @@ std::shared_ptr<SimplifiedClauseForm> SimplifiedClauseForm::clone() const {
 
 unordered_set<std::string> SimplifiedClauseForm::makeVariableNamesUniquePerClause(const unordered_set<std::string>& variables) {
     unordered_set<string> soFar;
-    for (auto &simplifiedClause : simplifiedClauseForm) {
+    for(auto& simplifiedClause : simplifiedClauseForm) {
         unordered_map<string, string> localSubstitution;
-        vector <string> allVarsForClause;
-        for (auto &simplifiedLiteral : simplifiedClause) {
-            auto args = simplifiedLiteral -> getAllVariablesAndConstants();
+        vector<string> allVarsForClause;
+        for(auto& simplifiedLiteral : simplifiedClause) {
+            auto args = simplifiedLiteral->getAllVariablesAndConstants();
             auto vars = AdHocTemplated<std::string>::unionIterablesVector(args, variables);
-            for (auto &var : vars) {
-                if (soFar.find(var) != soFar.end()) {
-                    if (localSubstitution.find(var) == localSubstitution.end()) {
+            for(auto& var : vars) {
+                if(soFar.find(var) != soFar.end()) {
+                    if(localSubstitution.find(var) == localSubstitution.end()) {
                         localSubstitution[var] = RandomFactory::getRandomTermOrFunctionName(allArguments);
                     }
-                }
-                else {
+                } else {
                     allVarsForClause.push_back(var);
                 }
             }
         }
-        for (auto &simplifiedLiteral : simplifiedClause) {
-            simplifiedLiteral->simpleSubstitution(localSubstitution);
-        }
-        for (auto &keyValue : localSubstitution) {
-            allVarsForClause.push_back(keyValue.second);
-        }
-        for (auto &variable : allVarsForClause) {
-            soFar.insert(variable);
-        }
+        for(auto& simplifiedLiteral : simplifiedClause) { simplifiedLiteral->simpleSubstitution(localSubstitution); }
+        for(auto& keyValue : localSubstitution) { allVarsForClause.push_back(keyValue.second); }
+        for(auto& variable : allVarsForClause) { soFar.insert(variable); }
     }
     return soFar;
 }

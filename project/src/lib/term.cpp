@@ -9,4 +9,4 @@ Term::Term(const std::string& term) {
 }
 Term::Term(const std::pair<std::string, std::vector<std::string>>& function) {
 }
-};
+}; // namespace utils

@@ -5,6 +5,4 @@
 #include "ad_hoc_templated.h"
 
 using namespace std;
-namespace utils {
-
-}
+namespace utils {}

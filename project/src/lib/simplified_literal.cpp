@@ -98,11 +98,10 @@ void SimplifiedLiteral::simpleSubstitution(unordered_map<std::string, std::strin
             if(substitution.find(variable) != substitution.end()) {
                 argument = substitution[variable];
             }
-        }
-        else {
+        } else {
             auto& variables = get<1>(argument).second;
-            for (auto &variable: variables) {
-                if (substitution.find(variable) != substitution.end()) {
+            for(auto& variable : variables) {
+                if(substitution.find(variable) != substitution.end()) {
                     variable = substitution[variable];
                 }
             }

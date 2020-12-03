@@ -6,6 +6,7 @@
 
 using namespace std;
 namespace utils {
-std::vector<SimplifiedClauseForm::SimplifiedClause> ClauseForm::makeVariableNamesUniquePerClause(const std::shared_ptr<SimplifiedClauseForm>& simplifiedClauseForm) {
+std::vector<SimplifiedClauseForm::SimplifiedClause> ClauseForm::makeVariableNamesUniquePerClause(
+const std::shared_ptr<SimplifiedClauseForm>& simplifiedClauseForm) {
 }
-};
+}; // namespace utils

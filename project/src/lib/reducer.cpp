@@ -676,7 +676,7 @@ template <> string Reducer::getSimplifiedClauseForm() {
 std::shared_ptr<ClauseForm> Reducer::getClauseForm() {
     auto simplifiedClauseForm = getSimplifiedClauseForm<std::shared_ptr<SimplifiedClauseForm>>();
     return make_shared<ClauseForm>(simplifiedClauseForm, reservedFunctionNames, allBoundVariables,
-                                   AdHocTemplated<string>::unionIterablesUnorderedSet(allBoundVariables, reservedTermNames));
+    AdHocTemplated<string>::unionIterablesUnorderedSet(allBoundVariables, reservedTermNames));
 }
 
 } // namespace utils

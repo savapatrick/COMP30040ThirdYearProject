@@ -15,25 +15,25 @@ class Literal {
     private:
     bool isNegated;
     std::string predicateName;
-    std::vector <std::shared_ptr<Term>> terms;
+    std::vector<std::shared_ptr<Term>> terms;
+
     public:
     Literal(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral,
-            const std::unordered_set<std::string>& variableNames,
-            const std::unordered_set<std::string>& constantNames) : isNegated(simplifiedLiteral->getIsNegated()),
-    predicateName(simplifiedLiteral->getPredicateName()) {
+    const std::unordered_set<std::string>& variableNames,
+    const std::unordered_set<std::string>& constantNames)
+    : isNegated(simplifiedLiteral->getIsNegated()), predicateName(simplifiedLiteral->getPredicateName()) {
         terms.reserve(simplifiedLiteral->getArguments().size());
         auto arguments = simplifiedLiteral->getArguments();
-        for (auto &arg : arguments) {
+        for(auto& arg : arguments) {
             if(arg.index()) {
                 terms.push_back(std::make_shared<Term>(std::get<1>(arg), variableNames, constantNames));
-            }
-            else {
+            } else {
                 terms.push_back(std::make_shared<Term>(std::get<0>(arg), variableNames, constantNames));
             }
         }
     }
 };
 
-};
+}; // namespace utils
 
 #endif // PROJECT_LITERAL_H
