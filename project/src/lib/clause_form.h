@@ -9,8 +9,10 @@
 #include "simplified_clause_form.h"
 
 namespace utils {
+class BasicTheoremProver;
 class ClauseForm {
     private:
+    friend class BasicTheoremProver;
     std::vector<std::shared_ptr<Clause>> clauseForm;
     std::unordered_set<std::string> allFunctionNames; // to do not be used
     std::unordered_set<std::string> allVariableNames;
@@ -32,6 +34,7 @@ class ClauseForm {
             clauseForm.push_back(std::make_shared<Clause>(simplifiedClause, variableNames, constantNames));
         }
     }
+    void makeVariableNamesUniquePerClause();
 };
 }; // namespace utils
 

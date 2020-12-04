@@ -16,16 +16,39 @@ template <class T, class V = std::string> class AdHocTemplated {
     template <template <class, typename...> class P, template <class, typename...> class Q>
     static std::vector<T> unionIterablesVector(const P<V>& first, const Q<V>& second) {
         std::vector<T> resultVector;
-        set_union(first.begin(), first.end(), second.begin(), second.end(), back_inserter(resultVector));
+        std::unordered_set<T> partialResult;
+        for (auto &elem : first) {
+            partialResult.insert(elem);
+        }
+        for (auto &elem : second) {
+            partialResult.insert(elem);
+        }
+        for (auto &elem: partialResult) {
+            resultVector.push_back(elem);
+        }
         return resultVector;
     }
 
     template <template <class, typename...> class P, template <class, typename...> class Q>
     static std::unordered_set<T> unionIterablesUnorderedSet(const P<V>& first, const Q<V>& second) {
-        std::vector<T> resultVector;
-        set_union(first.begin(), first.end(), second.begin(), second.end(), back_inserter(resultVector));
-        std::unordered_set<T> result(resultVector.begin(), resultVector.end());
+        std::unordered_set<T> result;
+        for (auto &elem : first) {
+            result.insert(elem);
+        }
+        for (auto &elem : second) {
+            result.insert(elem);
+        }
         return result;
+    }
+
+    template <template <class, typename...> class P, template <class, typename...> class Q, template <class, typename...> class S>
+    static void unionIterablesUnorderedSetInPlace(const P<V>& first, const Q<V>& second, S<T>& result) {
+        for (auto &elem : first) {
+            result.insert(elem);
+        }
+        for (auto &elem : second) {
+            result.insert(elem);
+        }
     }
 };
 

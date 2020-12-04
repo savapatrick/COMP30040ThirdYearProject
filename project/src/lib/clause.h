@@ -7,11 +7,13 @@
 
 #include "literal.h"
 #include "simplified_clause_form.h"
+#include <map>
 
 namespace utils {
-
-class Clause {
+class BasicTheoremProver;
+class Clause : public std::enable_shared_from_this<Clause>{
     private:
+    friend class BasicTheoremProver;
     std::vector<std::shared_ptr<Literal>> clause;
 
     public:
@@ -23,6 +25,18 @@ class Clause {
             clause.push_back(std::make_shared<Literal>(simplifiedLiteral, variableNames, constantNames));
         }
     }
+    Clause(const std::shared_ptr<Clause>& other) {
+        clause.reserve(other->clause.size());
+        auto &otherClauses = other->clause;
+        for (auto &otherClause : otherClauses) {
+            clause.push_back(otherClause->createDeepCopy());
+        }
+    }
+    std::shared_ptr<Clause> createDeepCopy();
+    std::unordered_set<std::string> getAllVariables();
+    void applySubstitution(const std::pair<std::string, std::string>& mapping);
+    std::map<std::pair<std::string, bool>, int> getAllLiterals();
+    std::string getString() const;
 };
 }; // namespace utils
 

@@ -11,16 +11,13 @@
 #include <set>
 
 namespace utils {
-
-class Literal {
+class BasicTheoremProver;
+class Literal : public std::enable_shared_from_this<Literal> {
     private:
-    static constexpr int CacheLIMIT() {
-        return 200;
-    };
+    friend class BasicTheoremProver;
     bool isNegated;
     std::string predicateName;
     std::vector<std::shared_ptr<Term>> terms;
-    std::set<std::shared_ptr<Literal>> wontWork;
 
     public:
     Literal(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral,
@@ -37,9 +34,21 @@ class Literal {
             }
         }
     }
+    Literal(const std::shared_ptr<Literal> &other) : isNegated(other->isNegated), predicateName(other->predicateName) {
+        terms.reserve(other->terms.size());
+        auto& otherTerms = other->terms;
+        for (auto &otherTerm : otherTerms) {
+            terms.push_back(otherTerm->createDeepCopy());
+        }
+    }
 
     bool equalsWithoutSign(const std::shared_ptr<Literal>& other);
-    bool unify(const std::shared_ptr<Literal>& other);
+    std::variant<bool, std::pair <std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Literal>& other);
+    std::shared_ptr<Literal> createDeepCopy();
+    std::unordered_set<std::string> getAllVariables();
+    void applySubstitution(const std::pair <std::string, std::string> &mapping);
+    std::pair<std::string, bool> getLiteral();
+    std::string getString() const;
 };
 
 }; // namespace utils

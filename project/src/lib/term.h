@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
+#include <variant>
 #include <vector>
 
 namespace utils {
@@ -19,16 +20,15 @@ class Term : public std::enable_shared_from_this<Term> {
     std::string termName; // function name, constant name, variable name
     TermType termType;
     std::vector<std::shared_ptr<Term>> arguments;
-    static std::pair<std::shared_ptr<Term>, std::shared_ptr<Term>> applySubstitution(
-    const std::unordered_map<std::string, std::shared_ptr<Term>>& result,
-    const std::shared_ptr<Term>& first,
-    const std::shared_ptr<Term>& second) ;
     bool containsTerm(const std::string& name);
-    bool findSubstitution(std::unordered_map<std::string, std::shared_ptr<Term>>& result,
+    std::variant<bool, std::pair <std::string, std::shared_ptr<Term>>>  findPartialSubstitution(
                           const std::shared_ptr<Term>& first,
                           const std::shared_ptr<Term>& second) const;
 
     public:
+    explicit Term(std::string  newVariable) : termName(std::move(newVariable)), termType(VARIABLE){
+        arguments.clear();
+    }
     explicit Term(const std::string& term,
     const std::unordered_set<std::string>& variableNames,
     const std::unordered_set<std::string>& constantNames)
@@ -59,8 +59,10 @@ class Term : public std::enable_shared_from_this<Term> {
     }
     std::shared_ptr<Term> createDeepCopy();
     [[nodiscard]] bool equals(const std::shared_ptr<Term>& other) const;
-    bool attemptToUnify(std::unordered_map<std::string, std::shared_ptr<Term>>& result, const std::shared_ptr<Term>& other);
-    void applySubstitution(std::unordered_map<std::string, std::shared_ptr<Term>>& result);
+    std::variant<bool, std::pair <std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Term>& other);
+    void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& substitution);
+    std::unordered_set<std::string> getAllVariables();
+    std::string getString() const;
 };
 }; // namespace utils
 
