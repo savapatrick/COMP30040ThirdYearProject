@@ -4,5 +4,4 @@
 
 #include "basic_theorem_prover.h"
 
-namespace utils {
-}; // namespace utils
+namespace utils {}; // namespace utils

@@ -16,7 +16,6 @@ class TheoremProver {
     private:
     protected:
     public:
-
 };
 } // namespace utils
 

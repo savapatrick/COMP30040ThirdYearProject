@@ -13,7 +13,6 @@ namespace utils {
 class BasicTheoremProver : public TheoremProver {
     private:
     public:
-
 };
 } // namespace utils
 

@@ -5,6 +5,4 @@
 #include "theorem_prover.h"
 
 using namespace std;
-namespace utils {
-
-}; // namespace utils
+namespace utils {}; // namespace utils

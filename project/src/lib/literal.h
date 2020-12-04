@@ -8,14 +8,19 @@
 #include "simplified_literal.h"
 #include "term.h"
 #include <memory>
+#include <set>
 
 namespace utils {
 
 class Literal {
     private:
+    static constexpr int CacheLIMIT() {
+        return 200;
+    };
     bool isNegated;
     std::string predicateName;
     std::vector<std::shared_ptr<Term>> terms;
+    std::set<std::shared_ptr<Literal>> wontWork;
 
     public:
     Literal(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral,
@@ -32,6 +37,9 @@ class Literal {
             }
         }
     }
+
+    bool equalsWithoutSign(const std::shared_ptr<Literal>& other);
+    bool unify(const std::shared_ptr<Literal>& other);
 };
 
 }; // namespace utils
