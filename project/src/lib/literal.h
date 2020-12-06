@@ -34,19 +34,17 @@ class Literal : public std::enable_shared_from_this<Literal> {
             }
         }
     }
-    Literal(const std::shared_ptr<Literal> &other) : isNegated(other->isNegated), predicateName(other->predicateName) {
+    Literal(const std::shared_ptr<Literal>& other) : isNegated(other->isNegated), predicateName(other->predicateName) {
         terms.reserve(other->terms.size());
         auto& otherTerms = other->terms;
-        for (auto &otherTerm : otherTerms) {
-            terms.push_back(otherTerm->createDeepCopy());
-        }
+        for(auto& otherTerm : otherTerms) { terms.push_back(otherTerm->createDeepCopy()); }
     }
 
     bool equalsWithoutSign(const std::shared_ptr<Literal>& other);
-    std::variant<bool, std::pair <std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Literal>& other);
+    std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Literal>& other);
     std::shared_ptr<Literal> createDeepCopy();
     std::unordered_set<std::string> getAllVariables();
-    void applySubstitution(const std::pair <std::string, std::shared_ptr<Term>> &mapping);
+    void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     std::pair<std::string, bool> getLiteral();
     std::string getString() const;
 };

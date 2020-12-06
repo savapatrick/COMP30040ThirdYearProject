@@ -12,74 +12,70 @@ namespace utils {
 
 bool BasicTheoremProver::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) {
     auto clauseLiterals = clause->getAllLiterals();
-    bool ok = false;
-    for (auto &keyValue : clauseLiterals) {
-        if (keyValue.second > 1 or clauseLiterals.find({keyValue.first.first, 1 - keyValue.first.second}) != clauseLiterals.end()) {
+    bool ok             = false;
+    for(auto& keyValue : clauseLiterals) {
+        if(keyValue.second > 1 or
+        clauseLiterals.find({ keyValue.first.first, 1 - keyValue.first.second }) != clauseLiterals.end()) {
             ok = true;
             break;
         }
     }
-    if (!ok) {
+    if(!ok) {
         return false;
     }
-    map <pair<int, int>, bool> blackListed;
+    map<pair<int, int>, bool> blackListed;
     bool unifiedAtLeastOnce = false;
     bool found;
-    do{
-        pair <int, int> indexes;
+    do {
+        pair<int, int> indexes;
         found = false;
-        for(int index = 0; index < (int)clause->clause.size(); ++ index) {
-            for (int index2 = index + 1; index2 < (int)clause->clause.size(); ++ index2) {
-                if (clause->clause[index]->predicateName == clause->clause[index2]->predicateName) {
-                    indexes = {index, index2};
-                    if (blackListed.find(indexes) != blackListed.end()) {
+        for(int index = 0; index < (int)clause->clause.size(); ++index) {
+            for(int index2 = index + 1; index2 < (int)clause->clause.size(); ++index2) {
+                if(clause->clause[index]->predicateName == clause->clause[index2]->predicateName) {
+                    indexes = { index, index2 };
+                    if(blackListed.find(indexes) != blackListed.end()) {
                         continue;
                     }
                     found = true;
                 }
             }
         }
-        if (found) {
+        if(found) {
             bool unified;
             auto clauseDeepCopy = clause->createDeepCopy();
             do {
-                auto result = clauseDeepCopy->clause[indexes.first]->augmentUnification(
-                clauseDeepCopy->clause[indexes.second]
-                );
-                if (result.index() == 0) {
-                    if (get<0>(result)) {
+                auto result = clauseDeepCopy->clause[indexes.first]->augmentUnification(clauseDeepCopy->clause[indexes.second]);
+                if(result.index() == 0) {
+                    if(get<0>(result)) {
                         unified = true;
                         break;
-                    }
-                    else {
+                    } else {
                         unified = false;
                         break;
                     }
-                }
-                else {
+                } else {
                     clauseDeepCopy->applySubstitution(get<1>(result));
                 }
-            }while(true);
-            if (unified) {
-                outputStream << "clause " << clause->getString() << " is transformed into " +
-                clauseDeepCopy->getString() << " because literals " + clauseDeepCopy->clause[indexes.first]->getString() +
-                " and " + clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
-                clause = clauseDeepCopy;
+            } while(true);
+            if(unified) {
+                outputStream << "clause " << clause->getString() << " is transformed into " + clauseDeepCopy->getString()
+                             << " because literals " + clauseDeepCopy->clause[indexes.first]->getString() + " and " +
+                clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
+                clause             = clauseDeepCopy;
                 unifiedAtLeastOnce = true;
-            }
-            else {
+            } else {
                 blackListed[indexes] = true;
             }
         }
-    }while(found);
+    } while(found);
     return unifiedAtLeastOnce;
 }
 bool BasicTheoremProver::isTautology(std::shared_ptr<Clause>& clause) {
     unordered_map<string, vector<shared_ptr<Literal>>> literals;
-    for (auto &currentLiteral : clause->clause) {
-        for (auto &literal : literals[currentLiteral->predicateName]) {
-            if (currentLiteral->equalsWithoutSign(literal)) {
-                if (currentLiteral->isNegated != literal->isNegated) {
+    for(auto& currentLiteral : clause->clause) {
+        for(auto& literal : literals[currentLiteral->predicateName]) {
+            if(currentLiteral->equalsWithoutSign(literal)) {
+                if(currentLiteral->isNegated != literal->isNegated) {
                     return true;
                 }
             }
@@ -90,16 +86,12 @@ bool BasicTheoremProver::isTautology(std::shared_ptr<Clause>& clause) {
 }
 bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
     unordered_map<string, shared_ptr<Literal>> literals;
-    for (auto &literal : clause->clause) {
-        literals[literal->getString()] = literal;
-    }
+    for(auto& literal : clause->clause) { literals[literal->getString()] = literal; }
     outputStream << "removing duplicates from clause " + clause->getString() << "\n";
-    if (literals.size() != clause->clause.size()) {
+    if(literals.size() != clause->clause.size()) {
         clause->clause.clear();
         clause->clause.reserve(literals.size());
-        for (auto &keyValue : literals) {
-            clause->clause.emplace_back(keyValue.second);
-        }
+        for(auto& keyValue : literals) { clause->clause.emplace_back(keyValue.second); }
         outputStream << "it then becomes " << clause->getString() << "\n";
         return true;
     }
@@ -109,49 +101,50 @@ bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
 bool BasicTheoremProver::factoringStep() {
     bool changed = false;
     std::vector<std::shared_ptr<Clause>> newClauseForm;
-    for (auto &clause : clauseForm->clauseForm) {
+    for(auto& clause : clauseForm->clauseForm) {
         changed |= removeDuplicates(clause);
         newClauseForm.push_back(clause);
-        if (tryToUnifyTwoLiterals(clause)) {
-            if (isTautology(clause)) {
+        if(tryToUnifyTwoLiterals(clause)) {
+            if(isTautology(clause)) {
                 outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
                 newClauseForm.pop_back();
                 changed = true;
             }
         }
     }
-    if (changed) {
+    if(changed) {
         clauseForm->clauseForm = newClauseForm;
     }
-    if (clauseForm->clauseForm.empty()) {
+    if(clauseForm->clauseForm.empty()) {
         return true;
     }
     return false;
 }
 
-std::pair<bool, std::shared_ptr<Clause>> BasicTheoremProver::attemptToUnify(std::shared_ptr<Clause>& first, std::shared_ptr<Clause>& second) {
-    auto literalsFirst = first->getAllLiterals();
+std::pair<bool, std::shared_ptr<Clause>>
+BasicTheoremProver::attemptToUnify(std::shared_ptr<Clause>& first, std::shared_ptr<Clause>& second) {
+    auto literalsFirst  = first->getAllLiterals();
     auto literalsSecond = second->getAllLiterals();
-    bool ok = false;
-    for (auto &keyValue : literalsFirst) {
-        if (literalsSecond.find({keyValue.first.first, 1 - keyValue.first.second}) != literalsSecond.end()) {
+    bool ok             = false;
+    for(auto& keyValue : literalsFirst) {
+        if(literalsSecond.find({ keyValue.first.first, 1 - keyValue.first.second }) != literalsSecond.end()) {
             ok = true;
         }
     }
-    if (!ok) {
-        return {false, shared_ptr<Clause>(nullptr)};
+    if(!ok) {
+        return { false, shared_ptr<Clause>(nullptr) };
     }
     map<pair<int, int>, bool> blackListed;
     bool found;
-    do{
+    do {
         found = false;
         pair<int, int> indexes;
-        for (int index = 0; index < (int)first->clause.size(); ++ index) {
-            for (int index2 = 0; index2 < (int)second->clause.size(); ++ index2) {
-                if (first->clause[index]->isNegated != second->clause[index2]->isNegated) {
-                    if (first->clause[index]->predicateName == second->clause[index2]->predicateName) {
-                        indexes = {index, index2};
-                        if (blackListed.find(indexes) != blackListed.end()) {
+        for(int index = 0; index < (int)first->clause.size(); ++index) {
+            for(int index2 = 0; index2 < (int)second->clause.size(); ++index2) {
+                if(first->clause[index]->isNegated != second->clause[index2]->isNegated) {
+                    if(first->clause[index]->predicateName == second->clause[index2]->predicateName) {
+                        indexes = { index, index2 };
+                        if(blackListed.find(indexes) != blackListed.end()) {
                             continue;
                         }
                         found = true;
@@ -159,47 +152,40 @@ std::pair<bool, std::shared_ptr<Clause>> BasicTheoremProver::attemptToUnify(std:
                 }
             }
         }
-        if (found) {
+        if(found) {
             bool unified;
-            auto firstDeepCopy = first->createDeepCopy();
+            auto firstDeepCopy  = first->createDeepCopy();
             auto secondDeepCopy = second->createDeepCopy();
             do {
-                auto result = firstDeepCopy->clause[indexes.first]->augmentUnification(
-                secondDeepCopy->clause[indexes.second]
-                );
-                if (result.index() == 0) {
-                    if (get<0>(result)) {
+                auto result = firstDeepCopy->clause[indexes.first]->augmentUnification(secondDeepCopy->clause[indexes.second]);
+                if(result.index() == 0) {
+                    if(get<0>(result)) {
                         unified = true;
                         break;
-                    }
-                    else {
+                    } else {
                         unified = false;
                         break;
                     }
-                }
-                else {
+                } else {
                     firstDeepCopy->applySubstitution(get<1>(result));
                     secondDeepCopy->applySubstitution(get<1>(result));
                 }
-            }while(true);
-            if (unified) {
-                outputStream << "clauses " + firstDeepCopy->getString() + " and " + secondDeepCopy->getString() <<
-                " get resolution rule applied on " + firstDeepCopy->clause[indexes.first]->getString() + " and on "
-                + secondDeepCopy->clause[indexes.second]->getString() + " and the resulting clause ";
+            } while(true);
+            if(unified) {
+                outputStream << "clauses " + firstDeepCopy->getString() + " and " + secondDeepCopy->getString()
+                             << " get resolution rule applied on " + firstDeepCopy->clause[indexes.first]->getString() +
+                " and on " + secondDeepCopy->clause[indexes.second]->getString() + " and the resulting clause ";
                 firstDeepCopy->clause.erase(firstDeepCopy->clause.begin() + indexes.first);
                 secondDeepCopy->clause.erase(secondDeepCopy->clause.begin() + indexes.second);
-                for (auto &literal : secondDeepCopy->clause) {
-                    firstDeepCopy->clause.push_back(literal);
-                }
+                for(auto& literal : secondDeepCopy->clause) { firstDeepCopy->clause.push_back(literal); }
                 outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
-                return {true, firstDeepCopy};
-            }
-            else {
+                return { true, firstDeepCopy };
+            } else {
                 blackListed[indexes] = true;
             }
         }
-    }while(found);
-    return {false, shared_ptr<Clause>(nullptr)};
+    } while(found);
+    return { false, shared_ptr<Clause>(nullptr) };
 }
 
 bool BasicTheoremProver::resolutionStep() {
@@ -226,20 +212,20 @@ bool BasicTheoremProver::resolutionStep() {
             shuffle(clauseForm->clauseForm.begin(), clauseForm->clauseForm.end(), std::mt19937(std::random_device()()));
             clauseForm->makeVariableNamesUniquePerClause();
         }
-    }while(found);
+    } while(found);
     return false;
 }
 
 void BasicTheoremProver::run() {
     do {
-        if (factoringStep()) {
+        if(factoringStep()) {
             outputStream << "derived empty clause!\n";
             break;
         }
-        if (resolutionStep()) {
+        if(resolutionStep()) {
             outputStream << "derived empty clause!\n";
             break;
         }
-    }while(true);
+    } while(true);
 }
 }; // namespace utils

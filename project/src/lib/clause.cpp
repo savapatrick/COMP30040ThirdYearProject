@@ -13,28 +13,24 @@ std::shared_ptr<Clause> Clause::createDeepCopy() {
 }
 std::unordered_set<std::string> Clause::getAllVariables() {
     unordered_set<string> result;
-    for (auto &literal : clause) {
+    for(auto& literal : clause) {
         AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(literal->getAllVariables(), result, result);
     }
     return result;
 }
 void Clause::applySubstitution(const pair<std::string, std::shared_ptr<Term>>& mapping) {
-    for (auto &literal : clause) {
-        literal->applySubstitution(mapping);
-    }
+    for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }
 std::map<std::pair<std::string, bool>, int> Clause::getAllLiterals() {
     map<pair<string, bool>, int> accumulator;
-    for(auto &literal : clause) {
-        accumulator[literal->getLiteral()] += 1;
-    }
+    for(auto& literal : clause) { accumulator[literal->getLiteral()] += 1; }
     return accumulator;
 }
 std::string Clause::getString() const {
     string result;
-    for (int index = 0; index < (int)clause.size(); ++ index) {
+    for(int index = 0; index < (int)clause.size(); ++index) {
         result += clause[index]->getString();
-        if (index + 1 != (int)clause.size()) {
+        if(index + 1 != (int)clause.size()) {
             result += "^";
         }
     }
@@ -42,4 +38,4 @@ std::string Clause::getString() const {
 }
 
 
-};
+}; // namespace utils

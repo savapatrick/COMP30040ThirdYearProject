@@ -11,7 +11,7 @@
 
 namespace utils {
 class BasicTheoremProver;
-class Clause : public std::enable_shared_from_this<Clause>{
+class Clause : public std::enable_shared_from_this<Clause> {
     private:
     friend class BasicTheoremProver;
     std::vector<std::shared_ptr<Literal>> clause;
@@ -27,10 +27,8 @@ class Clause : public std::enable_shared_from_this<Clause>{
     }
     Clause(const std::shared_ptr<Clause>& other) {
         clause.reserve(other->clause.size());
-        auto &otherClauses = other->clause;
-        for (auto &otherClause : otherClauses) {
-            clause.push_back(otherClause->createDeepCopy());
-        }
+        auto& otherClauses = other->clause;
+        for(auto& otherClause : otherClauses) { clause.push_back(otherClause->createDeepCopy()); }
     }
     std::shared_ptr<Clause> createDeepCopy();
     std::unordered_set<std::string> getAllVariables();

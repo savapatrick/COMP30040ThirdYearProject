@@ -21,12 +21,12 @@ class Term : public std::enable_shared_from_this<Term> {
     TermType termType;
     std::vector<std::shared_ptr<Term>> arguments;
     bool containsTerm(const std::string& name);
-    std::variant<bool, std::pair <std::string, std::shared_ptr<Term>>>  findPartialSubstitution(
-                          const std::shared_ptr<Term>& first,
-                          const std::shared_ptr<Term>& second) const;
+    std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>>
+    findPartialSubstitution(const std::shared_ptr<Term>& first, const std::shared_ptr<Term>& second) const;
     std::string preOrderTraversal(const std::shared_ptr<Term>& node) const;
+
     public:
-    explicit Term(std::string  newVariable) : termName(std::move(newVariable)), termType(VARIABLE){
+    explicit Term(std::string newVariable) : termName(std::move(newVariable)), termType(VARIABLE) {
         arguments.clear();
     }
     explicit Term(const std::string& term,
@@ -59,7 +59,7 @@ class Term : public std::enable_shared_from_this<Term> {
     }
     std::shared_ptr<Term> createDeepCopy();
     [[nodiscard]] bool equals(const std::shared_ptr<Term>& other) const;
-    std::variant<bool, std::pair <std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Term>& other);
+    std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Term>& other);
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& substitution);
     std::unordered_set<std::string> getAllVariables();
     std::string getString() const;

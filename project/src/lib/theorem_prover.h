@@ -18,11 +18,12 @@ class TheoremProver {
     protected:
     std::shared_ptr<ClauseForm> clauseForm;
     std::ofstream outputStream;
-    public:
-    TheoremProver(std::shared_ptr<ClauseForm>  _clauseForm, const std::string& _fileName = "theorem_prover.txt") :
-      clauseForm(std::move(_clauseForm)), outputStream(_fileName.c_str(),std::ios::out){}
-    virtual void run() = 0;
 
+    public:
+    TheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
+    : clauseForm(std::move(_clauseForm)), outputStream(_fileName.c_str(), std::ios::out) {
+    }
+    virtual void run() = 0;
 };
 } // namespace utils
 
