@@ -15,9 +15,9 @@ TEST(operatorsTestSuite, testAND) {
 
 TEST(operatorsTestSuite, testOR) {
     utils::Operators& operators = utils::Operators::getInstance();
-    const string seq            = "|patrick";
+    const string seq            = "^patrick";
     int i                       = 0;
-    ASSERT_EQ(operators.advanceOperator(i, seq, "OR"), "|");
+    ASSERT_EQ(operators.advanceOperator(i, seq, "OR"), "^");
     ASSERT_EQ(i, 1);
 }
 

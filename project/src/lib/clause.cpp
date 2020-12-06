@@ -18,7 +18,7 @@ std::unordered_set<std::string> Clause::getAllVariables() {
     }
     return result;
 }
-void Clause::applySubstitution(const pair<std::string, std::string>& mapping) {
+void Clause::applySubstitution(const pair<std::string, std::shared_ptr<Term>>& mapping) {
     for (auto &literal : clause) {
         literal->applySubstitution(mapping);
     }
@@ -31,7 +31,14 @@ std::map<std::pair<std::string, bool>, int> Clause::getAllLiterals() {
     return accumulator;
 }
 std::string Clause::getString() const {
-    throw logic_error("Not implemented");
+    string result;
+    for (int index = 0; index < (int)clause.size(); ++ index) {
+        result += clause[index]->getString();
+        if (index + 1 != (int)clause.size()) {
+            result += "^";
+        }
+    }
+    return result;
 }
 
 

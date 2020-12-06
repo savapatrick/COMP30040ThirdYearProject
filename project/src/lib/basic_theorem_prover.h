@@ -12,11 +12,14 @@
 namespace utils {
 class BasicTheoremProver : public TheoremProver {
     private:
+    static constexpr int ATTEMPTS() {
+        return 100;
+    }
     bool tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause); // and commit if possible
     bool isTautology(std::shared_ptr<Clause> &clause);
-    bool derivesEmptyClause(std::shared_ptr<Clause> &clause);
+    bool removeDuplicates(std::shared_ptr<Clause> &clause);
     bool factoringStep();
-    bool attemptToUnify(std::shared_ptr<Clause>& first, std::shared_ptr<Clause>& second);
+    std::pair<bool, std::shared_ptr<Clause>> attemptToUnify(std::shared_ptr<Clause>& first, std::shared_ptr<Clause>& second);
     bool resolutionStep();
 
     public:

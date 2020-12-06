@@ -28,7 +28,7 @@ class Operators {
     std::unordered_map<std::string, std::string> inv;
 
     Operators()
-    : AND("&"), OR("|"), NOT("~"), OPENEDBracket("("), CLOSEDBracket(")"), IMPLY("->"), DOUBLEImply("<->"),
+    : AND("&"), OR("^"), NOT("~"), OPENEDBracket("("), CLOSEDBracket(")"), IMPLY("->"), DOUBLEImply("<->"),
       EQuantifier("?"), VQuantifier("@") {
         mapping["AND"]         = AND;
         mapping["OR"]          = OR;

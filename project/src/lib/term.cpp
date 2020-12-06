@@ -151,8 +151,34 @@ std::unordered_set<std::string> Term::getAllVariables() {
     }
     return result;
 }
+
+std::string Term::preOrderTraversal(const std::shared_ptr<Term>& node) const{
+    string result;
+    result += node->termName;
+    if(node->termType == FUNCTION) {
+        result += "(";
+    }
+    for (int index = 0; index < (int)node->arguments.size(); ++ index) {
+        result += preOrderTraversal(node->arguments[index]);
+        if (index + 1 != (int)node->arguments.size()) {
+            result += ",";
+        }
+    }
+    if(node->termType == FUNCTION) {
+        result += ")";
+    }
+    return result;
+}
+
 std::string Term::getString() const {
-    throw logic_error("Not implemented yet");
+    string result;
+    for (int index = 0; index < (int)arguments.size(); ++ index) {
+        result += preOrderTraversal(arguments[index]);
+        if (index + 1 != (int)arguments.size()) {
+            result += ",";
+        }
+    }
+    return result;
 }
 
 }; // namespace utils

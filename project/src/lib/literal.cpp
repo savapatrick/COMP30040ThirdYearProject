@@ -54,10 +54,9 @@ std::unordered_set<std::string> Literal::getAllVariables() {
     return result;
 }
 
-void Literal::applySubstitution(const std::pair <std::string, std::string> &mapping) {
-    auto correspondingPointer = make_shared<Term>(mapping.second);
+void Literal::applySubstitution(const std::pair <std::string, std::shared_ptr<Term>> &mapping) {
     for (auto &term : terms) {
-        term->applySubstitution({mapping.first, correspondingPointer});
+        term->applySubstitution({mapping.first, mapping.second});
     }
 }
 std::pair<std::string, bool> Literal::getLiteral() {
