@@ -82,6 +82,7 @@ class Reducer {
     public:
     explicit Reducer(ParseTree& _parseTree);
 
+    void addNegationToRoot();
     template <typename T> T getSimplifiedClauseForm();
     std::shared_ptr<ClauseForm> getClauseForm();
 };
