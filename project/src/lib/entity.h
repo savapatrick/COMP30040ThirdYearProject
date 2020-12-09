@@ -19,7 +19,7 @@ enum EntityType {
     BOUNDVariable = 0,  /*e.g @x, ?y, etc*/
     SIMPLIFIEDLiteral,  /*e.g ~P(a), ~P(f(x)), ~P(a, x, f(y))*/
     SIMPLIFIEDOperator, /*AND, OR, NOT, IMPLY, DOUBLEImply*/
-    NORMALForms,        /*e.g CNF or DNF, so either ~P(a) ^ B(d), or ~P(d) ^ P(f) could be good examples*/
+    NORMALForms,        /*e.g CNF or DNF, so either ~P(a) ^ B(d), or ~P(d) | P(f) could be good examples*/
 };
 
 class Entity {

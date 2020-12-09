@@ -7,17 +7,17 @@ using namespace std;
 
 TEST(operatorsTestSuite, testAND) {
     utils::Operators& operators = utils::Operators::getInstance();
-    const string seq            = "&patrick";
+    const string seq            = "^patrick";
     int i                       = 0;
-    ASSERT_EQ(operators.advanceOperator(i, seq, "AND"), "&");
+    ASSERT_EQ(operators.advanceOperator(i, seq, "AND"), "^");
     ASSERT_EQ(i, 1);
 }
 
 TEST(operatorsTestSuite, testOR) {
     utils::Operators& operators = utils::Operators::getInstance();
-    const string seq            = "^patrick";
+    const string seq            = "|patrick";
     int i                       = 0;
-    ASSERT_EQ(operators.advanceOperator(i, seq, "OR"), "^");
+    ASSERT_EQ(operators.advanceOperator(i, seq, "OR"), "|");
     ASSERT_EQ(i, 1);
 }
 

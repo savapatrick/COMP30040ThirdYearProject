@@ -31,7 +31,7 @@ std::string Clause::getString() const {
     for(int index = 0; index < (int)clause.size(); ++index) {
         result += clause[index]->getString();
         if(index + 1 != (int)clause.size()) {
-            result += "^";
+            result += "|";
         }
     }
     return result;
