@@ -77,7 +77,7 @@ Term::findPartialSubstitution(const shared_ptr<Term>& first, const shared_ptr<Te
 
 void Term::applySubstitution(const pair<string, shared_ptr<Term>>& substitution) {
     queue<shared_ptr<Term>> queueForTerm;
-    if(termName != substitution.first) {
+    if(termName == substitution.first) {
         auto which = substitution.second;
         termType   = which->termType;
         termName   = which->termName;
@@ -173,6 +173,47 @@ std::string Term::getString() const {
         }
     }
     return result;
+}
+void Term::applySubstitution(const pair<std::string, std::string>& substitution) {
+    queue<shared_ptr<Term>> queueForTerm;
+    auto which = make_shared<Term>(substitution.second);
+    if(termName == substitution.first) {
+        termType  = which->termType;
+        termName  = which->termName;
+        arguments = which->arguments;
+        return;
+    }
+    queueForTerm.push(shared_from_this());
+    while(!queueForTerm.empty()) {
+        auto& frontTerm = queueForTerm.front();
+        queueForTerm.pop();
+
+        for(auto& arg : arguments) {
+            if(arg->termName == substitution.first) {
+                arg = which;
+                continue;
+            }
+            queueForTerm.push(arg);
+        }
+    }
+}
+void Term::renameFunction(const pair<std::string, std::string>& substitution) {
+    queue<shared_ptr<Term>> queueForTerm;
+    if(termName == substitution.first) {
+        termName = substitution.second;
+    }
+    queueForTerm.push(shared_from_this());
+    while(!queueForTerm.empty()) {
+        auto& frontTerm = queueForTerm.front();
+        queueForTerm.pop();
+
+        for(auto& arg : arguments) {
+            if(arg->termName == substitution.first) {
+                arg->termName = substitution.second;
+            }
+            queueForTerm.push(arg);
+        }
+    }
 }
 
 }; // namespace utils

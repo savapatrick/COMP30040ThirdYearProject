@@ -14,7 +14,7 @@ class ClauseForm {
     private:
     friend class BasicTheoremProver;
     std::vector<std::shared_ptr<Clause>> clauseForm;
-    std::unordered_set<std::string> allFunctionNames; // to do not be used
+    std::unordered_set<std::string> allFunctionNames;
     std::unordered_set<std::string> allVariableNames;
     std::unordered_set<std::string> allConstantNames;
 
@@ -34,6 +34,12 @@ class ClauseForm {
             clauseForm.push_back(std::make_shared<Clause>(simplifiedClause, variableNames, constantNames));
         }
     }
+    void merge(std::shared_ptr<ClauseForm>& other);
+    void applySubstitution(const std::pair<std::string, std::string>& mapping);
+    void renameFunction(const std::pair<std::string, std::string>& mapping);
+    void renameTerms(std::shared_ptr<ClauseForm>& other,
+    std::unordered_set<std::string>& _allTermNames,
+    std::unordered_set<std::string>& _allTermNamesOther);
     void makeVariableNamesUniquePerClause();
 };
 }; // namespace utils

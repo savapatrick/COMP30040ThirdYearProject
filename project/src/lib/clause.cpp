@@ -36,6 +36,12 @@ std::string Clause::getString() const {
     }
     return result;
 }
+void Clause::applySubstitution(const pair<std::string, std::string>& mapping) {
+    for(auto& literal : clause) { literal->applySubstitution(mapping); }
+}
+void Clause::renameFunction(const pair<std::string, std::string>& mapping) {
+    for(auto& literal : clause) { literal->renameFunction(mapping); }
+}
 
 
 }; // namespace utils

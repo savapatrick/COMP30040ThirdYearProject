@@ -6,7 +6,9 @@
 #define PROJECT_BASIC_THEOREM_PROVER_H
 
 #include "clause.h"
+#include "clause_form.h"
 #include "theorem_prover.h"
+
 #include <utility>
 
 namespace utils {
@@ -28,6 +30,7 @@ class BasicTheoremProver : public TheoremProver {
     }
     void run() override;
 };
+
 } // namespace utils
 
 #endif // PROJECT_BASIC_THEOREM_PROVER_H

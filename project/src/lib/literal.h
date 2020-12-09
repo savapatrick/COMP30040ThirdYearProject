@@ -45,6 +45,8 @@ class Literal : public std::enable_shared_from_this<Literal> {
     std::shared_ptr<Literal> createDeepCopy();
     std::unordered_set<std::string> getAllVariables();
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
+    void applySubstitution(const std::pair<std::string, std::string>& mapping);
+    void renameFunction(const std::pair<std::string, std::string>& mapping);
     std::pair<std::string, bool> getLiteral();
     std::string getString() const;
 };

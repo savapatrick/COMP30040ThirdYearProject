@@ -69,5 +69,11 @@ std::string Literal::getString() const {
     params.pop_back();
     return sign + predicateName + "(" + params + ")";
 }
+void Literal::applySubstitution(const pair<std::string, std::string>& mapping) {
+    for(auto& term : terms) { term->applySubstitution({ mapping.first, mapping.second }); }
+}
+void Literal::renameFunction(const pair<std::string, std::string>& mapping) {
+    for(auto& term : terms) { term->renameFunction({ mapping.first, mapping.second }); }
+}
 
 }; // namespace utils

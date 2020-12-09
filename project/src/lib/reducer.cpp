@@ -109,7 +109,7 @@ int Reducer::addOrClause(const int& nodeOne, const int& nodeTwo) {
 int Reducer::addNegationToFormula(const int& nodeOne) {
     auto notOperator = addNodeWithOperator("NOT");
     parseTree.graph[notOperator].emplace_back(nodeOne);
-    if (nodeOne == parseTree.Root) {
+    if(nodeOne == parseTree.Root) {
         parseTree.Root = parseTree.getNextNode();
         parseTree.graph[parseTree.Root].emplace_back(notOperator);
         return parseTree.Root;

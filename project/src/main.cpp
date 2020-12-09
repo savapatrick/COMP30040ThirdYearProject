@@ -5,7 +5,6 @@
 #include "lib/parse_tree.h"
 #include "lib/tokenizer.h"
 #include "lib/basic_theorem_prover.h"
-#include "lib/simplified_clause_form.h"
 #include <fstream>
 
 // C++ 17, because it uses variant
@@ -20,7 +19,7 @@ int main() {
     while(getline(input, auxFormula)) {
         formulas.push_back(auxFormula);
     }
-    vector <std::shared_ptr<utils::SimplifiedClauseForm>> simplifiedClauseForms;
+    vector <std::shared_ptr<utils::ClauseForm>> clauseForms;
     for (int index = 0; index < (int)formulas.size(); ++ index) {
         auto formula = formulas[index];
         if (index + 1 == (int)formulas.size()) {
@@ -36,12 +35,13 @@ int main() {
             reducer.addNegationToRoot();
         }
         output << "clause form for it is " << reducer.getSimplifiedClauseForm<string>() << '\n';
-        auto simplifiedClauseForm = reducer.getSimplifiedClauseForm<std::shared_ptr<utils::SimplifiedClauseForm>>();
-        simplifiedClauseForms.emplace_back(simplifiedClauseForm);
+        auto clauseForm = reducer.getClauseForm();
+        clauseForms.emplace_back(clauseForm);
     }
-    /* TODO : aggregate simplifiedClauseForms in clauseForm
-     * TODO: find a smart way of negating last formula --- assuming that the last formula is the one to be proved */
     std::shared_ptr<utils::ClauseForm> clauseForm;
+    for (auto &_clauseForm : clauseForms) {
+        clauseForm->merge(_clauseForm);
+    }
     utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
     basicTheoremProver.run();
     return 0;

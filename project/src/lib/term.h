@@ -61,6 +61,8 @@ class Term : public std::enable_shared_from_this<Term> {
     [[nodiscard]] bool equals(const std::shared_ptr<Term>& other) const;
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Term>& other);
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& substitution);
+    void applySubstitution(const std::pair<std::string, std::string>& substitution);
+    void renameFunction(const std::pair<std::string, std::string>& substitution);
     std::unordered_set<std::string> getAllVariables();
     std::string getString() const;
 };
