@@ -19,14 +19,14 @@ class ClauseForm {
     std::unordered_set<std::string> allConstantNames;
 
     public:
-    ClauseForm()= default;
+    ClauseForm() = default;
     ClauseForm(const std::shared_ptr<SimplifiedClauseForm>& simplifiedClauseForm,
     const std::unordered_set<std::string>& functionNames,
     const std::unordered_set<std::string>& variableNames,
     const std::unordered_set<std::string>& constantNames) {
-        allFunctionNames                  = functionNames;
-        allVariableNames                  = variableNames;
-        allConstantNames                  = constantNames;
+        allFunctionNames       = functionNames;
+        allVariableNames       = variableNames;
+        allConstantNames       = constantNames;
         auto simplifiedClauses = simplifiedClauseForm->getSimplifiedClauseForm();
         clauseForm.reserve(simplifiedClauses.size());
         for(auto& simplifiedClause : simplifiedClauses) {
@@ -39,8 +39,10 @@ class ClauseForm {
     void renameFunction(const std::pair<std::string, std::string>& mapping);
     void renameTerms(std::shared_ptr<ClauseForm>& other,
     std::unordered_set<std::string>& _allTermNames,
-    std::unordered_set<std::string>& _allTermNamesOther, std::unordered_set<std::string>& forbiddenOne,
-                     std::unordered_set<std::string>& forbiddenTwo, bool isFunctionRenaming);
+    std::unordered_set<std::string>& _allTermNamesOther,
+    std::unordered_set<std::string>& forbiddenOne,
+    std::unordered_set<std::string>& forbiddenTwo,
+    bool isFunctionRenaming);
     void makeVariableNamesUniquePerClause();
     std::string getString() const;
 };

@@ -59,8 +59,7 @@ Term::findPartialSubstitution(const shared_ptr<Term>& first, const shared_ptr<Te
             if(second->termType == TermType::FUNCTION) {
                 if(first->termName != second->termName) {
                     return false;
-                }
-                else {
+                } else {
                     for(int index = 0; index < (int)first->arguments.size(); ++index) {
                         auto res = findPartialSubstitution(first->arguments[index], second->arguments[index]);
                         if(res.index() == 0 and get<0>(res)) {

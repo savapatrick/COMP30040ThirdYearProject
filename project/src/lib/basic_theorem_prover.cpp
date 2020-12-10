@@ -201,17 +201,17 @@ bool BasicTheoremProver::resolutionStep() {
         shared_ptr<Clause> newClause;
         for(int index = 0; index < (int)clauseForm->clauseForm.size() and !found; ++index) {
             for(int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size() and !found; ++index2) {
-                if (avoid.find({index, index2}) != avoid.end()) {
+                if(avoid.find({ index, index2 }) != avoid.end()) {
                     continue;
                 }
                 auto result = attemptToUnify(clauseForm->clauseForm[index], clauseForm->clauseForm[index2]);
-//                outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
-//                outputStream.flush();
-                avoid.insert({index, index2});
+                //                outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
+                //                outputStream.flush();
+                avoid.insert({ index, index2 });
                 if(result.first) {
-//                    outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
-//                    " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
-//                    result.second->getString() << '\n';
+                    //                    outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
+                    //                    " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
+                    //                    result.second->getString() << '\n';
                     outputStream.flush();
                     found     = true;
                     newClause = result.second;

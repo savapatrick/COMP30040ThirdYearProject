@@ -11,9 +11,9 @@ namespace utils {
 std::string RandomFactory::getRandomTermOrFunctionName(std::unordered_set<std::string>& reservedTermNames) {
     static std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
     const int sizeOfAlphabet    = 26;
-    static std::random_device                  RandomDevice;
-    static std::mt19937                        generator(RandomDevice());
-    std::uniform_int_distribution<int>  distribution(0, RANGEMAX());
+    static std::random_device RandomDevice;
+    static std::mt19937 generator(RandomDevice());
+    std::uniform_int_distribution<int> distribution(0, RANGEMAX());
     string result;
     do {
         result.clear();
@@ -28,9 +28,9 @@ std::string RandomFactory::getRandomPredicateName(std::unordered_set<std::string
     static std::string startingLetterAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static std::string alphabet               = "abcdefghijklmnopqrstuvwxyz";
     const int sizeOfAlphabet                  = 26;
-    static std::random_device                  RandomDevice;
-    static std::mt19937                        generator(RandomDevice());
-    std::uniform_int_distribution<int>  distribution(0, RANGEMAX());
+    static std::random_device RandomDevice;
+    static std::mt19937 generator(RandomDevice());
+    std::uniform_int_distribution<int> distribution(0, RANGEMAX());
     string result;
     do {
         result.clear();

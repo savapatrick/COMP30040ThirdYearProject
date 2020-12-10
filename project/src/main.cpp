@@ -2,9 +2,9 @@
 // Created by Patrick Sava on 11/4/2020.
 //
 
+#include "lib/basic_theorem_prover.h"
 #include "lib/parse_tree.h"
 #include "lib/tokenizer.h"
-#include "lib/basic_theorem_prover.h"
 #include <fstream>
 #include <memory>
 
@@ -15,23 +15,20 @@ using namespace std;
 int main() {
     ifstream input("input.txt");
     ofstream output("output.txt");
-    vector <string> formulas;
+    vector<string> formulas;
     string auxFormula;
-    while(getline(input, auxFormula)) {
-        formulas.push_back(auxFormula);
-    }
-    vector <std::shared_ptr<utils::ClauseForm>> clauseForms;
-    for (int index = 0; index < (int)formulas.size(); ++ index) {
+    while(getline(input, auxFormula)) { formulas.push_back(auxFormula); }
+    vector<std::shared_ptr<utils::ClauseForm>> clauseForms;
+    for(int index = 0; index < (int)formulas.size(); ++index) {
         auto formula = formulas[index];
-        if (index + 1 == (int)formulas.size()) {
+        if(index + 1 == (int)formulas.size()) {
             output << "the formula " + formula << " is the one to be proved\n";
-        }
-        else {
+        } else {
             output << "the formula " + formula << " is part of the knowledge base\n";
         }
         utils::ParseTree tree(formula);
         utils::Reducer reducer(tree);
-        if (index + 1 == (int)formulas.size()) {
+        if(index + 1 == (int)formulas.size()) {
             output << "so it has to be negated to ~(" + formula + ")\n";
             reducer.addNegationToRoot();
         }
@@ -40,9 +37,7 @@ int main() {
         clauseForms.emplace_back(clauseForm);
     }
     std::shared_ptr<utils::ClauseForm> clauseForm = make_shared<utils::ClauseForm>();
-    for (auto &_clauseForm : clauseForms) {
-        clauseForm->merge(_clauseForm);
-    }
+    for(auto& _clauseForm : clauseForms) { clauseForm->merge(_clauseForm); }
     output << clauseForm->getString() << '\n';
     utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
     basicTheoremProver.run();

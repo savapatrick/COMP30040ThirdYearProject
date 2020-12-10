@@ -396,15 +396,14 @@ void Reducer::variableRenaming(int node, unordered_set<std::string>& accumulator
             string variable  = operators.getVariableFromQuantifierAndVariable(information);
             if(accumulator.find(variable) != accumulator.end()) {
                 // we want then to rename it
-                if (substitution.find(variable) != substitution.end()) {
+                if(substitution.find(variable) != substitution.end()) {
                     oldSubstitution = substitution[variable];
                 }
                 substitution[variable] = getRandomTermName();
                 accumulator.insert(substitution[variable]);
                 wasSubstitution = true;
                 whichVariable   = variable;
-            }
-            else {
+            } else {
                 accumulator.insert(variable);
             }
         } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
@@ -415,7 +414,7 @@ void Reducer::variableRenaming(int node, unordered_set<std::string>& accumulator
     for(auto& neighbour : parseTree.graph[node]) { variableRenaming(neighbour, accumulator, substitution); }
     if(wasSubstitution) {
         substitution.erase(substitution.find(whichVariable));
-        if (!oldSubstitution.empty()) {
+        if(!oldSubstitution.empty()) {
             substitution[whichVariable] = oldSubstitution;
         }
     }
@@ -573,12 +572,10 @@ bool isAnd) {
     // TODO: bear in mind that here we made the assumption that any free-variable in the
     // initial formula is a constant
     auto allArgumentsSecond = second->getAllArguments();
-    auto arguments = AdHocTemplated<string>::unionIterablesVector(allBoundVariables, allArgumentsSecond);
+    auto arguments          = AdHocTemplated<string>::unionIterablesVector(allBoundVariables, allArgumentsSecond);
     std::vector<SimplifiedLiteral::arg> argumentsVariant;
     argumentsVariant.reserve(arguments.size());
-    for (auto &arg : arguments) {
-        argumentsVariant.emplace_back(arg);
-    }
+    for(auto& arg : arguments) { argumentsVariant.emplace_back(arg); }
     if(arguments.empty()) {
         // we'll introduce a constant here, in order to do not allow predicates of arity 0
         arguments.emplace_back(getRandomTermName());
