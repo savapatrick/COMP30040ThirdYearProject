@@ -29,14 +29,15 @@ bool BasicTheoremProver::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) 
     do {
         pair<int, int> indexes;
         found = false;
-        for(int index = 0; index < (int)clause->clause.size(); ++index) {
-            for(int index2 = index + 1; index2 < (int)clause->clause.size(); ++index2) {
+        for(int index = 0; index < (int)clause->clause.size() and !found; ++index) {
+            for(int index2 = index + 1; index2 < (int)clause->clause.size() and !found; ++index2) {
                 if(clause->clause[index]->predicateName == clause->clause[index2]->predicateName) {
                     indexes = { index, index2 };
                     if(blackListed.find(indexes) != blackListed.end()) {
                         continue;
                     }
-                    found = true;
+                    blackListed[indexes] = true;
+                    found                = true;
                 }
             }
         }
@@ -64,8 +65,6 @@ bool BasicTheoremProver::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) 
                 outputStream.flush();
                 clause             = clauseDeepCopy;
                 unifiedAtLeastOnce = true;
-            } else {
-                blackListed[indexes] = true;
             }
         }
     } while(found);
@@ -86,6 +85,9 @@ bool BasicTheoremProver::isTautology(std::shared_ptr<Clause>& clause) {
     return false;
 }
 bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
+    if(clause->clause.size() == 1) {
+        return false;
+    }
     unordered_map<string, shared_ptr<Literal>> literals;
     for(auto& literal : clause->clause) { literals[literal->getString()] = literal; }
     outputStream << "removing duplicates from clause " + clause->getString() << "\n";
@@ -113,6 +115,7 @@ bool BasicTheoremProver::factoringStep() {
                 outputStream.flush();
                 newClauseForm.pop_back();
                 changed = true;
+                avoid.clear();
             }
         }
     }
@@ -143,15 +146,16 @@ BasicTheoremProver::attemptToUnify(std::shared_ptr<Clause>& first, std::shared_p
     do {
         found = false;
         pair<int, int> indexes;
-        for(int index = 0; index < (int)first->clause.size(); ++index) {
-            for(int index2 = 0; index2 < (int)second->clause.size(); ++index2) {
+        for(int index = 0; index < (int)first->clause.size() and !found; ++index) {
+            for(int index2 = 0; index2 < (int)second->clause.size() and !found; ++index2) {
                 if(first->clause[index]->isNegated != second->clause[index2]->isNegated) {
                     if(first->clause[index]->predicateName == second->clause[index2]->predicateName) {
                         indexes = { index, index2 };
                         if(blackListed.find(indexes) != blackListed.end()) {
                             continue;
                         }
-                        found = true;
+                        found                = true;
+                        blackListed[indexes] = true;
                     }
                 }
             }
@@ -186,8 +190,6 @@ BasicTheoremProver::attemptToUnify(std::shared_ptr<Clause>& first, std::shared_p
                 outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
                 outputStream.flush();
                 return { true, firstDeepCopy };
-            } else {
-                blackListed[indexes] = true;
             }
         }
     } while(found);
@@ -205,13 +207,13 @@ bool BasicTheoremProver::resolutionStep() {
                     continue;
                 }
                 auto result = attemptToUnify(clauseForm->clauseForm[index], clauseForm->clauseForm[index2]);
-                //                outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
-                //                outputStream.flush();
+                // outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
+                // outputStream.flush();
                 avoid.insert({ index, index2 });
                 if(result.first) {
-                    //                    outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
-                    //                    " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
-                    //                    result.second->getString() << '\n';
+                    // outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
+                    // " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
+                    // result.second->getString() << '\n';
                     outputStream.flush();
                     found     = true;
                     newClause = result.second;

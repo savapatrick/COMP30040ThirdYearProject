@@ -33,12 +33,14 @@ int main() {
             reducer.addNegationToRoot();
         }
         output << "clause form for it is " << reducer.getSimplifiedClauseForm<string>() << '\n';
+        output.flush();
         auto clauseForm = reducer.getClauseForm();
         clauseForms.emplace_back(clauseForm);
     }
     std::shared_ptr<utils::ClauseForm> clauseForm = make_shared<utils::ClauseForm>();
     for(auto& _clauseForm : clauseForms) { clauseForm->merge(_clauseForm); }
     output << clauseForm->getString() << '\n';
+    output.flush();
     utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
     basicTheoremProver.run();
     return 0;
