@@ -6,6 +6,7 @@
 #include "lib/tokenizer.h"
 #include "lib/basic_theorem_prover.h"
 #include <fstream>
+#include <memory>
 
 // C++ 17, because it uses variant
 
@@ -38,10 +39,11 @@ int main() {
         auto clauseForm = reducer.getClauseForm();
         clauseForms.emplace_back(clauseForm);
     }
-    std::shared_ptr<utils::ClauseForm> clauseForm;
+    std::shared_ptr<utils::ClauseForm> clauseForm = make_shared<utils::ClauseForm>();
     for (auto &_clauseForm : clauseForms) {
         clauseForm->merge(_clauseForm);
     }
+    output << clauseForm->getString() << '\n';
     utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
     basicTheoremProver.run();
     return 0;

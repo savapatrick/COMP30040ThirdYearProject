@@ -3,6 +3,7 @@
 //
 
 #include "term.h"
+#include <cassert>
 #include <queue>
 
 using namespace std;
@@ -59,16 +60,18 @@ Term::findPartialSubstitution(const shared_ptr<Term>& first, const shared_ptr<Te
                 if(first->termName != second->termName) {
                     return false;
                 }
-            } else {
-                for(int index = 0; index < (int)first->arguments.size(); ++index) {
-                    auto res = findPartialSubstitution(first->arguments[index], second->arguments[index]));
-                    if(res.index() == 0 and get<0>(res)) {
-                        continue;
+                else {
+                    for(int index = 0; index < (int)first->arguments.size(); ++index) {
+                        auto res = findPartialSubstitution(first->arguments[index], second->arguments[index]);
+                        if(res.index() == 0 and get<0>(res)) {
+                            continue;
+                        }
+                        return res;
                     }
-                    return res;
+                    return true;
                 }
-                return true;
             }
+            return false;
         }
         return false;
     }
@@ -89,7 +92,7 @@ void Term::applySubstitution(const pair<string, shared_ptr<Term>>& substitution)
         auto& frontTerm = queueForTerm.front();
         queueForTerm.pop();
 
-        for(auto& arg : arguments) {
+        for(auto& arg : frontTerm->arguments) {
             if(arg->termName == substitution.first) {
                 arg = substitution.second;
                 continue;
@@ -120,10 +123,9 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Term::augmentU
             }
         } else if(attempt.index()) {
             return get<1>(attempt);
-        } else {
-            return true;
         }
     }
+    return true;
 }
 
 std::shared_ptr<Term> Term::createDeepCopy() {
@@ -146,7 +148,7 @@ std::unordered_set<std::string> Term::getAllVariables() {
     return result;
 }
 
-std::string Term::preOrderTraversal(const std::shared_ptr<Term>& node) const {
+std::string Term::preOrderTraversal(const std::shared_ptr<Term>& node) {
     string result;
     result += node->termName;
     if(node->termType == FUNCTION) {
@@ -164,15 +166,8 @@ std::string Term::preOrderTraversal(const std::shared_ptr<Term>& node) const {
     return result;
 }
 
-std::string Term::getString() const {
-    string result;
-    for(int index = 0; index < (int)arguments.size(); ++index) {
-        result += preOrderTraversal(arguments[index]);
-        if(index + 1 != (int)arguments.size()) {
-            result += ",";
-        }
-    }
-    return result;
+std::string Term::getString() {
+    return preOrderTraversal(shared_from_this());
 }
 void Term::applySubstitution(const pair<std::string, std::string>& substitution) {
     queue<shared_ptr<Term>> queueForTerm;
@@ -188,7 +183,7 @@ void Term::applySubstitution(const pair<std::string, std::string>& substitution)
         auto& frontTerm = queueForTerm.front();
         queueForTerm.pop();
 
-        for(auto& arg : arguments) {
+        for(auto& arg : frontTerm->arguments) {
             if(arg->termName == substitution.first) {
                 arg = which;
                 continue;

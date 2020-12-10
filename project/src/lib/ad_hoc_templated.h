@@ -16,7 +16,7 @@ template <class T, class V = std::string> class AdHocTemplated {
     template <template <class, typename...> class P, template <class, typename...> class Q>
     static std::vector<T> unionIterablesVector(const P<V>& first, const Q<V>& second) {
         std::vector<T> resultVector;
-        std::unordered_set<T> partialResult;
+        std::unordered_set<T, std::hash<T>, std::equal_to<T>, std::allocator<T>> partialResult;
         for(auto& elem : first) { partialResult.insert(elem); }
         for(auto& elem : second) { partialResult.insert(elem); }
         for(auto& elem : partialResult) { resultVector.push_back(elem); }
@@ -24,10 +24,32 @@ template <class T, class V = std::string> class AdHocTemplated {
     }
 
     template <template <class, typename...> class P, template <class, typename...> class Q>
-    static std::unordered_set<T> unionIterablesUnorderedSet(const P<V>& first, const Q<V>& second) {
-        std::unordered_set<T> result;
+    static std::unordered_set<T, std::hash<T>, std::equal_to<T>, std::allocator<T>> unionIterablesUnorderedSet(const P<V>& first, const Q<V>& second) {
+        std::unordered_set<T, std::hash<T>, std::equal_to<T>, std::allocator<T>> result;
         for(auto& elem : first) { result.insert(elem); }
         for(auto& elem : second) { result.insert(elem); }
+        return result;
+    }
+
+    template <template <class, typename...> class P, template <class, typename...> class Q>
+    static std::unordered_set<T, std::hash<T>, std::equal_to<T>, std::allocator<T>> intersectionIterablesUnorderedSet(const P<V>& first, const Q<V>& second) {
+        std::unordered_set<T, std::hash<T>, std::equal_to<T>, std::allocator<T>> result;
+        for(auto& elem : first) {
+            if (second.find(elem) != second.end()) {
+                result.insert(elem);
+            }
+        }
+        return result;
+    }
+
+    template <template <class, typename...> class P, template <class, typename...> class Q>
+    static std::unordered_set<T, std::hash<T>, std::equal_to<T>, std::allocator<T>> differenceUnorderedSets(const P<V>& first, const Q<V>& second) {
+        std::unordered_set<T, std::hash<T>, std::equal_to<T>, std::allocator<T>> result;
+        for(auto& elem : first) {
+            if (second.find(elem) == second.end()) {
+                result.insert(elem);
+            }
+        }
         return result;
     }
 

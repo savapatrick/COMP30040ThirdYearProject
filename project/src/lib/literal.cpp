@@ -25,7 +25,7 @@ bool Literal::equalsWithoutSign(const std::shared_ptr<Literal>& other) {
 }
 
 std::shared_ptr<Literal> Literal::createDeepCopy() {
-    return std::shared_ptr<Literal>(shared_from_this());
+    return std::make_shared<Literal>(shared_from_this());
 }
 
 std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Literal::augmentUnification(const std::shared_ptr<Literal>& other) {

@@ -9,7 +9,7 @@ using namespace std;
 
 namespace utils {
 std::shared_ptr<Clause> Clause::createDeepCopy() {
-    return std::shared_ptr<Clause>(shared_from_this());
+    return std::make_shared<Clause>(shared_from_this());
 }
 std::unordered_set<std::string> Clause::getAllVariables() {
     unordered_set<string> result;
@@ -21,7 +21,7 @@ std::unordered_set<std::string> Clause::getAllVariables() {
 void Clause::applySubstitution(const pair<std::string, std::shared_ptr<Term>>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }
-std::map<std::pair<std::string, bool>, int> Clause::getAllLiterals() {
+std::map<std::pair<std::string, bool>, int> Clause::getAllLiterals() const {
     map<pair<string, bool>, int> accumulator;
     for(auto& literal : clause) { accumulator[literal->getLiteral()] += 1; }
     return accumulator;
@@ -31,7 +31,7 @@ std::string Clause::getString() const {
     for(int index = 0; index < (int)clause.size(); ++index) {
         result += clause[index]->getString();
         if(index + 1 != (int)clause.size()) {
-            result += "|";
+            result += " | ";
         }
     }
     return result;

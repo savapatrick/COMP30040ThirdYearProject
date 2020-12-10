@@ -10,6 +10,9 @@
 namespace utils {
 class RandomFactory {
     private:
+    static constexpr int RANGEMAX() {
+        return 1000000000;
+    }
     public:
     static std::string getRandomTermOrFunctionName(std::unordered_set<std::string>& reservedTermNames);
     static std::string getRandomPredicateName(std::unordered_set<std::string>& reservedPredicateNames);

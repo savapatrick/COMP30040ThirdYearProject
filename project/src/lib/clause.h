@@ -35,7 +35,7 @@ class Clause : public std::enable_shared_from_this<Clause> {
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);
-    std::map<std::pair<std::string, bool>, int> getAllLiterals();
+    std::map<std::pair<std::string, bool>, int> getAllLiterals() const;
     std::string getString() const;
 };
 }; // namespace utils

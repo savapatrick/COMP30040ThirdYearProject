@@ -14,9 +14,7 @@
 namespace utils {
 class BasicTheoremProver : public TheoremProver {
     private:
-    static constexpr int ATTEMPTS() {
-        return 100;
-    }
+    std::set<std::pair<int, int>> avoid;
     bool tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause); // and commit if possible
     bool isTautology(std::shared_ptr<Clause>& clause);
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
@@ -27,6 +25,7 @@ class BasicTheoremProver : public TheoremProver {
     public:
     BasicTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
     : TheoremProver(std::move(_clauseForm), _fileName) {
+        avoid.clear();
     }
     void run() override;
 };

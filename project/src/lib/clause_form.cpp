@@ -37,7 +37,9 @@ void ClauseForm::applySubstitution(const std::pair<std::string, std::string>& ma
 
 void ClauseForm::renameTerms(std::shared_ptr<ClauseForm>& other,
 std::unordered_set<std::string>& _allTermNames,
-std::unordered_set<std::string>& _allTermNamesOther) {
+std::unordered_set<std::string>& _allTermNamesOther,
+                             std::unordered_set<std::string>& forbiddenOne,
+                             std::unordered_set<std::string>& forbiddenTwo,const bool isFunctionRenaming) {
     vector<pair<string, string>> namesToBeChanged;
     for(auto& termName : _allTermNamesOther) {
         if(_allTermNames.find(termName) != _allTermNames.end()) {
@@ -48,20 +50,43 @@ std::unordered_set<std::string>& _allTermNamesOther) {
     }
     for(auto& termName : namesToBeChanged) {
         termName.second = RandomFactory::getRandomTermOrFunctionName(_allTermNames);
-        while(_allTermNamesOther.find(termName.second) != _allTermNamesOther.end()) {
+        while(_allTermNamesOther.find(termName.second) != _allTermNamesOther.end() ||
+        forbiddenOne.find(termName.second) != forbiddenOne.end() ||
+        forbiddenTwo.find(termName.second) != forbiddenTwo.end()) {
             _allTermNames.erase(_allTermNames.find(termName.second));
             termName.second = RandomFactory::getRandomTermOrFunctionName(_allTermNames);
         }
         _allTermNamesOther.insert(termName.second);
+        _allTermNames.insert(termName.second);
     }
-    for(auto& termName : namesToBeChanged) { other->renameFunction(termName); }
+    for(auto& termName : namesToBeChanged) {
+        if (isFunctionRenaming) {
+            other->renameFunction(termName);
+        }
+        else {
+            other->applySubstitution(termName);
+        }
+    }
 }
 
 void ClauseForm::merge(std::shared_ptr<ClauseForm>& other) {
-    renameTerms(other, allFunctionNames, other->allFunctionNames);
-    renameTerms(other, allVariableNames, other->allVariableNames);
+    renameTerms(other, allFunctionNames, other->allFunctionNames, allVariableNames, allConstantNames, true);
+    renameTerms(other, allVariableNames, other->allVariableNames, allFunctionNames, allConstantNames,  false);
     for(auto& constantName : other->allConstantNames) { allConstantNames.insert(constantName); }
     for(auto& clause : other->clauseForm) { clauseForm.push_back(clause); }
+}
+
+std::string ClauseForm::getString() const {
+    string result;
+    result += "{";
+    for(int index = 0; index < (int)clauseForm.size(); ++index) {
+        result += clauseForm[index]->getString();
+        if(index + 1 != (int)clauseForm.size()) {
+            result += ", ";
+        }
+    }
+    result += "}";
+    return result;
 }
 
 }; // namespace utils

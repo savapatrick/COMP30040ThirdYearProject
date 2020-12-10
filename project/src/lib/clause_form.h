@@ -19,6 +19,7 @@ class ClauseForm {
     std::unordered_set<std::string> allConstantNames;
 
     public:
+    ClauseForm()= default;
     ClauseForm(const std::shared_ptr<SimplifiedClauseForm>& simplifiedClauseForm,
     const std::unordered_set<std::string>& functionNames,
     const std::unordered_set<std::string>& variableNames,
@@ -26,21 +27,22 @@ class ClauseForm {
         allFunctionNames                  = functionNames;
         allVariableNames                  = variableNames;
         allConstantNames                  = constantNames;
-        auto deepCopy                     = simplifiedClauseForm->clone();
-        allVariableNames                  = deepCopy->makeVariableNamesUniquePerClause(allVariableNames);
-        auto simplifiedClauseFormDeepCopy = deepCopy->getSimplifiedClauseForm();
-        clauseForm.reserve(simplifiedClauseFormDeepCopy.size());
-        for(auto& simplifiedClause : simplifiedClauseFormDeepCopy) {
+        auto simplifiedClauses = simplifiedClauseForm->getSimplifiedClauseForm();
+        clauseForm.reserve(simplifiedClauses.size());
+        for(auto& simplifiedClause : simplifiedClauses) {
             clauseForm.push_back(std::make_shared<Clause>(simplifiedClause, variableNames, constantNames));
         }
+        makeVariableNamesUniquePerClause();
     }
     void merge(std::shared_ptr<ClauseForm>& other);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);
     void renameTerms(std::shared_ptr<ClauseForm>& other,
     std::unordered_set<std::string>& _allTermNames,
-    std::unordered_set<std::string>& _allTermNamesOther);
+    std::unordered_set<std::string>& _allTermNamesOther, std::unordered_set<std::string>& forbiddenOne,
+                     std::unordered_set<std::string>& forbiddenTwo, bool isFunctionRenaming);
     void makeVariableNamesUniquePerClause();
+    std::string getString() const;
 };
 }; // namespace utils
 

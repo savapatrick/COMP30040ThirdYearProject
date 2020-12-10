@@ -23,7 +23,7 @@ class Term : public std::enable_shared_from_this<Term> {
     bool containsTerm(const std::string& name);
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>>
     findPartialSubstitution(const std::shared_ptr<Term>& first, const std::shared_ptr<Term>& second) const;
-    std::string preOrderTraversal(const std::shared_ptr<Term>& node) const;
+    std::string preOrderTraversal(const std::shared_ptr<Term>& node);
 
     public:
     explicit Term(std::string newVariable) : termName(std::move(newVariable)), termType(VARIABLE) {
@@ -64,7 +64,7 @@ class Term : public std::enable_shared_from_this<Term> {
     void applySubstitution(const std::pair<std::string, std::string>& substitution);
     void renameFunction(const std::pair<std::string, std::string>& substitution);
     std::unordered_set<std::string> getAllVariables();
-    std::string getString() const;
+    std::string getString();
 };
 }; // namespace utils
 

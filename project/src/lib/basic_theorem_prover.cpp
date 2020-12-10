@@ -61,6 +61,7 @@ bool BasicTheoremProver::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) 
                 outputStream << "clause " << clause->getString() << " is transformed into " + clauseDeepCopy->getString()
                              << " because literals " + clauseDeepCopy->clause[indexes.first]->getString() + " and " +
                 clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
+                outputStream.flush();
                 clause             = clauseDeepCopy;
                 unifiedAtLeastOnce = true;
             } else {
@@ -88,11 +89,13 @@ bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
     unordered_map<string, shared_ptr<Literal>> literals;
     for(auto& literal : clause->clause) { literals[literal->getString()] = literal; }
     outputStream << "removing duplicates from clause " + clause->getString() << "\n";
+    outputStream.flush();
     if(literals.size() != clause->clause.size()) {
         clause->clause.clear();
         clause->clause.reserve(literals.size());
         for(auto& keyValue : literals) { clause->clause.emplace_back(keyValue.second); }
         outputStream << "it then becomes " << clause->getString() << "\n";
+        outputStream.flush();
         return true;
     }
     return false;
@@ -107,6 +110,7 @@ bool BasicTheoremProver::factoringStep() {
         if(tryToUnifyTwoLiterals(clause)) {
             if(isTautology(clause)) {
                 outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
+                outputStream.flush();
                 newClauseForm.pop_back();
                 changed = true;
             }
@@ -174,11 +178,13 @@ BasicTheoremProver::attemptToUnify(std::shared_ptr<Clause>& first, std::shared_p
             if(unified) {
                 outputStream << "clauses " + firstDeepCopy->getString() + " and " + secondDeepCopy->getString()
                              << " get resolution rule applied on " + firstDeepCopy->clause[indexes.first]->getString() +
-                " and on " + secondDeepCopy->clause[indexes.second]->getString() + " and the resulting clause ";
+                " and on " + secondDeepCopy->clause[indexes.second]->getString() + "\n[ADD] the resulting clause ";
+                outputStream.flush();
                 firstDeepCopy->clause.erase(firstDeepCopy->clause.begin() + indexes.first);
                 secondDeepCopy->clause.erase(secondDeepCopy->clause.begin() + indexes.second);
                 for(auto& literal : secondDeepCopy->clause) { firstDeepCopy->clause.push_back(literal); }
                 outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
+                outputStream.flush();
                 return { true, firstDeepCopy };
             } else {
                 blackListed[indexes] = true;
@@ -195,9 +201,18 @@ bool BasicTheoremProver::resolutionStep() {
         shared_ptr<Clause> newClause;
         for(int index = 0; index < (int)clauseForm->clauseForm.size() and !found; ++index) {
             for(int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size() and !found; ++index2) {
+                if (avoid.find({index, index2}) != avoid.end()) {
+                    continue;
+                }
                 auto result = attemptToUnify(clauseForm->clauseForm[index], clauseForm->clauseForm[index2]);
+//                outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
+//                outputStream.flush();
+                avoid.insert({index, index2});
                 if(result.first) {
-                    // TODO: maybe should we remove index-th and index2-th clause?
+//                    outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
+//                    " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
+//                    result.second->getString() << '\n';
+                    outputStream.flush();
                     found     = true;
                     newClause = result.second;
                     if(newClause->clause.empty()) {
@@ -209,7 +224,6 @@ bool BasicTheoremProver::resolutionStep() {
         }
         if(found) {
             clauseForm->clauseForm.push_back(newClause);
-            shuffle(clauseForm->clauseForm.begin(), clauseForm->clauseForm.end(), std::mt19937(std::random_device()()));
             clauseForm->makeVariableNamesUniquePerClause();
         }
     } while(found);
@@ -220,10 +234,12 @@ void BasicTheoremProver::run() {
     do {
         if(factoringStep()) {
             outputStream << "derived empty clause!\n";
+            outputStream.flush();
             break;
         }
         if(resolutionStep()) {
             outputStream << "derived empty clause!\n";
+            outputStream.flush();
             break;
         }
     } while(true);

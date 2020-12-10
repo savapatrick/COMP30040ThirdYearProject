@@ -18,6 +18,7 @@ class ParseTree;
 class Reducer {
     private:
     ParseTree& parseTree;
+    bool computedClauseForm;
     std::unordered_set<std::string> allBoundVariables;
     std::unordered_set<std::string> reservedTermNames;
     std::unordered_set<std::string> reservedFunctionNames;

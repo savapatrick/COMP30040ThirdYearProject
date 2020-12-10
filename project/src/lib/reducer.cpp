@@ -14,7 +14,7 @@ using namespace std;
 
 namespace utils {
 
-Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
+Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree), computedClauseForm(false) {
     allBoundVariables.clear();
     reservedTermNames.clear();
     reservedFunctionNames.clear();
@@ -386,6 +386,7 @@ void Reducer::basicReduce() {
 
 void Reducer::variableRenaming(int node, unordered_set<std::string>& accumulator, unordered_map<std::string, std::string>& substitution) {
     string whichVariable;
+    string oldSubstitution;
     bool wasSubstitution = false;
     Operators& operators = Operators::getInstance();
     if(parseTree.information.find(node) != parseTree.information.end()) {
@@ -395,10 +396,16 @@ void Reducer::variableRenaming(int node, unordered_set<std::string>& accumulator
             string variable  = operators.getVariableFromQuantifierAndVariable(information);
             if(accumulator.find(variable) != accumulator.end()) {
                 // we want then to rename it
+                if (substitution.find(variable) != substitution.end()) {
+                    oldSubstitution = substitution[variable];
+                }
                 substitution[variable] = getRandomTermName();
                 accumulator.insert(substitution[variable]);
                 wasSubstitution = true;
                 whichVariable   = variable;
+            }
+            else {
+                accumulator.insert(variable);
             }
         } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
             auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
@@ -408,6 +415,9 @@ void Reducer::variableRenaming(int node, unordered_set<std::string>& accumulator
     for(auto& neighbour : parseTree.graph[node]) { variableRenaming(neighbour, accumulator, substitution); }
     if(wasSubstitution) {
         substitution.erase(substitution.find(whichVariable));
+        if (!oldSubstitution.empty()) {
+            substitution[whichVariable] = oldSubstitution;
+        }
     }
 }
 
@@ -492,6 +502,8 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
         wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
     }
     if(wasEQuantifier) {
+        allBoundVariables.erase(allBoundVariables.find(whichVariable));
+        reservedTermNames.erase(reservedTermNames.find(whichVariable));
         skolem.erase(skolem.find(whichVariable));
         /// here we delete the information for this node
         parseTree.information.erase(parseTree.information.find(node));
@@ -561,13 +573,18 @@ bool isAnd) {
     // TODO: bear in mind that here we made the assumption that any free-variable in the
     // initial formula is a constant
     auto allArgumentsSecond = second->getAllArguments();
-    auto arguments = AdHocTemplated<SimplifiedLiteral::arg>::unionIterablesVector(allBoundVariables, allArgumentsSecond);
+    auto arguments = AdHocTemplated<string>::unionIterablesVector(allBoundVariables, allArgumentsSecond);
+    std::vector<SimplifiedLiteral::arg> argumentsVariant;
+    argumentsVariant.reserve(arguments.size());
+    for (auto &arg : arguments) {
+        argumentsVariant.emplace_back(arg);
+    }
     if(arguments.empty()) {
         // we'll introduce a constant here, in order to do not allow predicates of arity 0
         arguments.emplace_back(getRandomTermName());
     }
-    shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, arguments);
-    shared_ptr<SimplifiedLiteral> newLiteralNegated = make_shared<SimplifiedLiteral>(true, fakePredicateName, arguments);
+    shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
+    shared_ptr<SimplifiedLiteral> newLiteralNegated = make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);
     for(auto& clause : firstClauses) { clause.push_back(newLiteral); }
     for(auto& clause : secondClauses) { clause.push_back(newLiteralNegated); }
     firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
@@ -638,9 +655,8 @@ template <typename T> T getSimplifiedClauseForm() {
 }
 
 template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimplifiedClauseForm() {
-    static bool executed = false;
     static std::vector<SimplifiedClauseForm::SimplifiedClause> clauseForm;
-    if(!executed) {
+    if(!computedClauseForm) {
         cerr << "before everything : " << parseTree.getEulerTraversal() << endl;
         basicReduce();
         cerr << "after basic reduction : " << parseTree.getEulerTraversal() << endl;
@@ -651,7 +667,7 @@ template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimp
         unifyNormalForms(parseTree.Root);
         clauseForm =
         parseTree.information[parseTree.Root]->getEntity<shared_ptr<SimplifiedClauseForm>>()->getSimplifiedClauseForm();
-        executed = true;
+        computedClauseForm = true;
         cerr << parseTree.getEulerTraversal() << endl;
     }
     return clauseForm;
@@ -685,7 +701,7 @@ template <> string Reducer::getSimplifiedClauseForm() {
 std::shared_ptr<ClauseForm> Reducer::getClauseForm() {
     auto simplifiedClauseForm = getSimplifiedClauseForm<std::shared_ptr<SimplifiedClauseForm>>();
     return make_shared<ClauseForm>(simplifiedClauseForm, reservedFunctionNames, allBoundVariables,
-    AdHocTemplated<string>::unionIterablesUnorderedSet(allBoundVariables, reservedTermNames));
+    AdHocTemplated<string>::differenceUnorderedSets(reservedTermNames, allBoundVariables));
 }
 
 } // namespace utils
