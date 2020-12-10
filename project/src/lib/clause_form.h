@@ -1,42 +1,50 @@
 //
-// Created by Patrick Sava on 11/18/2020.
+// Created by Patrick Sava on 12/2/2020.
 //
 
 #ifndef PROJECT_CLAUSE_FORM_H
 #define PROJECT_CLAUSE_FORM_H
 
-#include "literal.h"
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
+#include "clause.h"
+#include "simplified_clause_form.h"
 
 namespace utils {
-
+class BasicTheoremProver;
 class ClauseForm {
-    public:
-    typedef std::vector<std::shared_ptr<Literal>> Clause;
-
     private:
-    friend class Reducer;
-
-    private:
-    bool isEmpty;
-    std::vector<Clause> literals;
-
-    public:
-    [[nodiscard]] const std::vector<Clause>& getClauseForm() const;
+    friend class BasicTheoremProver;
+    std::vector<std::shared_ptr<Clause>> clauseForm;
+    std::unordered_set<std::string> allFunctionNames;
+    std::unordered_set<std::string> allVariableNames;
+    std::unordered_set<std::string> allConstantNames;
 
     public:
-    ClauseForm() : isEmpty(true) {
-        literals.clear();
+    ClauseForm() = default;
+    ClauseForm(const std::shared_ptr<SimplifiedClauseForm>& simplifiedClauseForm,
+    const std::unordered_set<std::string>& functionNames,
+    const std::unordered_set<std::string>& variableNames,
+    const std::unordered_set<std::string>& constantNames) {
+        allFunctionNames       = functionNames;
+        allVariableNames       = variableNames;
+        allConstantNames       = constantNames;
+        auto simplifiedClauses = simplifiedClauseForm->getSimplifiedClauseForm();
+        clauseForm.reserve(simplifiedClauses.size());
+        for(auto& simplifiedClause : simplifiedClauses) {
+            clauseForm.push_back(std::make_shared<Clause>(simplifiedClause, variableNames, constantNames));
+        }
+        makeVariableNamesUniquePerClause();
     }
-    ClauseForm(std::vector<Clause> _literals) {
-        isEmpty  = _literals.empty();
-        literals = std::move(_literals);
-    }
-    [[nodiscard]] static std::string getString(const Clause& clause);
-    [[nodiscard]] std::string getString() const;
+    void merge(std::shared_ptr<ClauseForm>& other);
+    void applySubstitution(const std::pair<std::string, std::string>& mapping);
+    void renameFunction(const std::pair<std::string, std::string>& mapping);
+    void renameTerms(std::shared_ptr<ClauseForm>& other,
+    std::unordered_set<std::string>& _allTermNames,
+    std::unordered_set<std::string>& _allTermNamesOther,
+    std::unordered_set<std::string>& forbiddenOne,
+    std::unordered_set<std::string>& forbiddenTwo,
+    bool isFunctionRenaming);
+    void makeVariableNamesUniquePerClause();
+    std::string getString() const;
 };
 }; // namespace utils
 

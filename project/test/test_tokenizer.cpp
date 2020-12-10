@@ -27,15 +27,15 @@ TEST(tokenizerTestSuite, testTokenize) {
 }
 
 TEST(tokenizerTestSuite, testTokenizeTwo) {
-    const string formula  = "?x(Artst(x)&@y(Bkpr(y)->~Hate(x,y)))";
-    vector<string> result = { "?x", "(", "Artst(x)", "&", "@y", "(", "Bkpr(y)", "->", "~", "Hate(x,y)", ")", ")" };
+    const string formula  = "?x(Artst(x)^@y(Bkpr(y)->~Hate(x,y)))";
+    vector<string> result = { "?x", "(", "Artst(x)", "^", "@y", "(", "Bkpr(y)", "->", "~", "Hate(x,y)", ")", ")" };
     utils::Tokenizer& tokenizer = utils::Tokenizer::getInstance();
     ASSERT_EQ(tokenizer.tokenize(formula), result);
 }
 
 TEST(tokenizerTestSuite, testTokenizeThree) {
-    const string formula        = "@x(Bkpr(x) -> ?y(Artst(y) & Hate(x, y)))";
-    vector<string> result       = { "@x", "(", "Bkpr(x)", "->", "?y", "(", "Artst(y)", "&", "Hate(x,y)", ")", ")" };
+    const string formula        = "@x(Bkpr(x) -> ?y(Artst(y) ^ Hate(x, y)))";
+    vector<string> result       = { "@x", "(", "Bkpr(x)", "->", "?y", "(", "Artst(y)", "^", "Hate(x,y)", ")", ")" };
     utils::Tokenizer& tokenizer = utils::Tokenizer::getInstance();
     ASSERT_EQ(tokenizer.tokenize(formula), result);
 }

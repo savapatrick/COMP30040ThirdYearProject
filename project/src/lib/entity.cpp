@@ -23,12 +23,12 @@ template <> string Entity::getEntity() const {
 }
 
 // throws
-template <> shared_ptr<Literal> Entity::getEntity() const {
+template <> shared_ptr<SimplifiedLiteral> Entity::getEntity() const {
     return get<1>(entity);
 }
 
 // throws
-template <> shared_ptr<ClauseForm> Entity::getEntity() const {
+template <> shared_ptr<SimplifiedClauseForm> Entity::getEntity() const {
     return get<2>(entity);
 }
 
@@ -36,7 +36,7 @@ std::string Entity::getString() const {
     Operators& operators = Operators::getInstance();
     if(type == EntityType::BOUNDVariable or type == EntityType::SIMPLIFIEDOperator) {
         return get<0>(entity);
-    } else if(type == EntityType::LITERAL) {
+    } else if(type == EntityType::SIMPLIFIEDLiteral) {
         return get<1>(entity)->getString();
     } else {
         return get<2>(entity)->getString();

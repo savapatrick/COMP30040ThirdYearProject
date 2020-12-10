@@ -1,104 +1,79 @@
 //
-// Created by Patrick Sava on 11/5/2020.
+// Created by Patrick Sava on 12/2/2020.
 //
 
 #include "literal.h"
-#include "operators.h"
+#include "ad_hoc_templated.h"
 #include <stdexcept>
 
 using namespace std;
 
 namespace utils {
-
-bool Literal::isLiteral(const std::string& seq) {
-    if(seq.empty()) {
-        throw invalid_argument("cannot check whether the empty string is predicate");
+bool Literal::equalsWithoutSign(const std::shared_ptr<Literal>& other) {
+    if(predicateName != other->predicateName) {
+        return false;
     }
-    Operators& operators = Operators::getInstance();
-    int i                = 0;
-    if(operators.whichOperator(i, seq) == "NOT") {
-        operators.advanceOperator(i, seq, "NOT");
+    if(terms.size() != other->terms.size()) {
+        throw logic_error("Predicate " + predicateName + " occurs with different arities!");
     }
-    return (i < (int)seq.size() and isupper(seq[i]));
+    for(int index = 0; index < (int)terms.size(); ++index) {
+        if(!terms[index]->equals(other->terms[index])) {
+            return false;
+        }
+    }
+    return true;
 }
 
-std::string Literal::getArgumentString(const arg& argument) {
-    if(argument.index() == 0) {
-        return get<0>(argument);
-    }
-    string result;
-    auto function = get<1>(argument);
-    result += function.first;
-    result += "(";
-    for(auto& functionArgument : function.second) { result += functionArgument + ","; }
-    result.pop_back();
-    result += ")";
-    return result;
+std::shared_ptr<Literal> Literal::createDeepCopy() {
+    return std::make_shared<Literal>(shared_from_this());
 }
 
-std::string Literal::getString() const {
-    string result;
-    Operators& operators = Operators::getInstance();
-    if(isNegated) {
-        result += operators.NOT;
+std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Literal::augmentUnification(const std::shared_ptr<Literal>& other) {
+    if(this->equalsWithoutSign(other)) {
+        return true;
     }
-    result += predicateName;
-    result += "(";
-    for(int ind = 0; ind < (int)arguments.size(); ++ind) {
-        if(ind + 1 == arguments.size()) {
-            result += getArgumentString(arguments[ind]) + ")";
+    for(int index = 0; index < (int)other->terms.size(); ++index) {
+        auto attempt = terms[index]->augmentUnification(other->terms[index]);
+        if(attempt.index() == 0) {
+            if(!get<0>(attempt)) {
+                return false;
+            }
+            continue;
         } else {
-            result += getArgumentString(arguments[ind]) + ",";
+            return get<1>(attempt);
         }
+    }
+    return true;
+}
+std::unordered_set<std::string> Literal::getAllVariables() {
+    unordered_set<string> result;
+    for(auto& term : terms) {
+        AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(term->getAllVariables(), result, result);
     }
     return result;
 }
 
-bool Literal::getIsNegated() const {
-    return isNegated;
+void Literal::applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping) {
+    for(auto& term : terms) { term->applySubstitution({ mapping.first, mapping.second }); }
 }
-
-const string& Literal::getPredicateName() const {
-    return predicateName;
+std::pair<std::string, bool> Literal::getLiteral() {
+    return { predicateName, isNegated };
 }
-
-const std::vector<Literal::arg>& Literal::getArguments() const {
-    return arguments;
-}
-
-void Literal::negate() {
-    isNegated ^= true;
-}
-
-void Literal::setArguments(const vector<Literal::arg>& args) {
-    Literal::arguments = args;
-}
-
-bool Literal::substituteSkolem(std::unordered_map<std::string, Literal::arg>& skolem) {
-    bool wasModified = false;
-    for(auto& argument : arguments) {
-        if(argument.index() == 0) {
-            // this is variable
-            // only raw variables could be substituted
-            auto variable = get<0>(argument);
-            if(skolem.find(variable) != skolem.end()) {
-                argument    = skolem[variable];
-                wasModified = true;
-            }
-        }
+std::string Literal::getString() const {
+    string sign;
+    if(isNegated) {
+        sign = "~";
     }
-    return wasModified;
+    string params;
+    for(auto& term : terms) { params += term->getString() + ","; }
+    params.pop_back();
+    return sign + predicateName + "(" + params + ")";
 }
-void Literal::simpleSubstitution(unordered_map<std::string, std::string>& substitution) {
-    for(auto& argument : arguments) {
-        if(argument.index() == 0) {
-            // this is variable
-            // only raw variables could be substituted
-            auto variable = get<0>(argument);
-            if(substitution.find(variable) != substitution.end()) {
-                argument = substitution[variable];
-            }
-        }
-    }
+void Literal::applySubstitution(const pair<std::string, std::string>& mapping) {
+    for(auto& term : terms) { term->applySubstitution({ mapping.first, mapping.second }); }
 }
+void Literal::renameFunction(const pair<std::string, std::string>& mapping) {
+    for(auto& term : terms) { term->renameFunction({ mapping.first, mapping.second }); }
+}
+
 }; // namespace utils

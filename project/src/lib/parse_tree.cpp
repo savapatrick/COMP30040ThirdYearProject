@@ -103,9 +103,10 @@ void ParseTree::buildTree(const vector<std::string>& tokens) {
             }
             auto node = getNextNode();
             graph[fatherChain.top()].emplace_back(node);
-            auto predicate                   = Tokenizer::decomposePredicate(token);
-            std::shared_ptr<Literal> literal = std::make_shared<Literal>(false, predicate.first, predicate.second);
-            information[node]                = make_shared<Entity>(EntityType::LITERAL, literal);
+            auto predicate = Tokenizer::decomposePredicate(token);
+            std::shared_ptr<SimplifiedLiteral> simplifiedLiteral =
+            std::make_shared<SimplifiedLiteral>(false, predicate.first, predicate.second);
+            information[node] = make_shared<Entity>(EntityType::SIMPLIFIEDLiteral, simplifiedLiteral);
             while(!operatorPrecedenceNOTQuant.empty() and sumSoFarParanthesis == operatorPrecedenceNOTQuant.top().second) {
                 auto target = operatorPrecedenceNOTQuant.top().first;
                 operatorPrecedenceNOTQuant.pop();

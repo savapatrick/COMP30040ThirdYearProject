@@ -5,6 +5,7 @@
 #ifndef PROJECT_REDUCER_H
 #define PROJECT_REDUCER_H
 
+#include "clause_form.h"
 #include "entity.h"
 #include "parse_tree.h"
 #include <set>
@@ -17,7 +18,10 @@ class ParseTree;
 class Reducer {
     private:
     ParseTree& parseTree;
-    std::unordered_set<std::string> reservedVariableNames;
+    bool computedClauseForm;
+    std::unordered_set<std::string> allBoundVariables;
+    std::unordered_set<std::string> reservedTermNames;
+    std::unordered_set<std::string> reservedFunctionNames;
     std::unordered_set<std::string> reservedPredicateNames;
 
     void disposeNode(int node);
@@ -48,37 +52,40 @@ class Reducer {
 
     bool pushNOTStep(int node);
 
-    bool checkNonAmbiguousScope(int node, std::set<std::string>& variablesInCurrentStack, std::string* result);
+    void variableRenaming(int node, std::unordered_set<std::string>& accumulator, std::unordered_map<std::string, std::string>& substitution);
+    void constantRenaming(int node,
+    std::unordered_set<std::string>& variablesInQuantifiers,
+    std::unordered_map<std::string, std::string>& substitution);
 
-    void variableRenaming(int node, std::set<std::string>& accumulator, std::unordered_map<std::string, std::string>& substitution);
+    void disambiguateFormula();
 
     bool skolemizationStep(int node,
     std::vector<std::string>& variablesInUniversalQuantifiers,
-    std::unordered_map<std::string, Literal::arg>& skolem);
+    std::unordered_map<std::string, SimplifiedLiteral::arg>& skolem);
 
     static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string& which);
 
-    std::string getRandomFunctionOrConstantName();
+    std::string getRandomTermName();
+    std::string getRandomFunctionName();
     std::string getRandomPredicateName();
 
     void basicReduce();
 
     void skolemization();
 
-    std::unordered_set<std::string> countVariablesAndConstants();
-
     void removeUniversalQuantifiers();
 
-    std::shared_ptr<ClauseForm> unifyTwoNormalFormsOnOperator(const std::shared_ptr<ClauseForm>& first,
-    const std::shared_ptr<ClauseForm>& second,
-    bool isAnd,
-    const std::vector<Literal::arg>& arguments);
-    void  unifyNormalForms(int node, const std::vector<Literal::arg>& arguments);
+    std::shared_ptr<SimplifiedClauseForm> unifyTwoNormalFormsOnOperator(const std::shared_ptr<SimplifiedClauseForm>& first,
+    const std::shared_ptr<SimplifiedClauseForm>& second,
+    bool isAnd);
+    void unifyNormalForms(int node);
 
     public:
     explicit Reducer(ParseTree& _parseTree);
 
-    template <typename T> T getClauseForm();
+    void addNegationToRoot();
+    template <typename T> T getSimplifiedClauseForm();
+    std::shared_ptr<ClauseForm> getClauseForm();
 };
 }; // namespace utils
 

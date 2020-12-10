@@ -3,9 +3,10 @@
 //
 
 #include "reducer.h"
+#include "ad_hoc_templated.h"
 #include "operators.h"
+#include "random_factory.h"
 #include <algorithm>
-#include <cassert>
 #include <ctime>
 #include <iostream>
 
@@ -13,22 +14,29 @@ using namespace std;
 
 namespace utils {
 
-Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
+Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree), computedClauseForm(false) {
+    allBoundVariables.clear();
+    reservedTermNames.clear();
+    reservedFunctionNames.clear();
+    reservedPredicateNames.clear();
     Operators& operators = Operators::getInstance();
     for(auto& info : parseTree.information) {
         auto value = info.second;
-        if(value->getType() == EntityType::LITERAL) {
-            auto literal   = value->getEntity<shared_ptr<Literal>>();
-            auto arguments = literal->getArguments();
+        if(value->getType() == EntityType::SIMPLIFIEDLiteral) {
+            auto simplifiedLiteral = value->getEntity<shared_ptr<SimplifiedLiteral>>();
+            auto arguments         = simplifiedLiteral->getArguments();
             for(auto& argument : arguments) {
                 if(argument.index() == 1) {
                     throw invalid_argument("given a non-raw parse tree to the Reducer constructor");
                 }
-                reservedVariableNames.insert(Literal::getArgumentString(argument));
+                reservedTermNames.insert(SimplifiedLiteral::getArgumentString(argument));
             }
-            reservedPredicateNames.insert(literal->getPredicateName());
+            reservedPredicateNames.insert(simplifiedLiteral->getPredicateName());
         } else if(value->getType() == EntityType::BOUNDVariable) {
-            reservedVariableNames.insert(operators.getVariableFromQuantifierAndVariable(value->getString()));
+            auto boundVariable = value->getEntity<string>();
+            auto variable      = operators.getVariableFromQuantifierAndVariable(boundVariable);
+            reservedTermNames.insert(variable);
+            allBoundVariables.insert(variable);
         } else if(value->getType() == EntityType::NORMALForms) {
             // for the intended purpose of this class, we should never enter on this branch
             // because we expect the Reducer class to always get the raw parseTree
@@ -41,36 +49,16 @@ Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree) {
     }
 }
 
-std::string Reducer::getRandomFunctionOrConstantName() {
-    static std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
-    const int sizeOfAlphabet    = 26;
-    // TODO: consider whether we want the C++11 random generator
-    std::srand(13);
-    string result;
-    do {
-        result.clear();
-        int length = rand() % 15 + 1; /// 26^15 is huge
-        for(int ind = 1; ind <= length; ++ind) { result += alphabet[rand() % sizeOfAlphabet]; }
-    } while(reservedVariableNames.find(result) != reservedVariableNames.end());
-    reservedVariableNames.insert(result);
-    return result;
+std::string Reducer::getRandomTermName() {
+    return RandomFactory::getRandomTermOrFunctionName(reservedTermNames);
+}
+
+std::string Reducer::getRandomFunctionName() {
+    return RandomFactory::getRandomTermOrFunctionName(reservedFunctionNames);
 }
 
 std::string Reducer::getRandomPredicateName() {
-    static std::string startingLetterAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    static std::string alphabet               = "abcdefghijklmnopqrstuvwxyz";
-    const int sizeOfAlphabet                  = 26;
-    // TODO: consider whether we want the C++11 random generator
-    std::srand(14);
-    string result;
-    do {
-        result.clear();
-        int length = rand() % 15 + 1; /// 26^15 is huge
-        result += startingLetterAlphabet[rand() % sizeOfAlphabet];
-        for(int ind = 2; ind <= length; ++ind) { result += alphabet[rand() % sizeOfAlphabet]; }
-    } while(reservedPredicateNames.find(result) != reservedPredicateNames.end());
-    reservedPredicateNames.insert(result);
-    return result;
+    return RandomFactory::getRandomPredicateName(reservedPredicateNames);
 }
 
 void Reducer::disposeNode(int node) {
@@ -121,6 +109,11 @@ int Reducer::addOrClause(const int& nodeOne, const int& nodeTwo) {
 int Reducer::addNegationToFormula(const int& nodeOne) {
     auto notOperator = addNodeWithOperator("NOT");
     parseTree.graph[notOperator].emplace_back(nodeOne);
+    if(nodeOne == parseTree.Root) {
+        parseTree.Root = parseTree.getNextNode();
+        parseTree.graph[parseTree.Root].emplace_back(notOperator);
+        return parseTree.Root;
+    }
     return notOperator;
 }
 
@@ -357,7 +350,9 @@ bool Reducer::pushNOTStep(int node) {
                     }
                     break;
                 }
-                case LITERAL: parseTree.information[neighbour]->getEntity<shared_ptr<Literal>>()->negate(); break;
+                case SIMPLIFIEDLiteral:
+                    parseTree.information[neighbour]->getEntity<shared_ptr<SimplifiedLiteral>>()->negate();
+                    break;
                 case NORMALForms:
                 default: throw logic_error("at this point the atoms are not grouped on normal forms");
                 }
@@ -389,34 +384,9 @@ void Reducer::basicReduce() {
     } while(doIt);
 }
 
-bool Reducer::checkNonAmbiguousScope(int node, set<std::string>& variablesInCurrentStack, string* result) {
-    Operators& operators = Operators::getInstance();
-    string toRemove;
-    if(parseTree.information.find(node) != parseTree.information.end()) {
-        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
-            auto information = parseTree.information[node]->getEntity<string>();
-            auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
-            auto variable    = operators.getVariableFromQuantifierAndVariable(information);
-            if(variablesInCurrentStack.find(variable) != variablesInCurrentStack.end()) {
-                *result = variable;
-                return false;
-            }
-            variablesInCurrentStack.insert(variable);
-            toRemove = variable;
-        }
-    }
-    bool isOk = true;
-    for(auto& neighbour : parseTree.graph[node]) {
-        isOk &= checkNonAmbiguousScope(neighbour, variablesInCurrentStack, result);
-    }
-    if(!toRemove.empty()) {
-        variablesInCurrentStack.erase(variablesInCurrentStack.find(toRemove));
-    }
-    return isOk;
-}
-
-void Reducer::variableRenaming(int node, set<std::string>& accumulator, unordered_map<std::string, std::string>& substitution) {
+void Reducer::variableRenaming(int node, unordered_set<std::string>& accumulator, unordered_map<std::string, std::string>& substitution) {
     string whichVariable;
+    string oldSubstitution;
     bool wasSubstitution = false;
     Operators& operators = Operators::getInstance();
     if(parseTree.information.find(node) != parseTree.information.end()) {
@@ -426,25 +396,76 @@ void Reducer::variableRenaming(int node, set<std::string>& accumulator, unordere
             string variable  = operators.getVariableFromQuantifierAndVariable(information);
             if(accumulator.find(variable) != accumulator.end()) {
                 // we want then to rename it
-                substitution[variable] = getRandomFunctionOrConstantName();
+                if(substitution.find(variable) != substitution.end()) {
+                    oldSubstitution = substitution[variable];
+                }
+                substitution[variable] = getRandomTermName();
                 accumulator.insert(substitution[variable]);
                 wasSubstitution = true;
                 whichVariable   = variable;
+            } else {
+                accumulator.insert(variable);
             }
-        } else if(parseTree.information[node]->getType() == EntityType::LITERAL) {
-            auto literal = parseTree.information[node]->getEntity<shared_ptr<Literal>>();
-            literal->simpleSubstitution(substitution);
+        } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
+            auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
+            simplifiedLiteral->simpleSubstitution(substitution);
         }
     }
     for(auto& neighbour : parseTree.graph[node]) { variableRenaming(neighbour, accumulator, substitution); }
     if(wasSubstitution) {
         substitution.erase(substitution.find(whichVariable));
+        if(!oldSubstitution.empty()) {
+            substitution[whichVariable] = oldSubstitution;
+        }
+    }
+}
+
+void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuantifiers, unordered_map<string, string>& substitution) {
+    Operators& operators = Operators::getInstance();
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            string variable  = operators.getVariableFromQuantifierAndVariable(information);
+            variablesInQuantifiers.insert(variable);
+        } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
+            auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
+            auto arguments         = simplifiedLiteral->getArguments();
+            vector<string> freeVariables;
+            for(auto& argument : arguments) {
+                if(argument.index()) {
+                    throw logic_error("The current implementation for constantRenaming function "
+                                      "assumes that there are no functions in the formula");
+                }
+                auto term = get<0>(argument);
+                if(variablesInQuantifiers.find(term) == variablesInQuantifiers.end()) {
+                    // this is a free-variable
+                    if(allBoundVariables.find(term) != allBoundVariables.end()) {
+                        // this free-variable share a name with a bound variable
+                        if(substitution.find(term) == substitution.end()) {
+                            substitution[term] = getRandomTermName();
+                        }
+                        freeVariables.emplace_back(term);
+                    }
+                }
+            }
+            unordered_map<string, string> localSubstitution;
+            for(auto& freeVariable : freeVariables) { localSubstitution[freeVariable] = substitution[freeVariable]; }
+            simplifiedLiteral->simpleSubstitution(localSubstitution);
+        }
+    }
+    for(auto& neighbour : parseTree.graph[node]) { constantRenaming(neighbour, variablesInQuantifiers, substitution); }
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            string variable  = operators.getVariableFromQuantifierAndVariable(information);
+            variablesInQuantifiers.erase(variablesInQuantifiers.find(variable));
+        }
     }
 }
 
 bool Reducer::skolemizationStep(int node,
 std::vector<std::string>& variablesInUniversalQuantifiers,
-unordered_map<string, Literal::arg>& skolem) {
+unordered_map<string, SimplifiedLiteral::arg>& skolem) {
     bool wasModified    = false;
     bool wasEQuantifier = false;
     bool wasVQuantifier = false;
@@ -457,9 +478,9 @@ unordered_map<string, Literal::arg>& skolem) {
             auto variable    = operators.getVariableFromQuantifierAndVariable(information);
             if(quantifier == operators.EQuantifier) {
                 if(variablesInUniversalQuantifiers.empty()) {
-                    skolem[variable] = getRandomFunctionOrConstantName();
+                    skolem[variable] = getRandomTermName();
                 } else {
-                    skolem[variable] = make_pair(getRandomFunctionOrConstantName(), variablesInUniversalQuantifiers);
+                    skolem[variable] = make_pair(getRandomFunctionName(), variablesInUniversalQuantifiers);
                 }
                 wasModified |= true;
                 wasEQuantifier = true;
@@ -471,15 +492,17 @@ unordered_map<string, Literal::arg>& skolem) {
                 variablesInUniversalQuantifiers.push_back(variable);
                 wasVQuantifier = true;
             }
-        } else if(parseTree.information[node]->getType() == EntityType::LITERAL) {
-            auto literal = parseTree.information[node]->getEntity<shared_ptr<Literal>>();
-            wasModified |= literal->substituteSkolem(skolem);
+        } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
+            auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
+            wasModified |= simplifiedLiteral->substituteSkolem(skolem);
         }
     }
     for(auto& neighbour : parseTree.graph[node]) {
         wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
     }
     if(wasEQuantifier) {
+        allBoundVariables.erase(allBoundVariables.find(whichVariable));
+        reservedTermNames.erase(reservedTermNames.find(whichVariable));
         skolem.erase(skolem.find(whichVariable));
         /// here we delete the information for this node
         parseTree.information.erase(parseTree.information.find(node));
@@ -490,20 +513,19 @@ unordered_map<string, Literal::arg>& skolem) {
     return wasModified;
 }
 
-void Reducer::skolemization() {
-    set<std::string> variablesSoFar;
-    string violatingVariable;
-    if(!checkNonAmbiguousScope(parseTree.Root, variablesSoFar, &violatingVariable)) {
-        throw logic_error("the given formula has ambiguities in variable namings; "
-                          "the variable " +
-        violatingVariable + " apears multiple times in a chain of quantifiers");
-    }
-    if(!variablesSoFar.empty()) {
-        throw logic_error("something went wrong with checkNonAmbiguousScope function; content partially disposed");
-    }
-    // in order to disambiguate the formula, make the variables unique
+void Reducer::disambiguateFormula() {
+    unordered_set<std::string> variablesSoFar;
     unordered_map<string, string> simpleSubstitution;
     variableRenaming(parseTree.Root, variablesSoFar, simpleSubstitution);
+    allBoundVariables = variablesSoFar;
+    unordered_set<std::string> boundVariables;
+    simpleSubstitution.clear();
+    constantRenaming(parseTree.Root, boundVariables, simpleSubstitution);
+}
+
+void Reducer::skolemization() {
+    // in order to disambiguate the formula, make the variables unique
+    disambiguateFormula();
     vector<std::string> variablesInUniversalQuantifiers;
     unordered_map<string, variant<string, pair<string, vector<string>>>> skolem;
     while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, skolem)) {
@@ -511,30 +533,6 @@ void Reducer::skolemization() {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }
     }
-}
-
-unordered_set<string> Reducer::countVariablesAndConstants() {
-    unordered_set<string> variables;
-    Operators& operators = Operators::getInstance();
-    for(auto& information : parseTree.information) {
-        auto value = information.second;
-        if(value->getType() == EntityType::LITERAL) {
-            auto literal   = value->getEntity<shared_ptr<Literal>>();
-            auto arguments = literal->getArguments();
-            for(auto& argument : arguments) {
-                if(argument.index() == 0) {
-                    variables.insert(get<0>(argument));
-                }
-            }
-        } else if(value->getType() == EntityType::BOUNDVariable) {
-            auto boundVariable = value->getEntity<string>();
-            auto variable      = operators.getVariableFromQuantifierAndVariable(boundVariable);
-            variables.insert(variable);
-        } else if(information.first == EntityType::NORMALForms) {
-            throw logic_error("At this point we don't expect any NORMALForms in the ParseTree");
-        }
-    }
-    return variables;
 }
 
 void Reducer::removeUniversalQuantifiers() {
@@ -549,42 +547,52 @@ void Reducer::removeUniversalQuantifiers() {
     for(auto& elem : universalQuantifiersNodes) { parseTree.information.erase(parseTree.information.find(elem)); }
 }
 
-shared_ptr<ClauseForm> Reducer::unifyTwoNormalFormsOnOperator(const shared_ptr<ClauseForm>& first,
-const shared_ptr<ClauseForm>& second,
-bool isAnd,
-const std::vector<Literal::arg>& arguments) {
+shared_ptr<SimplifiedClauseForm> Reducer::unifyTwoNormalFormsOnOperator(const shared_ptr<SimplifiedClauseForm>& first,
+const shared_ptr<SimplifiedClauseForm>& second,
+bool isAnd) {
     if(first->isEmpty) {
-        return make_shared<ClauseForm>(second->literals);
+        return make_shared<SimplifiedClauseForm>(second->simplifiedClauseForm);
     }
     if(second->isEmpty) {
-        return make_shared<ClauseForm>(first->literals);
+        return make_shared<SimplifiedClauseForm>(first->simplifiedClauseForm);
     }
-    std::vector<ClauseForm::Clause> firstClauses(first->getClauseForm());
-    std::vector<ClauseForm::Clause> secondClauses(second->getClauseForm());
+    std::vector<SimplifiedClauseForm::SimplifiedClause> firstClauses(first->getSimplifiedClauseForm());
+    std::vector<SimplifiedClauseForm::SimplifiedClause> secondClauses(second->getSimplifiedClauseForm());
     if(isAnd) {
         firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
-        return make_shared<ClauseForm>(firstClauses);
+        return make_shared<SimplifiedClauseForm>(firstClauses);
     }
-    std::string fakePredicateName         = getRandomPredicateName();
+    std::string fakePredicateName = getRandomPredicateName();
     // uncomment here if you want to escape from the optimization
-    if (firstClauses.size() == 1 and secondClauses.size() == 1) {
+    if(firstClauses.size() == 1 and secondClauses.size() == 1) {
         /// trivial case
         firstClauses[0].insert(end(firstClauses[0]), begin(secondClauses[0]), end(secondClauses[0]));
-        return make_shared<ClauseForm>(firstClauses);
+        return make_shared<SimplifiedClauseForm>(firstClauses);
     }
-    shared_ptr<Literal> newLiteral        = make_shared<Literal>(false, fakePredicateName, arguments);
-    shared_ptr<Literal> newLiteralNegated = make_shared<Literal>(true, fakePredicateName, arguments);
+    // TODO: bear in mind that here we made the assumption that any free-variable in the
+    // initial formula is a constant
+    auto allArgumentsSecond = second->getAllArguments();
+    auto arguments          = AdHocTemplated<string>::unionIterablesVector(allBoundVariables, allArgumentsSecond);
+    std::vector<SimplifiedLiteral::arg> argumentsVariant;
+    argumentsVariant.reserve(arguments.size());
+    for(auto& arg : arguments) { argumentsVariant.emplace_back(arg); }
+    if(arguments.empty()) {
+        // we'll introduce a constant here, in order to do not allow predicates of arity 0
+        arguments.emplace_back(getRandomTermName());
+    }
+    shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
+    shared_ptr<SimplifiedLiteral> newLiteralNegated = make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);
     for(auto& clause : firstClauses) { clause.push_back(newLiteral); }
     for(auto& clause : secondClauses) { clause.push_back(newLiteralNegated); }
     firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
-    return make_shared<ClauseForm>(firstClauses);
+    return make_shared<SimplifiedClauseForm>(firstClauses);
 }
 
-void Reducer::unifyNormalForms(int node, const std::vector<Literal::arg>& arguments) {
+void Reducer::unifyNormalForms(int node) {
     int cnt = 0;
     int whichNeighbour;
     for(auto& neighbour : parseTree.graph[node]) {
-        unifyNormalForms(neighbour, arguments);
+        unifyNormalForms(neighbour);
         if(parseTree.information.find(neighbour) != parseTree.information.end()) {
             cnt += 1;
             whichNeighbour = neighbour;
@@ -595,13 +603,11 @@ void Reducer::unifyNormalForms(int node, const std::vector<Literal::arg>& argume
             throw logic_error("two instances cannot be in a relationship father-son");
         }
         swap(parseTree.information[node], parseTree.information[whichNeighbour]);
-        for (auto &x : parseTree.graph[node]) {
-            disposeNode(x);
-        }
+        for(auto& x : parseTree.graph[node]) { disposeNode(x); }
         parseTree.graph[node].clear();
     }
     int totalNumberOfOperators = 0;
-    int totalNumberOfClauses = 0;
+    int totalNumberOfClauses   = 0;
     for(auto& neighbour : parseTree.graph[node]) {
         if(parseTree.information.find(neighbour) != parseTree.information.end()) {
             if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
@@ -613,27 +619,26 @@ void Reducer::unifyNormalForms(int node, const std::vector<Literal::arg>& argume
     }
     Operators& operators = Operators::getInstance();
     if(parseTree.graph[node].empty() and parseTree.information.find(node) != parseTree.information.end() and
-    parseTree.information[node]->getType() == EntityType::LITERAL) {
-        /// simple leaf which is literal
-        vector<ClauseForm::Clause> clauses;
-        clauses.push_back({ parseTree.information[node]->getEntity<shared_ptr<Literal>>() });
-        shared_ptr<ClauseForm> normalForm = make_shared<ClauseForm>(clauses);
-        parseTree.information[node]       = make_shared<Entity>(EntityType::NORMALForms, normalForm);
-    }
-    else if(totalNumberOfClauses and totalNumberOfOperators) {
+    parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
+        /// simple leaf which is simplifiedLiteral
+        vector<SimplifiedClauseForm::SimplifiedClause> clauses;
+        clauses.push_back({ parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>() });
+        shared_ptr<SimplifiedClauseForm> normalForm = make_shared<SimplifiedClauseForm>(clauses);
+        parseTree.information[node]                 = make_shared<Entity>(EntityType::NORMALForms, normalForm);
+    } else if(totalNumberOfClauses and totalNumberOfOperators) {
         // we are in a node and that one is having the sons forming a normal form
-        parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms, make_shared<ClauseForm>());
+        parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms, make_shared<SimplifiedClauseForm>());
         bool isAnd                  = false;
         for(auto& neighbour : parseTree.graph[node]) {
             if(parseTree.information.find(neighbour) == parseTree.information.end()) {
                 continue;
             } else {
-                if(parseTree.information[neighbour]->getType() == EntityType::LITERAL) {
-                    throw logic_error("at this point it should be no literal in the parse tree");
+                if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDLiteral) {
+                    throw logic_error("at this point it should be no simplifiedLiteral in the parse tree");
                 } else if(parseTree.information[neighbour]->getType() == EntityType::NORMALForms) {
                     parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms,
-                    unifyTwoNormalFormsOnOperator(parseTree.information[node]->getEntity<shared_ptr<ClauseForm>>(),
-                    parseTree.information[neighbour]->getEntity<shared_ptr<ClauseForm>>(), isAnd, arguments));
+                    unifyTwoNormalFormsOnOperator(parseTree.information[node]->getEntity<shared_ptr<SimplifiedClauseForm>>(),
+                    parseTree.information[neighbour]->getEntity<shared_ptr<SimplifiedClauseForm>>(), isAnd));
                 } else if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
                     isAnd = operators.isAnd(parseTree.information[neighbour]->getEntity<string>());
                 }
@@ -642,44 +647,58 @@ void Reducer::unifyNormalForms(int node, const std::vector<Literal::arg>& argume
     }
 }
 
-template <typename T> T getClauseForm() {
+template <typename T> T getSimplifiedClauseForm() {
     throw logic_error("not implemented");
 }
 
-template <> std::vector<ClauseForm::Clause> Reducer::getClauseForm() {
-    static bool executed = false;
-    static std::vector<ClauseForm::Clause> clauseForm;
-    if(!executed) {
+template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimplifiedClauseForm() {
+    static std::vector<SimplifiedClauseForm::SimplifiedClause> clauseForm;
+    if(!computedClauseForm) {
         cerr << "before everything : " << parseTree.getEulerTraversal() << endl;
         basicReduce();
         cerr << "after basic reduction : " << parseTree.getEulerTraversal() << endl;
         skolemization();
         cerr << "after skolemization : " << parseTree.getEulerTraversal() << endl;
-        auto allVariables             = countVariablesAndConstants();
-        std::vector<Literal::arg> arguments;
-        arguments.reserve(allVariables.size());
-        for(auto& variable : allVariables) { arguments.emplace_back(variable); }
         cerr << parseTree.getEulerTraversal() << endl;
         removeUniversalQuantifiers();
-        unifyNormalForms(parseTree.Root, arguments);
-        clauseForm = parseTree.information[parseTree.Root]->getEntity<shared_ptr<ClauseForm>>()->getClauseForm();
-        executed   = true;
+        unifyNormalForms(parseTree.Root);
+        clauseForm =
+        parseTree.information[parseTree.Root]->getEntity<shared_ptr<SimplifiedClauseForm>>()->getSimplifiedClauseForm();
+        computedClauseForm = true;
         cerr << parseTree.getEulerTraversal() << endl;
     }
     return clauseForm;
 }
 
-template <> string Reducer::getClauseForm() {
-    std::vector<ClauseForm::Clause> clauseForm = getClauseForm<std::vector<ClauseForm::Clause>>();
-    string result                              = "{";
-    for(int ind = 0; ind < (int)clauseForm.size(); ++ind) {
-        auto clause = clauseForm[ind];
-        result += ClauseForm::getString(clause);
-        if(ind + 1 < (int)clauseForm.size()) {
+void Reducer::addNegationToRoot() {
+    addNegationToFormula(parseTree.Root);
+}
+
+template <> std::shared_ptr<SimplifiedClauseForm> Reducer::getSimplifiedClauseForm() {
+    std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseForm =
+    getSimplifiedClauseForm<std::vector<SimplifiedClauseForm::SimplifiedClause>>();
+    return make_shared<SimplifiedClauseForm>(simplifiedClauseForm);
+}
+
+template <> string Reducer::getSimplifiedClauseForm() {
+    std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseForm =
+    getSimplifiedClauseForm<std::vector<SimplifiedClauseForm::SimplifiedClause>>();
+    string result = "{";
+    for(int ind = 0; ind < (int)simplifiedClauseForm.size(); ++ind) {
+        auto clause = simplifiedClauseForm[ind];
+        result += SimplifiedClauseForm::getString(clause);
+        if(ind + 1 < (int)simplifiedClauseForm.size()) {
             result += ", ";
         }
     }
     result += "}";
     return result;
 }
+
+std::shared_ptr<ClauseForm> Reducer::getClauseForm() {
+    auto simplifiedClauseForm = getSimplifiedClauseForm<std::shared_ptr<SimplifiedClauseForm>>();
+    return make_shared<ClauseForm>(simplifiedClauseForm, reservedFunctionNames, allBoundVariables,
+    AdHocTemplated<string>::differenceUnorderedSets(reservedTermNames, allBoundVariables));
+}
+
 } // namespace utils
