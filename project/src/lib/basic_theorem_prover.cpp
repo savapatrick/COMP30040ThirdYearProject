@@ -197,13 +197,16 @@ BasicTheoremProver::attemptToUnify(std::shared_ptr<Clause>& first, std::shared_p
 }
 
 bool BasicTheoremProver::resolutionStep() {
-    bool found;
     do {
-        found = false;
-        shared_ptr<Clause> newClause;
-        for(int index = 0; index < (int)clauseForm->clauseForm.size() and !found; ++index) {
-            for(int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size() and !found; ++index2) {
-                if(avoid.find({ index, index2 }) != avoid.end()) {
+        timestamp += 1;
+        for(auto &elem : clauseForm->clauseForm) {
+            clausesSoFar.insert(elem->getString());
+        }
+        for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
+            for(int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                if(avoid.find({ index, index2 }) != avoid.end() or
+                (hot.find(index) != hot.end() and hot[index] < timestamp) or
+                (hot.find(index2) != hot.end() and hot[index2] < timestamp)) {
                     continue;
                 }
                 auto result = attemptToUnify(clauseForm->clauseForm[index], clauseForm->clauseForm[index2]);
@@ -211,28 +214,43 @@ bool BasicTheoremProver::resolutionStep() {
                 // outputStream.flush();
                 avoid.insert({ index, index2 });
                 if(result.first) {
-                    // outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
-                    // " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
-                    // result.second->getString() << '\n';
-                    outputStream.flush();
-                    found     = true;
-                    newClause = result.second;
-                    if(newClause->clause.empty()) {
+                    //  outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
+                    //  " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
+                    //  result.second->getString() << '\n';
+                    //  outputStream.flush();
+                    auto clauseHash = result.second->getString();
+                    if (clauses.find(clauseHash) != clauses.end()) {
+                        continue;
+                    }
+                    if (clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
+                        continue;
+                    }
+                    clauses[clauseHash] = result.second;
+                    hot[index] = timestamp + static_cast<long long>(clauseForm->clauseForm.size()) + 1; // then pick it again
+                    hot[index2] = timestamp + static_cast<long long>(clauseForm->clauseForm.size()) + 1; // then pick it again
+                    if(result.second->clause.empty()) {
                         // we derived the empty clause
                         return true;
                     }
                 }
             }
         }
-        if(found) {
-            clauseForm->clauseForm.push_back(newClause);
+        if(!clauses.empty()) {
+            for (auto &keyValue : clauses) { clauseForm->clauseForm.push_back(keyValue.second); }
             clauseForm->makeVariableNamesUniquePerClause();
         }
-    } while(found);
-    return false;
+        else {
+            return false;
+        }
+    } while(true);
 }
 
 void BasicTheoremProver::run() {
+    outputStream << "we have the following clauses in our initial set!\n";
+    for (int index = 0; index < (int)clauseForm->clauseForm.size(); ++ index) {
+        outputStream << index << " " << clauseForm->clauseForm[index]->getString() << "\n";
+    }
+    outputStream.flush();
     do {
         if(factoringStep()) {
             outputStream << "derived empty clause!\n";

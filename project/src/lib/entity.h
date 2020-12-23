@@ -74,6 +74,8 @@ class Entity {
     template <typename Value> Value getEntity() const;
 
     [[nodiscard]] std::string getString() const;
+
+    void applySubstitution(std::unordered_map<std::string, std::string>& substitution);
 };
 }; // namespace utils
 

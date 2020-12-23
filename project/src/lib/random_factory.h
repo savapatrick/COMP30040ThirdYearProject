@@ -15,7 +15,11 @@ class RandomFactory {
     }
 
     public:
-    static std::string getRandomTermOrFunctionName(std::unordered_set<std::string>& reservedTermNames);
+
+    static std::string getRandomTermOrFunctionName(std::unordered_set<std::string>& reservedTermNames, const std::string &pref = "");
+    static std::string getRandomConstantName(std::unordered_set<std::string>& reservedTermNames);
+    static std::string getRandomVariableName(std::unordered_set<std::string>& reservedTermNames);
+    static std::string getRandomFunctionName(std::unordered_set<std::string>& reservedTermNames);
     static std::string getRandomPredicateName(std::unordered_set<std::string>& reservedPredicateNames);
 };
 } // namespace utils

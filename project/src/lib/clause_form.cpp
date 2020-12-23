@@ -16,7 +16,7 @@ void ClauseForm::makeVariableNamesUniquePerClause() {
         unordered_set<string> localVariables;
         for(auto& variable : allVariables) {
             if(soFar.find(variable) != soFar.end()) {
-                auto substitution = make_pair(variable, RandomFactory::getRandomTermOrFunctionName(allVariableNames));
+                auto substitution = make_pair(variable, RandomFactory::getRandomVariableName(allVariableNames));
                 clause->applySubstitution(substitution);
                 localVariables.insert(substitution.second);
             } else {

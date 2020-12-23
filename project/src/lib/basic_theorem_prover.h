@@ -15,6 +15,10 @@ namespace utils {
 class BasicTheoremProver : public TheoremProver {
     private:
     std::set<std::pair<int, int>> avoid;
+    std::unordered_map<int, long long> hot;
+    std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
+    std::unordered_set<std::string> clausesSoFar;
+    long long timestamp;
     bool tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause); // and commit if possible
     bool isTautology(std::shared_ptr<Clause>& clause);
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
@@ -26,6 +30,10 @@ class BasicTheoremProver : public TheoremProver {
     BasicTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
     : TheoremProver(std::move(_clauseForm), _fileName) {
         avoid.clear();
+        hot.clear();
+        clauses.clear();
+        clausesSoFar.clear();
+        timestamp = 0;
     }
     void run() override;
 };

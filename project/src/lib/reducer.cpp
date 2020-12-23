@@ -49,14 +49,6 @@ Reducer::Reducer(ParseTree& _parseTree) : parseTree(_parseTree), computedClauseF
     }
 }
 
-std::string Reducer::getRandomTermName() {
-    return RandomFactory::getRandomTermOrFunctionName(reservedTermNames);
-}
-
-std::string Reducer::getRandomFunctionName() {
-    return RandomFactory::getRandomTermOrFunctionName(reservedFunctionNames);
-}
-
 std::string Reducer::getRandomPredicateName() {
     return RandomFactory::getRandomPredicateName(reservedPredicateNames);
 }
@@ -297,14 +289,11 @@ bool Reducer::pushNOTStep(int node) {
     string operatorOnTheLevel;
     for(auto& neighbour : parseTree.graph[node]) {
         if(parseTree.information.find(neighbour) != parseTree.information.end()) {
-            if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
+            if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator
+            and !operators.isNot(parseTree.information[neighbour]->getString())) {
                 if(operatorOnTheLevel.empty()) {
                     operatorOnTheLevel = parseTree.information[neighbour]->getString();
-                    if(operatorOnTheLevel == operators.NOT) {
-                        // that's not unary
-                        // then reset
-                        operatorOnTheLevel.clear();
-                    } else if(operatorOnTheLevel != operators.AND and operatorOnTheLevel != operators.OR) {
+                    if(operatorOnTheLevel != operators.AND and operatorOnTheLevel != operators.OR) {
                         // at this point the tree should have only AND, OR and NOT + quantifiers
                         throw logic_error("at this point the tree should have only AND, OR and NOT + quantifiers");
                     }
@@ -402,16 +391,16 @@ void Reducer::variableRenaming(int node, unordered_set<std::string>& accumulator
                 if(substitution.find(variable) != substitution.end()) {
                     oldSubstitution = substitution[variable];
                 }
-                substitution[variable] = getRandomTermName();
+                substitution[variable] = RandomFactory::getRandomVariableName(reservedTermNames);
                 accumulator.insert(substitution[variable]);
                 wasSubstitution = true;
                 whichVariable   = variable;
+                parseTree.information[node]->applySubstitution(substitution);
             } else {
                 accumulator.insert(variable);
             }
         } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
-            auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
-            simplifiedLiteral->simpleSubstitution(substitution);
+            parseTree.information[node]->applySubstitution(substitution);
         }
     }
     for(auto& neighbour : parseTree.graph[node]) { variableRenaming(neighbour, accumulator, substitution); }
@@ -445,7 +434,7 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
                     if(allBoundVariables.find(term) != allBoundVariables.end()) {
                         // this free-variable share a name with a bound variable
                         if(substitution.find(term) == substitution.end()) {
-                            substitution[term] = getRandomTermName();
+                            substitution[term] = RandomFactory::getRandomConstantName(reservedTermNames);
                         }
                         freeVariables.emplace_back(term);
                     }
@@ -481,9 +470,9 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             auto variable    = operators.getVariableFromQuantifierAndVariable(information);
             if(quantifier == operators.EQuantifier) {
                 if(variablesInUniversalQuantifiers.empty()) {
-                    skolem[variable] = getRandomTermName();
+                    skolem[variable] = RandomFactory::getRandomConstantName(reservedTermNames);
                 } else {
-                    skolem[variable] = make_pair(getRandomFunctionName(), variablesInUniversalQuantifiers);
+                    skolem[variable] = make_pair(RandomFactory::getRandomFunctionName(reservedFunctionNames), variablesInUniversalQuantifiers);
                 }
                 wasModified |= true;
                 wasEQuantifier = true;
@@ -517,9 +506,13 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
 }
 
 void Reducer::disambiguateFormula() {
-    unordered_set<std::string> variablesSoFar;
+    unordered_set<std::string> variablesSoFar(allBoundVariables.begin(), allBoundVariables.end());
+//    unordered_set<std::string> variablesSoFar;
     unordered_map<string, string> simpleSubstitution;
     variableRenaming(parseTree.Root, variablesSoFar, simpleSubstitution);
+    for (auto &x : allBoundVariables) {
+        reservedTermNames.erase(reservedTermNames.find(x));
+    }
     allBoundVariables = variablesSoFar;
     unordered_set<std::string> boundVariables;
     simpleSubstitution.clear();
@@ -581,7 +574,7 @@ bool isAnd) {
     for(auto& arg : arguments) { argumentsVariant.emplace_back(arg); }
     if(arguments.empty()) {
         // we'll introduce a constant here, in order to do not allow predicates of arity 0
-        arguments.emplace_back(getRandomTermName());
+        arguments.emplace_back(RandomFactory::getRandomConstantName(reservedTermNames));
     }
     shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
     shared_ptr<SimplifiedLiteral> newLiteralNegated = make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);
