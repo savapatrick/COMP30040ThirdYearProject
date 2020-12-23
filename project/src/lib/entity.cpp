@@ -42,4 +42,20 @@ std::string Entity::getString() const {
         return get<2>(entity)->getString();
     }
 }
+void Entity::applySubstitution(std::unordered_map<std::string, std::string>& substitution) {
+    if (type >= 2) {
+        throw std::logic_error("cannot apply substitution on operators or normal forms!");
+    }
+    else if (type == 0) {
+        auto variable = get<0>(entity).substr(1);
+        if (substitution.find(variable) != substitution.end()) {
+            variable = substitution[variable];
+        }
+        entity = get<0>(entity)[0] + variable;
+    }
+    else {
+        auto literal = get<1>(entity);
+        literal->simpleSubstitution(substitution);
+    }
+}
 }; // namespace utils

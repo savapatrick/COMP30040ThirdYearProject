@@ -69,7 +69,7 @@ unordered_set<std::string> SimplifiedClauseForm::makeVariableNamesUniquePerClaus
             for(auto& var : vars) {
                 if(soFar.find(var) != soFar.end()) {
                     if(localSubstitution.find(var) == localSubstitution.end()) {
-                        localSubstitution[var] = RandomFactory::getRandomTermOrFunctionName(allArguments);
+                        localSubstitution[var] = RandomFactory::getRandomVariableName(allArguments);
                     }
                 } else {
                     allVarsForClause.push_back(var);

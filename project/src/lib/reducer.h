@@ -65,8 +65,6 @@ class Reducer {
 
     static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string& which);
 
-    std::string getRandomTermName();
-    std::string getRandomFunctionName();
     std::string getRandomPredicateName();
 
     void basicReduce();

@@ -17,10 +17,6 @@ std::vector<std::string> Tokenizer::tokenize(const std::string& seq) const {
     string aux(seq);
     /// get rid of all of the whitespaces
     aux.erase(remove_if(aux.begin(), aux.end(), [](char c) { return isspace(c); }), aux.end());
-    /// FROM NOW, each predicate starts with UPPER-CASE letter
-    /// functions can occur only as an argument to a predicate
-    /// both functions and variables start with lower-case letters
-    /// TODO: reconsider whether this is okay or whether we really want lower-case starting predicates
     vector<string> tokens;
     Operators& operators = Operators::getInstance();
     int ind              = 0;

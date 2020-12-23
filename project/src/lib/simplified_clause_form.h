@@ -39,6 +39,7 @@ class SimplifiedClauseForm {
                 allArguments.insert(args.begin(), args.end());
             }
         }
+//        makeVariableNamesUniquePerClause(allArguments);
     }
     std::unordered_set<std::string> makeVariableNamesUniquePerClause(const std::unordered_set<std::string>& variables);
     std::shared_ptr<SimplifiedClauseForm> clone() const;

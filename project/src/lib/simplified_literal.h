@@ -5,6 +5,7 @@
 #ifndef PROJECT_SIMPLIFIED_LITERAL_H
 #define PROJECT_SIMPLIFIED_LITERAL_H
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -27,6 +28,8 @@ class SimplifiedLiteral {
     SimplifiedLiteral(bool _isNegated, std::string _predicateName, std::vector<arg> _arguments)
     : isNegated(_isNegated), predicateName(std::move(_predicateName)), arguments(std::move(_arguments)) {
     }
+    SimplifiedLiteral(const std::shared_ptr<SimplifiedLiteral> &other) :
+ isNegated(other->isNegated), predicateName(other->predicateName), arguments(other->arguments){}
 
     static bool isSimplifiedLiteral(const std::string& seq);
 
