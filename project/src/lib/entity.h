@@ -36,6 +36,19 @@ class Entity {
     public:
     Entity() = default;
 
+    Entity(const std::shared_ptr<Entity>& other) : type(other->type) {
+        if (type == 0 or type == 2) {
+            entity = std::get<0>(other->entity);
+        }
+        else if (type == 1) {
+            entity = std::make_shared<SimplifiedLiteral>(std::get<1>(other->entity));
+        }
+        else {
+            throw std::logic_error("Not implemented because simplified clause form should never be duplicated"
+                                   "as part of entity");
+        }
+    }
+
     explicit Entity(const EntityType& _type, const std::string& _entity) : type(_type), entity(_entity) {
         if(type and type != 2) {
             throw std::invalid_argument("Type for Entity has to be 0 or 2 but given " + std::to_string(type));

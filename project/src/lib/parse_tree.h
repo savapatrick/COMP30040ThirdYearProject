@@ -36,6 +36,8 @@ class ParseTree {
     explicit ParseTree(const std::string& tokens);
 
     std::string getEulerTraversal();
+
+    int createCopyForSubtree(int node);
 };
 }; // namespace utils
 

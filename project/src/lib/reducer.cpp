@@ -197,7 +197,9 @@ bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, 
                 disposeNode(doubleImply);
                 pile.push_back(addImplication(leftPredicate, rightPredicate));
                 pile.push_back(addNodeWithOperator("AND"));
-                pile.push_back(addImplication(rightPredicate, leftPredicate));
+                auto rightPredicateDeepCopy = parseTree.createCopyForSubtree(rightPredicate);
+                auto leftPredicateDeepCopy = parseTree.createCopyForSubtree(leftPredicate);
+                pile.push_back(addImplication(rightPredicateDeepCopy, leftPredicateDeepCopy));
             } else if(!isDoubleImplication and whichOperator == "IMPLY") {
                 auto leftPredicate = pile.back();
                 pile.pop_back();
@@ -279,6 +281,7 @@ bool Reducer::reduceImplicationStep(int node) {
             throw logic_error("it should not get modified twice when "
                               "applying resolveRightAssociativityForImplications");
         }
+        cerr << "after resolving right associativity " << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
         wasModified = true;
     }
     return wasModified;
@@ -293,10 +296,10 @@ bool Reducer::pushNOTStep(int node) {
     }
     string operatorOnTheLevel;
     for(auto& neighbour : parseTree.graph[node]) {
-        if(parseTree.information.find(node) != parseTree.information.end()) {
-            if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDOperator) {
+        if(parseTree.information.find(neighbour) != parseTree.information.end()) {
+            if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
                 if(operatorOnTheLevel.empty()) {
-                    operatorOnTheLevel = parseTree.information[node]->getString();
+                    operatorOnTheLevel = parseTree.information[neighbour]->getString();
                     if(operatorOnTheLevel == operators.NOT) {
                         // that's not unary
                         // then reset
@@ -306,7 +309,7 @@ bool Reducer::pushNOTStep(int node) {
                         throw logic_error("at this point the tree should have only AND, OR and NOT + quantifiers");
                     }
                 } else {
-                    if(operatorOnTheLevel != parseTree.information[node]->getString()) {
+                    if(operatorOnTheLevel != parseTree.information[neighbour]->getString()) {
                         throw logic_error("all of the simplified operators which are on"
                                           "the same level should be the same at this point");
                     }
@@ -654,9 +657,9 @@ template <typename T> T getSimplifiedClauseForm() {
 template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimplifiedClauseForm() {
     static std::vector<SimplifiedClauseForm::SimplifiedClause> clauseForm;
     if(!computedClauseForm) {
-        cerr << "before everything : " << parseTree.getEulerTraversal() << endl;
+        cerr << "before everything : " << parseTree.getEulerTraversal(parseTree.Root, true) << endl;
         basicReduce();
-        cerr << "after basic reduction : " << parseTree.getEulerTraversal() << endl;
+        cerr << "after basic reduction : " << parseTree.getEulerTraversal(parseTree.Root, true) << endl;
         skolemization();
         cerr << "after skolemization : " << parseTree.getEulerTraversal() << endl;
         cerr << parseTree.getEulerTraversal() << endl;
