@@ -109,6 +109,11 @@ bool BasicTheoremProver::factoringStep() {
     for(auto& clause : clauseForm->clauseForm) {
         changed |= removeDuplicates(clause);
         newClauseForm.push_back(clause);
+        // TODO: something does not make sense here
+        // the cache should be reseted?
+        // TODO: revisit what does factoring mean
+        // TODO: implement maybe subsumption?
+        // TODO: implement correctly tautology elimination
         if(tryToUnifyTwoLiterals(clause)) {
             if(isTautology(clause)) {
                 outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
