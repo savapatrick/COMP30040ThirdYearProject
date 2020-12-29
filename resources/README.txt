@@ -35,3 +35,5 @@ quite useful as well:
 https://www.cl.cam.ac.uk/teaching/1516/LogicProof/logic-notes.pdf
 
 https://www.cs.cornell.edu/courses/cs4700/2011fa/lectures/16_FirstOrderLogic.pdf
+
+https://www.logic.at/staff/leitsch/resolv.pdf

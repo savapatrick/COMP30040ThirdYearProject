@@ -10,9 +10,13 @@
 
 namespace utils {
 class BasicTheoremProver;
+class TwoVariableTheoremProver;
+class Unification;
 class ClauseForm {
     private:
     friend class BasicTheoremProver;
+    friend class TwoVariableTheoremProver;
+    friend class Unification;
     std::vector<std::shared_ptr<Clause>> clauseForm;
     std::unordered_set<std::string> allFunctionNames;
     std::unordered_set<std::string> allVariableNames;
@@ -45,6 +49,8 @@ class ClauseForm {
     bool isFunctionRenaming);
     void makeVariableNamesUniquePerClause();
     std::string getString() const;
+    std::string getStringWithIndex() const;
+    bool isTwoVariableFragment();
 };
 }; // namespace utils
 

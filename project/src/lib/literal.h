@@ -11,10 +11,16 @@
 #include <set>
 
 namespace utils {
+class TheoremProver;
 class BasicTheoremProver;
+class TwoVariableTheoremProver;
+class Unification;
 class Literal : public std::enable_shared_from_this<Literal> {
     private:
+    friend class TheoremProver;
     friend class BasicTheoremProver;
+    friend class TwoVariableTheoremProver;
+    friend class Unification;
     bool isNegated;
     std::string predicateName;
     std::vector<std::shared_ptr<Term>> terms;
@@ -43,6 +49,7 @@ class Literal : public std::enable_shared_from_this<Literal> {
     bool equalsWithoutSign(const std::shared_ptr<Literal>& other);
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Literal>& other);
     std::shared_ptr<Literal> createDeepCopy();
+    bool hasNestedFunctions();
     std::unordered_set<std::string> getAllVariables();
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);

@@ -45,6 +45,16 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Literal::augme
     }
     return true;
 }
+
+bool Literal::hasNestedFunctions() {
+    for (auto& term : terms) {
+        if (term->hasNestedFunctions()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 std::unordered_set<std::string> Literal::getAllVariables() {
     unordered_set<string> result;
     for(auto& term : terms) {

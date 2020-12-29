@@ -64,6 +64,7 @@ class Term : public std::enable_shared_from_this<Term> {
     void applySubstitution(const std::pair<std::string, std::string>& substitution);
     void renameFunction(const std::pair<std::string, std::string>& substitution);
     std::unordered_set<std::string> getAllVariables();
+    bool hasNestedFunctions();
     std::string getString();
 };
 }; // namespace utils

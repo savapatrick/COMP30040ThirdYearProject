@@ -130,6 +130,27 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Term::augmentU
 std::shared_ptr<Term> Term::createDeepCopy() {
     return make_shared<Term>(shared_from_this());
 }
+
+bool Term::hasNestedFunctions() {
+    queue<shared_ptr<Term>> queueTerms;
+    queueTerms.push(shared_from_this());
+    while(!queueTerms.empty()) {
+        auto& frontTerm = queueTerms.front();
+        queueTerms.pop();
+
+        if(termType == TermType::FUNCTION) {
+            for (auto& neighbour: frontTerm->arguments) {
+                if (neighbour->termType == TermType::FUNCTION) {
+                    return true;
+                }
+            }
+        }
+
+        for(auto& neighbour : frontTerm->arguments) { queueTerms.push(neighbour); }
+    }
+    return false;
+}
+
 std::unordered_set<std::string> Term::getAllVariables() {
     std::unordered_set<std::string> result;
     queue<shared_ptr<Term>> queueTerms;
@@ -138,8 +159,8 @@ std::unordered_set<std::string> Term::getAllVariables() {
         auto& frontTerm = queueTerms.front();
         queueTerms.pop();
 
-        if(termType == TermType::VARIABLE) {
-            result.insert(termName);
+        if(frontTerm->termType == TermType::VARIABLE) {
+            result.insert(frontTerm->termName);
         }
 
         for(auto& neighbour : frontTerm->arguments) { queueTerms.push(neighbour); }
