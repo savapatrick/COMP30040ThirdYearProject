@@ -13,7 +13,7 @@ bool Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) {
     bool ok             = false;
     for(auto& keyValue : clauseLiterals) {
         if(keyValue.second > 1 or
-           clauseLiterals.find({ keyValue.first.first, 1 - keyValue.first.second }) != clauseLiterals.end()) {
+        clauseLiterals.find({ keyValue.first.first, 1 - keyValue.first.second }) != clauseLiterals.end()) {
             ok = true;
             break;
         }
@@ -59,7 +59,7 @@ bool Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) {
             if(unified) {
                 outputStream << "clause " << clause->getString() << " is transformed into " + clauseDeepCopy->getString()
                              << " because literals " + clauseDeepCopy->clause[indexes.first]->getString() + " and " +
-                                clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
+                clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
                 outputStream.flush();
                 clause             = clauseDeepCopy;
                 unifiedAtLeastOnce = true;
@@ -122,7 +122,7 @@ Unification::attemptToUnify(shared_ptr<Clause>& first, shared_ptr<Clause>& secon
             if(unified) {
                 outputStream << "clauses " + firstDeepCopy->getString() + " and " + secondDeepCopy->getString()
                              << " get resolution rule applied on " + firstDeepCopy->clause[indexes.first]->getString() +
-                                " and on " + secondDeepCopy->clause[indexes.second]->getString() + "\n[ADD] the resulting clause ";
+                " and on " + secondDeepCopy->clause[indexes.second]->getString() + "\n[ADD] the resulting clause ";
                 outputStream.flush();
                 firstDeepCopy->clause.erase(firstDeepCopy->clause.begin() + indexes.first);
                 secondDeepCopy->clause.erase(secondDeepCopy->clause.begin() + indexes.second);
@@ -136,4 +136,4 @@ Unification::attemptToUnify(shared_ptr<Clause>& first, shared_ptr<Clause>& secon
     return { false, shared_ptr<Clause>(nullptr) };
 }
 
-};
+}; // namespace utils

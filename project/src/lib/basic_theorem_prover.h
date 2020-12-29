@@ -33,9 +33,7 @@ class BasicTheoremProver : public TheoremProver {
         clauses.clear();
         clausesSoFar.clear();
         timestamp = 0;
-        for(auto &elem : clauseForm->clauseForm) {
-            clausesSoFar.insert(elem->getString());
-        }
+        for(auto& elem : clauseForm->clauseForm) { clausesSoFar.insert(elem->getString()); }
     }
     void run() override;
 };

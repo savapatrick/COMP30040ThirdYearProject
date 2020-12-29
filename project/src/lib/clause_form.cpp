@@ -97,8 +97,8 @@ std::string ClauseForm::getStringWithIndex() const {
 }
 
 bool ClauseForm::isTwoVariableFragment() {
-    for (auto& clause: clauseForm) {
-        if (clause->hasNestedFunctions() or clause->getAllVariables().size() > 2) {
+    for(auto& clause : clauseForm) {
+        if(clause->hasNestedFunctions() or clause->getAllVariables().size() > 2) {
             return false;
         }
     }

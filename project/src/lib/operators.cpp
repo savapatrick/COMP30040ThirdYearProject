@@ -54,7 +54,8 @@ bool Operators::isQuantifierAndVariable(const string& current) {
     if(!isQuantifier(current.substr(0, 1))) {
         return false;
     }
-    return (std::find_if_not(current.begin() + 1, current.end(), [](char c) { return islower(c) or c == '_'; }) == current.end());
+    return (
+    std::find_if_not(current.begin() + 1, current.end(), [](char c) { return islower(c) or c == '_'; }) == current.end());
 }
 
 std::string Operators::getQuantifierFromQuantifierAndVariable(const string& current) {

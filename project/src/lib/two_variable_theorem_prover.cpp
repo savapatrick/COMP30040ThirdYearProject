@@ -11,8 +11,8 @@ namespace utils {
 
 bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
     auto predicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
-      return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName)
-        and (first->getAllVariables().size() == 2 and second->getAllVariables().size() == 2);
+        return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName) and
+        (first->getAllVariables().size() == 2 and second->getAllVariables().size() == 2);
     };
     do {
         int times = 0;
@@ -20,19 +20,17 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
             outputStream << "derived empty clause!\n";
             outputStream.flush();
             return true;
-        }
-        else {
+        } else {
             times += 1;
         }
         if(resolutionStep(predicate)) {
             outputStream << "derived empty clause!\n";
             outputStream.flush();
             return true;
-        }
-        else {
+        } else {
             times += 1;
         }
-        if (times == 2 and hot.empty()) {
+        if(times == 2 and hot.empty()) {
             outputStream << "reached saturation!\n";
             outputStream.flush();
             return false;
@@ -43,17 +41,16 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
 
 void TwoVariableTheoremProver::disposeTwoVariableClauses() {
     std::vector<std::shared_ptr<Clause>> newClauseForm;
-    for (auto& clause : clauseForm->clauseForm) {
-        if (clause->getHighestNumberOfVariablesPerLiteral() >= 2) {
-            if (clause->getHighestNumberOfVariablesPerLiteral() > 2) {
+    for(auto& clause : clauseForm->clauseForm) {
+        if(clause->getHighestNumberOfVariablesPerLiteral() >= 2) {
+            if(clause->getHighestNumberOfVariablesPerLiteral() > 2) {
                 throw logic_error("we should not have more than two variables per clause at this point!");
             }
-        }
-        else {
+        } else {
             newClauseForm.push_back(clause);
         }
     }
-    if (newClauseForm.size() != clauseForm->clauseForm.size()) {
+    if(newClauseForm.size() != clauseForm->clauseForm.size()) {
         clauseForm->clauseForm = newClauseForm;
     }
 }
@@ -72,13 +69,12 @@ void TwoVariableTheoremProver::run() {
     outputStream << "we have the following clauses in our initial set!\n";
     outputStream << clauseForm->getStringWithIndex();
     outputStream.flush();
-    if (fullResolutionTwoVariableLiterals()) {
+    if(fullResolutionTwoVariableLiterals()) {
         return;
     }
     disposeTwoVariableClauses();
     outputStream << "we have the following clauses after disposal:\n";
     outputStream << clauseForm->getStringWithIndex();
     outputStream.flush();
-
 }
-};
+}; // namespace utils

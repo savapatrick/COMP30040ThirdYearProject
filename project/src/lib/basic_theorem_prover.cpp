@@ -62,15 +62,14 @@ template <class LiteralPredicate> bool BasicTheoremProver::resolutionStep(Litera
         timestamp += 1;
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
             for(int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-                if(avoid.find({ index, index2 }) != avoid.end() or
-                (hot.find(index) != hot.end() and hot[index] < timestamp) or
+                if(avoid.find({ index, index2 }) != avoid.end() or (hot.find(index) != hot.end() and hot[index] < timestamp) or
                 (hot.find(index2) != hot.end() and hot[index2] < timestamp)) {
                     continue;
                 }
-                if (hot.find(index) != hot.end()) {
+                if(hot.find(index) != hot.end()) {
                     hot.erase(hot.find(index));
                 }
-                if (hot.find(index2) != hot.end()) {
+                if(hot.find(index2) != hot.end()) {
                     hot.erase(hot.find(index2));
                 }
                 auto result = unification->attemptToUnify(clauseForm->clauseForm[index], clauseForm->clauseForm[index2], predicate);
@@ -83,10 +82,10 @@ template <class LiteralPredicate> bool BasicTheoremProver::resolutionStep(Litera
                     //  result.second->getString() << '\n';
                     //  outputStream.flush();
                     auto clauseHash = result.second->getString();
-                    if (clauses.find(clauseHash) != clauses.end()) {
+                    if(clauses.find(clauseHash) != clauses.end()) {
                         continue;
                     }
-                    if (clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
+                    if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
                         continue;
                     }
                     clauses[clauseHash] = result.second;
@@ -101,10 +100,9 @@ template <class LiteralPredicate> bool BasicTheoremProver::resolutionStep(Litera
             }
         }
         if(!clauses.empty()) {
-            for (auto &keyValue : clauses) { clauseForm->clauseForm.push_back(keyValue.second); }
+            for(auto& keyValue : clauses) { clauseForm->clauseForm.push_back(keyValue.second); }
             clauseForm->makeVariableNamesUniquePerClause();
-        }
-        else {
+        } else {
             return false;
         }
     } while(true);
@@ -123,19 +121,17 @@ void BasicTheoremProver::run() {
             outputStream << "derived empty clause!\n";
             outputStream.flush();
             break;
-        }
-        else {
+        } else {
             times += 1;
         }
         if(resolutionStep(predicate)) {
             outputStream << "derived empty clause!\n";
             outputStream.flush();
             break;
-        }
-        else {
+        } else {
             times += 1;
         }
-        if (times == 2 and hot.empty()) {
+        if(times == 2 and hot.empty()) {
             outputStream << "reached saturation!\n";
             outputStream.flush();
             break;

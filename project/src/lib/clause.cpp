@@ -12,7 +12,7 @@ std::shared_ptr<Clause> Clause::createDeepCopy() {
     return std::make_shared<Clause>(shared_from_this());
 }
 bool Clause::hasNestedFunctions() {
-    for (auto& literal: clause) {
+    for(auto& literal : clause) {
         if(literal->hasNestedFunctions()) {
             return true;
         }
@@ -21,9 +21,7 @@ bool Clause::hasNestedFunctions() {
 }
 int Clause::getHighestNumberOfVariablesPerLiteral() {
     int answer = 0;
-    for (auto& literal: clause) {
-        answer = max(answer, static_cast<int>(literal->getAllVariables().size()));
-    }
+    for(auto& literal : clause) { answer = max(answer, static_cast<int>(literal->getAllVariables().size())); }
     return answer;
 }
 std::unordered_set<std::string> Clause::getAllVariables() {

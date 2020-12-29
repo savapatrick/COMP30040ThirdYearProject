@@ -139,8 +139,8 @@ bool Term::hasNestedFunctions() {
         queueTerms.pop();
 
         if(termType == TermType::FUNCTION) {
-            for (auto& neighbour: frontTerm->arguments) {
-                if (neighbour->termType == TermType::FUNCTION) {
+            for(auto& neighbour : frontTerm->arguments) {
+                if(neighbour->termType == TermType::FUNCTION) {
                     return true;
                 }
             }

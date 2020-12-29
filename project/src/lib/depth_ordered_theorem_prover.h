@@ -8,14 +8,14 @@
 #include "basic_theorem_prover.h"
 
 namespace utils {
-    class DepthOrderedTheoremProver : public BasicTheoremProver{
-        private:
-        public:
-        DepthOrderedTheoremProver(std::shared_ptr<ClauseForm> _clauseForm,
-        const std::string& _fileName = "theorem_prover.txt")
-        : BasicTheoremProver(std::move(_clauseForm), _fileName) {}
-        void run() override;
-    };
+class DepthOrderedTheoremProver : public BasicTheoremProver {
+    private:
+    public:
+    DepthOrderedTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
+    : BasicTheoremProver(std::move(_clauseForm), _fileName) {
+    }
+    void run() override;
 };
+}; // namespace utils
 
 #endif // PROJECT_DEPTH_ORDERED_THEOREM_PROVER_H

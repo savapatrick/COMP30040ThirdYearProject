@@ -17,11 +17,12 @@ class Unification {
     std::ofstream& outputStream;
 
     public:
-    Unification(std::ofstream& stream): outputStream(stream){};
+    Unification(std::ofstream& stream) : outputStream(stream){};
     bool tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause); // and commit if possible
-    template <class LiteralPredicate> std::pair<bool, std::shared_ptr<Clause>> attemptToUnify(std::shared_ptr<Clause>& first, std::shared_ptr<Clause>& second, LiteralPredicate predicate);
-
+    template <class LiteralPredicate>
+    std::pair<bool, std::shared_ptr<Clause>>
+    attemptToUnify(std::shared_ptr<Clause>& first, std::shared_ptr<Clause>& second, LiteralPredicate predicate);
 };
-};
+}; // namespace utils
 
 #endif // PROJECT_UNIFICATION_H

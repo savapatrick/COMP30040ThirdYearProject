@@ -12,18 +12,17 @@ class TwoVariableTheoremProver : public BasicTheoremProver {
     bool withEquality;
 
     public:
-    TwoVariableTheoremProver(std::shared_ptr<ClauseForm> _clauseForm,
-    const std::string& _fileName = "theorem_prover.txt")
+    TwoVariableTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
     : BasicTheoremProver(std::move(_clauseForm), _fileName), withEquality(false) {
-        if (!clauseForm->isTwoVariableFragment()) {
+        if(!clauseForm->isTwoVariableFragment()) {
             throw std::invalid_argument("The given clause form " + clauseForm->getString() + "is not a valid two variable fragment");
         }
     }
     bool fullResolutionTwoVariableLiterals();
     void disposeTwoVariableClauses();
-    bool backtrackingClauseFormAndResolution(std::vector<std::shared_ptr<Clause>> &chosen);
+    bool backtrackingClauseFormAndResolution(std::vector<std::shared_ptr<Clause>>& chosen);
     void run() override;
 };
-};
+}; // namespace utils
 
 #endif // PROJECT_TWO_VARIABLE_THEOREM_PROVER_H

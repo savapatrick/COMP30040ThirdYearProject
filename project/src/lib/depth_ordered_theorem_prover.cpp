@@ -8,4 +8,4 @@ namespace utils {
 void DepthOrderedTheoremProver::run() {
     BasicTheoremProver::run();
 }
-};
+}; // namespace utils

@@ -37,13 +37,11 @@ class Entity {
     Entity() = default;
 
     Entity(const std::shared_ptr<Entity>& other) : type(other->type) {
-        if (type == 0 or type == 2) {
+        if(type == 0 or type == 2) {
             entity = std::get<0>(other->entity);
-        }
-        else if (type == 1) {
+        } else if(type == 1) {
             entity = std::make_shared<SimplifiedLiteral>(std::get<1>(other->entity));
-        }
-        else {
+        } else {
             throw std::logic_error("Not implemented because simplified clause form should never be duplicated"
                                    "as part of entity");
         }

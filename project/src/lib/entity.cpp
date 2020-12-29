@@ -43,17 +43,15 @@ std::string Entity::getString() const {
     }
 }
 void Entity::applySubstitution(std::unordered_map<std::string, std::string>& substitution) {
-    if (type >= 2) {
+    if(type >= 2) {
         throw std::logic_error("cannot apply substitution on operators or normal forms!");
-    }
-    else if (type == 0) {
+    } else if(type == 0) {
         auto variable = get<0>(entity).substr(1);
-        if (substitution.find(variable) != substitution.end()) {
+        if(substitution.find(variable) != substitution.end()) {
             variable = substitution[variable];
         }
         entity = get<0>(entity)[0] + variable;
-    }
-    else {
+    } else {
         auto literal = get<1>(entity);
         literal->simpleSubstitution(substitution);
     }

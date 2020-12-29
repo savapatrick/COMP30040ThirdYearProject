@@ -47,8 +47,8 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Literal::augme
 }
 
 bool Literal::hasNestedFunctions() {
-    for (auto& term : terms) {
-        if (term->hasNestedFunctions()) {
+    for(auto& term : terms) {
+        if(term->hasNestedFunctions()) {
             return true;
         }
     }

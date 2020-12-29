@@ -190,7 +190,7 @@ bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, 
                 pile.push_back(addImplication(leftPredicate, rightPredicate));
                 pile.push_back(addNodeWithOperator("AND"));
                 auto rightPredicateDeepCopy = parseTree.createCopyForSubtree(rightPredicate);
-                auto leftPredicateDeepCopy = parseTree.createCopyForSubtree(leftPredicate);
+                auto leftPredicateDeepCopy  = parseTree.createCopyForSubtree(leftPredicate);
                 pile.push_back(addImplication(rightPredicateDeepCopy, leftPredicateDeepCopy));
             } else if(!isDoubleImplication and whichOperator == "IMPLY") {
                 auto leftPredicate = pile.back();
@@ -289,8 +289,8 @@ bool Reducer::pushNOTStep(int node) {
     string operatorOnTheLevel;
     for(auto& neighbour : parseTree.graph[node]) {
         if(parseTree.information.find(neighbour) != parseTree.information.end()) {
-            if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator
-            and !operators.isNot(parseTree.information[neighbour]->getString())) {
+            if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator and
+            !operators.isNot(parseTree.information[neighbour]->getString())) {
                 if(operatorOnTheLevel.empty()) {
                     operatorOnTheLevel = parseTree.information[neighbour]->getString();
                     if(operatorOnTheLevel != operators.AND and operatorOnTheLevel != operators.OR) {
@@ -472,7 +472,8 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
                 if(variablesInUniversalQuantifiers.empty()) {
                     skolem[variable] = RandomFactory::getRandomConstantName(reservedTermNames);
                 } else {
-                    skolem[variable] = make_pair(RandomFactory::getRandomFunctionName(reservedFunctionNames), variablesInUniversalQuantifiers);
+                    skolem[variable] =
+                    make_pair(RandomFactory::getRandomFunctionName(reservedFunctionNames), variablesInUniversalQuantifiers);
                 }
                 wasModified |= true;
                 wasEQuantifier = true;
@@ -507,12 +508,10 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
 
 void Reducer::disambiguateFormula() {
     unordered_set<std::string> variablesSoFar(allBoundVariables.begin(), allBoundVariables.end());
-//    unordered_set<std::string> variablesSoFar;
+    //    unordered_set<std::string> variablesSoFar;
     unordered_map<string, string> simpleSubstitution;
     variableRenaming(parseTree.Root, variablesSoFar, simpleSubstitution);
-    for (auto &x : allBoundVariables) {
-        reservedTermNames.erase(reservedTermNames.find(x));
-    }
+    for(auto& x : allBoundVariables) { reservedTermNames.erase(reservedTermNames.find(x)); }
     allBoundVariables = variablesSoFar;
     unordered_set<std::string> boundVariables;
     simpleSubstitution.clear();
