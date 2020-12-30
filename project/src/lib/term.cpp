@@ -231,4 +231,23 @@ void Term::renameFunction(const pair<std::string, std::string>& substitution) {
     }
 }
 
+void Term::getDepths(const shared_ptr<Term>& node, unordered_map<std::string, int>& soFar, int currentDepth) {
+    if (node->termType == TermType::VARIABLE) {
+        soFar[node->termName] = max(soFar[node->termName], currentDepth);
+    }
+    for (auto &neighbour : arguments) {
+        getDepths(neighbour, soFar, currentDepth + 1);
+    }
+}
+
+std::pair<int, std::unordered_map<std::string, int>> Term::getDepths() {
+    unordered_map<std::string, int> depths;
+    getDepths(shared_from_this(), depths, 0);
+    int maxDepth = 0;
+    for (auto &keyValue : depths) {
+        maxDepth = max(maxDepth, keyValue.second);
+    }
+    return {maxDepth, depths};
+}
+
 }; // namespace utils

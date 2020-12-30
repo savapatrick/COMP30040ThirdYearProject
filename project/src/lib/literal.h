@@ -9,16 +9,19 @@
 #include "term.h"
 #include <memory>
 #include <set>
+#include <unordered_map>
 
 namespace utils {
 class TheoremProver;
 class BasicTheoremProver;
+class DepthOrderedTheoremProver;
 class TwoVariableTheoremProver;
 class Unification;
 class Literal : public std::enable_shared_from_this<Literal> {
     private:
     friend class TheoremProver;
     friend class BasicTheoremProver;
+    friend class DepthOrderedTheoremProver;
     friend class TwoVariableTheoremProver;
     friend class Unification;
     bool isNegated;
@@ -56,6 +59,7 @@ class Literal : public std::enable_shared_from_this<Literal> {
     void renameFunction(const std::pair<std::string, std::string>& mapping);
     std::pair<std::string, bool> getLiteral();
     std::string getString() const;
+    std::pair<int, std::unordered_map<std::string, int>> getDepths();
 };
 
 }; // namespace utils

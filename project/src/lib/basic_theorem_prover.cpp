@@ -17,13 +17,11 @@ bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
     unordered_map<string, shared_ptr<Literal>> literals;
     for(auto& literal : clause->clause) { literals[literal->getString()] = literal; }
     outputStream << "removing duplicates from clause " + clause->getString() << "\n";
-    outputStream.flush();
     if(literals.size() != clause->clause.size()) {
         clause->clause.clear();
         clause->clause.reserve(literals.size());
         for(auto& keyValue : literals) { clause->clause.emplace_back(keyValue.second); }
         outputStream << "it then becomes " << clause->getString() << "\n";
-        outputStream.flush();
         return true;
     }
     return false;
@@ -38,7 +36,6 @@ bool BasicTheoremProver::factoringStep() {
         if(unification->tryToUnifyTwoLiterals(clause)) {
             if(isTautology(clause)) {
                 outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
-                outputStream.flush();
                 newClauseForm.pop_back();
                 changed = true;
                 // TODO: instead of clear,
@@ -56,7 +53,7 @@ bool BasicTheoremProver::factoringStep() {
     return false;
 }
 
-template <class LiteralPredicate> bool BasicTheoremProver::resolutionStep(LiteralPredicate predicate) {
+template <class LiteralPredicate, class ResolventPredicate> bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate) {
     do {
         clauses.clear();
         timestamp += 1;
@@ -74,13 +71,11 @@ template <class LiteralPredicate> bool BasicTheoremProver::resolutionStep(Litera
                 }
                 auto result = unification->attemptToUnify(clauseForm->clauseForm[index], clauseForm->clauseForm[index2], predicate);
                 // outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
-                // outputStream.flush();
                 avoid.insert({ index, index2 });
                 if(result.first) {
                     //  outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
                     //  " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
                     //  result.second->getString() << '\n';
-                    //  outputStream.flush();
                     auto clauseHash = result.second->getString();
                     if(clauses.find(clauseHash) != clauses.end()) {
                         continue;
@@ -108,33 +103,36 @@ template <class LiteralPredicate> bool BasicTheoremProver::resolutionStep(Litera
     } while(true);
 }
 
-void BasicTheoremProver::run() {
+bool BasicTheoremProver::run() {
     outputStream << "we have the following clauses in our initial set!\n";
     outputStream << clauseForm->getStringWithIndex();
-    outputStream.flush();
-    auto predicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
+    auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName);
     };
+    auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral, const std::vector<std::shared_ptr<Literal>> &resolvents) -> bool{
+        return true;
+    };
     do {
+        outputData();
         int times = 0;
         if(factoringStep()) {
             outputStream << "derived empty clause!\n";
-            outputStream.flush();
-            break;
+            outputData();
+            return false;
         } else {
             times += 1;
         }
-        if(resolutionStep(predicate)) {
+        if(resolutionStep(literalPredicate, resolventPredicate)) {
             outputStream << "derived empty clause!\n";
-            outputStream.flush();
-            break;
+            outputData();
+            return false;
         } else {
             times += 1;
         }
         if(times == 2 and hot.empty()) {
             outputStream << "reached saturation!\n";
-            outputStream.flush();
-            break;
+            outputData();
+            return true;
         }
     } while(true);
 }

@@ -57,10 +57,10 @@ bool Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) {
                 }
             } while(true);
             if(unified) {
-                outputStream << "clause " << clause->getString() << " is transformed into " + clauseDeepCopy->getString()
-                             << " because literals " + clauseDeepCopy->clause[indexes.first]->getString() + " and " +
-                clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
-                outputStream.flush();
+                outputStream << "clause "<< clause->getString() << " is transformed into " +
+                clauseDeepCopy->getString() << " because literals " +
+                clauseDeepCopy->clause[indexes.first]->getString() +
+                " and " + clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
                 clause             = clauseDeepCopy;
                 unifiedAtLeastOnce = true;
             }
@@ -69,9 +69,10 @@ bool Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) {
     return unifiedAtLeastOnce;
 }
 
-template <class LiteralPredicate>
+template <class LiteralPredicate, class ResolventPredicate>
 std::pair<bool, std::shared_ptr<Clause>>
-Unification::attemptToUnify(shared_ptr<Clause>& first, shared_ptr<Clause>& second, LiteralPredicate predicate) {
+Unification::attemptToUnify(shared_ptr<Clause>& first, shared_ptr<Clause>& second, LiteralPredicate literalPredicate,
+                            ResolventPredicate resolventPredicate) {
     auto literalsFirst  = first->getAllLiterals();
     auto literalsSecond = second->getAllLiterals();
     bool ok             = false;
@@ -90,7 +91,7 @@ Unification::attemptToUnify(shared_ptr<Clause>& first, shared_ptr<Clause>& secon
         pair<int, int> indexes;
         for(int index = 0; index < (int)first->clause.size() and !found; ++index) {
             for(int index2 = 0; index2 < (int)second->clause.size() and !found; ++index2) {
-                if(predicate(first->clause[index], second->clause[index2])) {
+                if(literalPredicate(first->clause[index], second->clause[index2])) {
                     indexes = { index, index2 };
                     if(blackListed.find(indexes) != blackListed.end()) {
                         continue;
@@ -123,13 +124,14 @@ Unification::attemptToUnify(shared_ptr<Clause>& first, shared_ptr<Clause>& secon
                 outputStream << "clauses " + firstDeepCopy->getString() + " and " + secondDeepCopy->getString()
                              << " get resolution rule applied on " + firstDeepCopy->clause[indexes.first]->getString() +
                 " and on " + secondDeepCopy->clause[indexes.second]->getString() + "\n[ADD] the resulting clause ";
-                outputStream.flush();
+                auto resolvedLiteral = firstDeepCopy->clause[indexes.first];
                 firstDeepCopy->clause.erase(firstDeepCopy->clause.begin() + indexes.first);
                 secondDeepCopy->clause.erase(secondDeepCopy->clause.begin() + indexes.second);
                 for(auto& literal : secondDeepCopy->clause) { firstDeepCopy->clause.push_back(literal); }
                 outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
-                outputStream.flush();
-                return { true, firstDeepCopy };
+                if (resolventPredicate(resolvedLiteral, firstDeepCopy->clause)) {
+                    return { true, firstDeepCopy };
+                }
             }
         }
     } while(found);
