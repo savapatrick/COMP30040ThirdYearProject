@@ -24,7 +24,7 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
         } else {
             times += 1;
         }
-        if(resolutionStep(literalPredicate, resolventPredicate)) {
+        if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
             outputStream << "derived empty clause!\n";
             return false;
         } else {
@@ -59,7 +59,7 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(vector<std::s
     if(chosen.size() == clauseForm->clauseForm.size()) {
         shared_ptr<ClauseForm> currentClauseForm(make_shared<ClauseForm>());
         for(auto& literal : chosen) { currentClauseForm->clauseForm.push_back({ make_shared<Clause>(literal) }); }
-        DepthOrderedTheoremProver prover(currentClauseForm, false);
+        DepthOrderedTheoremProver prover(currentClauseForm);
         // TODO: try to capture the output somehow
         return prover.run();
     }

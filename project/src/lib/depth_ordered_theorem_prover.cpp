@@ -55,7 +55,7 @@ bool DepthOrderedTheoremProver::run() {
         } else {
             times += 1;
         }
-        if(resolutionStep(literalPredicate, resolventPredicate)) {
+        if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
             outputStream << "derived empty clause!\n";
             outputData();
             return false;
