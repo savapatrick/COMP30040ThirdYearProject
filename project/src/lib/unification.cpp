@@ -57,10 +57,9 @@ bool Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) {
                 }
             } while(true);
             if(unified) {
-                outputStream << "clause "<< clause->getString() << " is transformed into " +
-                clauseDeepCopy->getString() << " because literals " +
-                clauseDeepCopy->clause[indexes.first]->getString() +
-                " and " + clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
+                outputStream << "clause " << clause->getString() << " is transformed into " + clauseDeepCopy->getString()
+                             << " because literals " + clauseDeepCopy->clause[indexes.first]->getString() + " and " +
+                clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
                 clause             = clauseDeepCopy;
                 unifiedAtLeastOnce = true;
             }
@@ -70,9 +69,10 @@ bool Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) {
 }
 
 template <class LiteralPredicate, class ResolventPredicate>
-std::pair<bool, std::shared_ptr<Clause>>
-Unification::attemptToUnify(shared_ptr<Clause>& first, shared_ptr<Clause>& second, LiteralPredicate literalPredicate,
-                            ResolventPredicate resolventPredicate) {
+std::pair<bool, std::shared_ptr<Clause>> Unification::attemptToUnify(shared_ptr<Clause>& first,
+shared_ptr<Clause>& second,
+LiteralPredicate literalPredicate,
+ResolventPredicate resolventPredicate) {
     auto literalsFirst  = first->getAllLiterals();
     auto literalsSecond = second->getAllLiterals();
     bool ok             = false;
@@ -129,7 +129,7 @@ Unification::attemptToUnify(shared_ptr<Clause>& first, shared_ptr<Clause>& secon
                 secondDeepCopy->clause.erase(secondDeepCopy->clause.begin() + indexes.second);
                 for(auto& literal : secondDeepCopy->clause) { firstDeepCopy->clause.push_back(literal); }
                 outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
-                if (resolventPredicate(resolvedLiteral, firstDeepCopy->clause)) {
+                if(resolventPredicate(resolvedLiteral, firstDeepCopy->clause)) {
                     return { true, firstDeepCopy };
                 }
             }

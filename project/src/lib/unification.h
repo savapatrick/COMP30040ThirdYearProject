@@ -20,8 +20,9 @@ class Unification {
     Unification(std::ostream& stream) : outputStream(stream){};
     bool tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause); // and commit if possible
     template <class LiteralPredicate, class ResolventPredicate>
-    std::pair<bool, std::shared_ptr<Clause>>
-    attemptToUnify(std::shared_ptr<Clause>& first, std::shared_ptr<Clause>& second, LiteralPredicate literalPredicate,
+    std::pair<bool, std::shared_ptr<Clause>> attemptToUnify(std::shared_ptr<Clause>& first,
+    std::shared_ptr<Clause>& second,
+    LiteralPredicate literalPredicate,
     ResolventPredicate resolventPredicate);
 };
 }; // namespace utils

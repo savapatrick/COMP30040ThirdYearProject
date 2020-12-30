@@ -22,8 +22,9 @@ class TheoremProver {
     std::string filename;
 
     public:
-    TheoremProver(std::shared_ptr<ClauseForm> _clauseForm, std::string  _fileName = "theorem_prover.txt")
-    : clauseForm(std::move(_clauseForm)), outputStream(), filename(std::move(_fileName)){}
+    TheoremProver(std::shared_ptr<ClauseForm> _clauseForm, std::string _fileName = "theorem_prover.txt")
+    : clauseForm(std::move(_clauseForm)), outputStream(), filename(std::move(_fileName)) {
+    }
     std::string getData() const;
     void outputData();
     static bool isTautology(std::shared_ptr<Clause>& clause);

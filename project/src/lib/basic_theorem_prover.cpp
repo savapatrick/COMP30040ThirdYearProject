@@ -53,7 +53,8 @@ bool BasicTheoremProver::factoringStep() {
     return false;
 }
 
-template <class LiteralPredicate, class ResolventPredicate> bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate) {
+template <class LiteralPredicate, class ResolventPredicate>
+bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate) {
     do {
         clauses.clear();
         timestamp += 1;
@@ -109,9 +110,8 @@ bool BasicTheoremProver::run() {
     auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName);
     };
-    auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral, const std::vector<std::shared_ptr<Literal>> &resolvents) -> bool{
-        return true;
-    };
+    auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
+                              const std::vector<std::shared_ptr<Literal>>& resolvents) -> bool { return true; };
     do {
         outputData();
         int times = 0;

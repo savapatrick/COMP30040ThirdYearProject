@@ -14,9 +14,8 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName) and
         (first->getAllVariables().size() == 2 and second->getAllVariables().size() == 2);
     };
-    auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral, const std::vector<std::shared_ptr<Literal>> &resolvents) -> bool{
-      return true;
-    };
+    auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
+                              const std::vector<std::shared_ptr<Literal>>& resolvents) -> bool { return true; };
     do {
         int times = 0;
         if(factoringStep()) {
@@ -59,16 +58,14 @@ void TwoVariableTheoremProver::disposeTwoVariableClauses() {
 bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(vector<std::shared_ptr<Literal>>& chosen) {
     if(chosen.size() == clauseForm->clauseForm.size()) {
         shared_ptr<ClauseForm> currentClauseForm(make_shared<ClauseForm>());
-        for (auto &literal: chosen) {
-            currentClauseForm->clauseForm.push_back({make_shared<Clause>(literal)});
-        }
+        for(auto& literal : chosen) { currentClauseForm->clauseForm.push_back({ make_shared<Clause>(literal) }); }
         DepthOrderedTheoremProver prover(currentClauseForm, false);
         // TODO: try to capture the output somehow
         return prover.run();
     }
-    for (auto &elem: clauseForm->clauseForm[chosen.size()]->clause) {
+    for(auto& elem : clauseForm->clauseForm[chosen.size()]->clause) {
         chosen.push_back(elem);
-        if (backtrackingClauseFormAndResolution(chosen)) {
+        if(backtrackingClauseFormAndResolution(chosen)) {
             return true;
         }
         chosen.pop_back();
@@ -87,7 +84,7 @@ bool TwoVariableTheoremProver::run() {
     outputStream << "we have the following clauses after disposal:\n";
     outputStream << clauseForm->getStringWithIndex();
     vector<std::shared_ptr<Literal>> chosen;
-    if (backtrackingClauseFormAndResolution(chosen)) {
+    if(backtrackingClauseFormAndResolution(chosen)) {
         outputStream << "reached saturation!\n";
         outputData();
         return true;

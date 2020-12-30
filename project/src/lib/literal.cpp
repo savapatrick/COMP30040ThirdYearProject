@@ -88,14 +88,14 @@ void Literal::renameFunction(const pair<std::string, std::string>& mapping) {
 std::pair<int, std::unordered_map<std::string, int>> Literal::getDepths() {
     std::unordered_map<string, int> result;
     int maxDepth = 0;
-    for (auto &term : terms) {
+    for(auto& term : terms) {
         auto termDepths = term->getDepths();
-        maxDepth = max(maxDepth, termDepths.first);
-        for (auto &keyValue : termDepths.second) {
+        maxDepth        = max(maxDepth, termDepths.first);
+        for(auto& keyValue : termDepths.second) {
             result[keyValue.first] = max(result[keyValue.first], keyValue.second);
         }
     }
-    return {maxDepth, result};
+    return { maxDepth, result };
 }
 
 }; // namespace utils

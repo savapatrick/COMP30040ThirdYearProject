@@ -26,7 +26,7 @@ std::string TheoremProver::getData() const {
 }
 
 void TheoremProver::outputData() {
-    ofstream out ("filename", ios::app);
+    ofstream out("filename", ios::app);
     out << outputStream.str();
     out.flush();
     outputStream.str("");

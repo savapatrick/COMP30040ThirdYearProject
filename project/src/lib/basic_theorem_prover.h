@@ -23,7 +23,8 @@ class BasicTheoremProver : public TheoremProver {
     long long timestamp;
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
     bool factoringStep();
-    template <class LiteralPredicate, class ResolventPredicate> bool resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate);
+    template <class LiteralPredicate, class ResolventPredicate>
+    bool resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate);
 
     public:
     BasicTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
