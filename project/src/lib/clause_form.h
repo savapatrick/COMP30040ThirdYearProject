@@ -38,6 +38,16 @@ class ClauseForm {
         }
         makeVariableNamesUniquePerClause();
     }
+    ClauseForm(const std::shared_ptr<ClauseForm>& other) {
+        clauseForm.reserve(other->clauseForm.size());
+        for (auto &clause : other->clauseForm) {
+            clauseForm.push_back(clause->createDeepCopy());
+        }
+        allFunctionNames = other->allFunctionNames;
+        allVariableNames = other->allVariableNames;
+        allConstantNames = other->allConstantNames;
+        makeVariableNamesUniquePerClause();
+    }
     void merge(std::shared_ptr<ClauseForm>& other);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);

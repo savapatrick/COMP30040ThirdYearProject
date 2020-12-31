@@ -28,7 +28,7 @@ class BasicTheoremProver : public TheoremProver {
 
     public:
     BasicTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
-    : TheoremProver(std::move(_clauseForm), _fileName), unification(std::make_shared<Unification>(outputStream)) {
+    : TheoremProver(_clauseForm, _fileName), unification(std::make_shared<Unification>(outputStream)) {
         avoid.clear();
         hot.clear();
         clauses.clear();

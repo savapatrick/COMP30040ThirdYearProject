@@ -9,7 +9,7 @@ using namespace std;
 namespace utils {
 
 bool DepthOrderedTheoremProver::run() {
-    outputStream << "we have the following clauses in our initial set!\n";
+    outputStream << "[depth ordered theorem prover]\nwe have the following clauses in our initial set!\n";
     outputStream << clauseForm->getStringWithIndex();
     auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName);

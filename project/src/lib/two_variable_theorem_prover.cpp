@@ -11,6 +11,8 @@ namespace utils {
 
 bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
     auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
+        auto p1 = first->getAllVariables();
+        auto p2 = second->getAllVariables();
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName) and
         (first->getAllVariables().size() == 2 and second->getAllVariables().size() == 2);
     };
@@ -60,8 +62,11 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(vector<std::s
         shared_ptr<ClauseForm> currentClauseForm(make_shared<ClauseForm>());
         for(auto& literal : chosen) { currentClauseForm->clauseForm.push_back({ make_shared<Clause>(literal) }); }
         DepthOrderedTheoremProver prover(currentClauseForm);
-        // TODO: try to capture the output somehow
-        return prover.run();
+        if (prover.run()) {
+            outputStream << prover.getData();
+            return true;
+        }
+        return false;
     }
     for(auto& elem : clauseForm->clauseForm[chosen.size()]->clause) {
         chosen.push_back(elem);
@@ -74,22 +79,22 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(vector<std::s
 }
 
 bool TwoVariableTheoremProver::run() {
-    outputStream << "we have the following clauses in our initial set!\n";
+    outputStream << "[two variable theorem prover]\nwe have the following clauses in our initial set!\n";
     outputStream << clauseForm->getStringWithIndex();
     if(!fullResolutionTwoVariableLiterals()) {
         outputData();
         return false;
     }
     disposeTwoVariableClauses();
-    outputStream << "we have the following clauses after disposal:\n";
+    outputStream << "[two variable theorem prover]\nwe have the following clauses after disposal:\n";
     outputStream << clauseForm->getStringWithIndex();
     vector<std::shared_ptr<Literal>> chosen;
     if(backtrackingClauseFormAndResolution(chosen)) {
-        outputStream << "reached saturation!\n";
+        outputStream << "proved by saturation!\n";
         outputData();
         return true;
     }
-    outputStream << "derived empty clause!\n";
+    outputStream << "refuted by always deriving empty clause!\n";
     outputData();
     return false;
 }

@@ -54,7 +54,7 @@ bool BasicTheoremProver::factoringStep() {
 }
 
 bool BasicTheoremProver::run() {
-    outputStream << "we have the following clauses in our initial set!\n";
+    outputStream << "[basic theorem prover]\nwe have the following clauses in our initial set!\n";
     outputStream << clauseForm->getStringWithIndex();
     auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName);
@@ -65,21 +65,21 @@ bool BasicTheoremProver::run() {
         outputData();
         int times = 0;
         if(factoringStep()) {
-            outputStream << "derived empty clause!\n";
+            outputStream << "proved by deriving the empty clause!\n";
             outputData();
             return false;
         } else {
             times += 1;
         }
         if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
-            outputStream << "derived empty clause!\n";
+            outputStream << "proved by deriving the empty clause!\n";
             outputData();
             return false;
         } else {
             times += 1;
         }
         if(times == 2 and hot.empty()) {
-            outputStream << "reached saturation!\n";
+            outputStream << "refuted by reaching saturation!\n";
             outputData();
             return true;
         }

@@ -22,15 +22,22 @@ bool TheoremProver::isTautology(std::shared_ptr<Clause>& clause) {
     return false;
 }
 std::string TheoremProver::getData() const {
-    return outputStream.str();
+    return allData;
 }
 
 void TheoremProver::outputData() {
-    ofstream out("filename", ios::app);
+    ofstream out(filename, ios::app);
     out << outputStream.str();
     out.flush();
+    allData += outputStream.str();
     outputStream.str("");
     outputStream.clear();
+}
+
+void TheoremProver::clearFile() {
+    std::ofstream streamFile;
+    streamFile.open(filename, std::ofstream::out | std::ofstream::trunc);
+    streamFile.close();
 }
 
 }; // namespace utils

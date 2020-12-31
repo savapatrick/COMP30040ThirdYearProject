@@ -16,14 +16,18 @@
 namespace utils {
 class TheoremProver {
     private:
+    void clearFile();
     protected:
     std::shared_ptr<ClauseForm> clauseForm;
     std::stringstream outputStream;
     std::string filename;
+    std::string allData;
 
     public:
-    TheoremProver(std::shared_ptr<ClauseForm> _clauseForm, std::string _fileName = "theorem_prover.txt")
-    : clauseForm(std::move(_clauseForm)), outputStream(), filename(std::move(_fileName)) {
+    TheoremProver(const std::shared_ptr<ClauseForm>& _clauseForm, std::string _fileName = "theorem_prover.txt")
+    : clauseForm(), outputStream(), filename(std::move(_fileName)) {
+        clauseForm = std::make_shared<ClauseForm>(_clauseForm);
+        clearFile();
     }
     std::string getData() const;
     void outputData();
