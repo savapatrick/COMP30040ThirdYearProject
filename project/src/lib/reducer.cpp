@@ -511,7 +511,10 @@ void Reducer::disambiguateFormula() {
     //    unordered_set<std::string> variablesSoFar;
     unordered_map<string, string> simpleSubstitution;
     variableRenaming(parseTree.Root, variablesSoFar, simpleSubstitution);
-    for(auto& x : allBoundVariables) { reservedTermNames.erase(reservedTermNames.find(x)); }
+    for(auto& x : allBoundVariables) {
+        reservedTermNames.erase(reservedTermNames.find(x));
+        variablesSoFar.erase(variablesSoFar.find(x));
+    }
     allBoundVariables = variablesSoFar;
     unordered_set<std::string> boundVariables;
     simpleSubstitution.clear();

@@ -109,20 +109,18 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Term::augmentU
     auto attempt = findPartialSubstitution(shared_from_this(), other);
     if(attempt.index() == 0) {
         if(!get<0>(attempt)) {
-            return false;
-        }
-    } else if(attempt.index()) {
-        return get<1>(attempt);
-    } else {
-        // second
-        attempt = findPartialSubstitution(other, shared_from_this());
-        if(attempt.index() == 0) {
-            if(!get<0>(attempt)) {
-                return false;
+            // second
+            attempt = findPartialSubstitution(other, shared_from_this());
+            if(attempt.index() == 0) {
+                if(!get<0>(attempt)) {
+                    return false;
+                }
+            } else if(attempt.index()) {
+                return get<1>(attempt);
             }
-        } else if(attempt.index()) {
-            return get<1>(attempt);
         }
+    } else {
+        return get<1>(attempt);
     }
     return true;
 }

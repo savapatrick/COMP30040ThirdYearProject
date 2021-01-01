@@ -15,7 +15,7 @@ using namespace std;
 
 int main() {
     ifstream input("input.txt");
-    ofstream output("output.txt");
+    ofstream output("clause_form.txt");
     vector<string> formulas;
     string auxFormula;
     while(getline(input, auxFormula)) { formulas.push_back(auxFormula); }
@@ -42,8 +42,8 @@ int main() {
     for(auto& _clauseForm : clauseForms) { clauseForm->merge(_clauseForm); }
     output << clauseForm->getString() << '\n';
     output.flush();
-    utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
-    basicTheoremProver.run();
+//    utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
+//    basicTheoremProver.run();
     utils::TwoVariableTheoremProver twoVariableTheoremProver(clauseForm, "two_variable_theorem_prover_output.txt");
     twoVariableTheoremProver.run();
     return 0;

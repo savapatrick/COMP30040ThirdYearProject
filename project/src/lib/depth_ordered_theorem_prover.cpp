@@ -3,6 +3,7 @@
 //
 
 #include "depth_ordered_theorem_prover.h"
+#include <iostream>
 
 using namespace std;
 
@@ -14,16 +15,19 @@ bool DepthOrderedTheoremProver::run() {
     auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName);
     };
-    auto isAOrdering = [](const shared_ptr<Literal>& first, const shared_ptr<Literal>& second) -> bool {
+    auto isAOrdering = [&](const shared_ptr<Literal>& first, const shared_ptr<Literal>& second) -> bool {
+        outputStream << "[" << first->getString() << ", " << second->getString() << "]\n";
         auto getDepthsFirst  = first->getDepths();
         auto getDepthsSecond = second->getDepths();
         if(getDepthsFirst.first >= getDepthsSecond.first) {
+            outputStream << "returns false\n";
             return false;
         }
         auto variablesFirst  = first->getAllVariables();
         auto variablesSecond = second->getAllVariables();
         for(auto& variableFirst : variablesFirst) {
             if(variablesSecond.find(variableFirst) == variablesSecond.end()) {
+                outputStream << "returns false\n";
                 return false;
             }
         }
@@ -31,9 +35,11 @@ bool DepthOrderedTheoremProver::run() {
             auto variable = variableAndDepth.first;
             auto depth    = variableAndDepth.second;
             if(depth >= getDepthsSecond.second[variable]) {
+                outputStream << "returns false\n";
                 return false;
             }
         }
+        outputStream << "returns true\n";
         return true;
     };
     auto resolventPredicate = [&isAOrdering](const std::shared_ptr<Literal>& resolvedLiteral,
