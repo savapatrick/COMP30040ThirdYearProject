@@ -8,7 +8,8 @@ using namespace std;
 
 namespace utils {
 
-bool Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) {
+variant<bool, shared_ptr<Clause>> Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& initialClause) {
+    shared_ptr<Clause> clause = initialClause->createDeepCopy();
     auto clauseLiterals = clause->getAllLiterals();
     bool ok             = false;
     for(auto& keyValue : clauseLiterals) {
@@ -65,7 +66,10 @@ bool Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause) {
             }
         }
     } while(found);
-    return unifiedAtLeastOnce;
+    if (unifiedAtLeastOnce) {
+        return clause;
+    }
+    return false;
 }
 
 }; // namespace utils

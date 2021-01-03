@@ -18,7 +18,7 @@ class Unification {
 
     public:
     Unification(std::ostream& stream) : outputStream(stream){};
-    bool tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause); // and commit if possible
+    std::variant<bool, std::shared_ptr<Clause>> tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause); // and commit if possible
     template <typename LiteralPredicate, typename ResolventPredicate>
     std::pair<bool, std::shared_ptr<Clause>> attemptToUnify(std::shared_ptr<Clause>& first,
     std::shared_ptr<Clause>& second,

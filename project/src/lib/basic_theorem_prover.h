@@ -34,7 +34,16 @@ class BasicTheoremProver : public TheoremProver {
         clauses.clear();
         clausesSoFar.clear();
         timestamp = 0;
-        for(auto& elem : clauseForm->clauseForm) { clausesSoFar.insert(elem->getString()); }
+        std::vector<std::shared_ptr<Clause>> newClauseForm;
+        for(auto& elem : clauseForm->clauseForm) {
+            if (clausesSoFar.find(elem->getString()) == clausesSoFar.end()) {
+                clausesSoFar.insert(elem->getString());
+                newClauseForm.push_back(elem);
+            }
+        }
+        if (clauseForm->clauseForm.size() != newClauseForm.size()) {
+            clauseForm->clauseForm = newClauseForm;
+        }
     }
     bool run() override;
 };
@@ -42,6 +51,7 @@ class BasicTheoremProver : public TheoremProver {
 template <typename LiteralPredicate, typename ResolventPredicate>
 bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate) {
     do {
+        outputData();
         clauses.clear();
         timestamp += 1;
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {

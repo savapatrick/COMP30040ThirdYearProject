@@ -33,14 +33,27 @@ bool BasicTheoremProver::factoringStep() {
     for(auto& clause : clauseForm->clauseForm) {
         changed |= removeDuplicates(clause);
         newClauseForm.push_back(clause);
-        if(unification->tryToUnifyTwoLiterals(clause)) {
-            if(isTautology(clause)) {
-                outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
+        if (isTautology(clause)) {
+            outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
+            newClauseForm.pop_back();
+            changed = true;
+            avoid.clear();
+            clausesSoFar.erase(clausesSoFar.find(clause->getString()));
+            continue;;
+        }
+        auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
+        if(unificationResult.index()) {
+            newClauseForm.push_back(std::get<1>(unificationResult));
+            if(isTautology(newClauseForm.back()) or clausesSoFar.find(newClauseForm.back()->getString()) != clausesSoFar.end()) {
                 newClauseForm.pop_back();
-                changed = true;
-                // TODO: instead of clear,
-                // strongly prefer over manually tweak the indices
-                avoid.clear();
+            }
+            else {
+                if (!removeDuplicates(newClauseForm.back())) {
+                    newClauseForm.pop_back();
+                }
+                else {
+                    changed = true;
+                }
             }
         }
     }
