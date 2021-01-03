@@ -14,7 +14,7 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
         auto p1 = first->getAllVariables();
         auto p2 = second->getAllVariables();
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName) and
-        (first->getAllVariables().size() == 2 and second->getAllVariables().size() == 2);
+        (first->getAllVariables().size() == 2 or second->getAllVariables().size() == 2);
     };
     auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
                               const std::vector<std::shared_ptr<Literal>>& resolvents) -> bool { return true; };
@@ -85,11 +85,11 @@ bool TwoVariableTheoremProver::run() {
     outputStream << clauseForm->getStringWithIndex();
     vector<std::shared_ptr<Literal>> chosen;
     if(backtrackingClauseFormAndResolution(chosen)) {
-        outputStream << "proved by saturation!\n";
+        outputStream << "refuted by saturation!\n";
         outputData();
         return true;
     }
-    outputStream << "refuted by always deriving empty clause!\n";
+    outputStream << "proved by always deriving empty clause!\n";
     outputData();
     return false;
 }
