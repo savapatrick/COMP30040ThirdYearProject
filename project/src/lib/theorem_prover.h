@@ -17,6 +17,7 @@ namespace utils {
 class TheoremProver {
     private:
     void clearFile();
+
     protected:
     std::shared_ptr<ClauseForm> clauseForm;
     std::stringstream outputStream;

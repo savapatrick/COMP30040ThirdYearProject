@@ -21,8 +21,9 @@ class BasicTheoremProver : public TheoremProver {
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
     std::unordered_set<std::string> clausesSoFar;
     long long timestamp;
+    void updateCache(int deletedIndex);
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
-    bool factoringStep();
+    void factoringStep();
     template <typename LiteralPredicate, typename ResolventPredicate>
     bool resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate);
 
@@ -36,12 +37,12 @@ class BasicTheoremProver : public TheoremProver {
         timestamp = 0;
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
-            if (clausesSoFar.find(elem->getString()) == clausesSoFar.end()) {
+            if(clausesSoFar.find(elem->getString()) == clausesSoFar.end()) {
                 clausesSoFar.insert(elem->getString());
                 newClauseForm.push_back(elem);
             }
         }
-        if (clauseForm->clauseForm.size() != newClauseForm.size()) {
+        if(clauseForm->clauseForm.size() != newClauseForm.size()) {
             clauseForm->clauseForm = newClauseForm;
         }
     }
@@ -53,6 +54,7 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
     do {
         outputData();
         clauses.clear();
+        factoringStep();
         timestamp += 1;
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
             for(int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size(); ++index2) {

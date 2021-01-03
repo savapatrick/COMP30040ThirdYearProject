@@ -27,43 +27,39 @@ bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
     return false;
 }
 
-bool BasicTheoremProver::factoringStep() {
+void BasicTheoremProver::factoringStep() {
     bool changed = false;
-    std::vector<std::shared_ptr<Clause>> newClauseForm;
-    for(auto& clause : clauseForm->clauseForm) {
+    vector<shared_ptr<Clause>> newClauseForm;
+    vector<shared_ptr<Clause>> toBeInserted;
+    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
+        auto& clause = clauseForm->clauseForm[index];
         changed |= removeDuplicates(clause);
         newClauseForm.push_back(clause);
-        if (isTautology(clause)) {
+        if(isTautology(clause)) {
             outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
             newClauseForm.pop_back();
             changed = true;
-            avoid.clear();
-            clausesSoFar.erase(clausesSoFar.find(clause->getString()));
-            continue;;
+            updateCache(index);
+            continue;
         }
         auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
         if(unificationResult.index()) {
-            newClauseForm.push_back(std::get<1>(unificationResult));
-            if(isTautology(newClauseForm.back()) or clausesSoFar.find(newClauseForm.back()->getString()) != clausesSoFar.end()) {
-                newClauseForm.pop_back();
-            }
-            else {
-                if (!removeDuplicates(newClauseForm.back())) {
-                    newClauseForm.pop_back();
-                }
-                else {
+            toBeInserted.push_back(std::get<1>(unificationResult));
+            if(isTautology(toBeInserted.back()) or clausesSoFar.find(toBeInserted.back()->getString()) != clausesSoFar.end()) {
+                toBeInserted.pop_back();
+            } else {
+                if(!removeDuplicates(toBeInserted.back())) {
+                    toBeInserted.pop_back();
+                } else {
                     changed = true;
                 }
             }
         }
     }
     if(changed) {
+        for(auto& elem : toBeInserted) { newClauseForm.push_back(elem); }
         clauseForm->clauseForm = newClauseForm;
     }
-    if(clauseForm->clauseForm.empty()) {
-        return true;
-    }
-    return false;
 }
 
 bool BasicTheoremProver::run() {
@@ -76,26 +72,57 @@ bool BasicTheoremProver::run() {
                               const std::vector<std::shared_ptr<Literal>>& resolvents) -> bool { return true; };
     do {
         outputData();
-        int times = 0;
-        if(factoringStep()) {
-            outputStream << "proved by deriving the empty clause!\n";
-            outputData();
-            return false;
-        } else {
-            times += 1;
-        }
         if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
             outputStream << "proved by deriving the empty clause!\n";
             outputData();
             return false;
         } else {
-            times += 1;
-        }
-        if(times == 2 and hot.empty()) {
-            outputStream << "refuted by reaching saturation!\n";
-            outputData();
-            return true;
+            if(hot.empty()) {
+                outputStream << "refuted by reaching saturation!\n";
+                outputData();
+                return true;
+            }
         }
     } while(true);
+}
+
+void BasicTheoremProver::updateCache(int deletedIndex) {
+    if(hot.find(deletedIndex) != hot.end()) {
+        hot.erase(hot.find(deletedIndex));
+    }
+    vector<int> toBeUpdated;
+    for(auto& elem : hot) {
+        if(elem.first > deletedIndex) {
+            toBeUpdated.push_back(elem.first);
+        }
+    }
+    vector<pair<int, long long>> toBeInserted;
+    for(auto& elem : toBeUpdated) {
+        auto value = hot[elem];
+        hot.erase(hot.find(elem));
+        toBeInserted.emplace_back(elem - 1, value);
+    }
+    for(auto& elem : toBeInserted) { hot[elem.first] = elem.second; }
+    vector<pair<int, int>> toBeUpdatedSet;
+    for(auto& elem : avoid) {
+        if(elem.first >= deletedIndex or elem.second >= deletedIndex) {
+            toBeUpdatedSet.emplace_back(elem);
+        }
+    }
+    vector<pair<int, int>> toBeInsertedSet;
+    for(auto elem : toBeUpdatedSet) {
+        avoid.erase(avoid.find(elem));
+        if(elem.first == deletedIndex or elem.second == deletedIndex) {
+            continue;
+        }
+        if(elem.first > deletedIndex) {
+            elem.first -= 1;
+        }
+        if(elem.second > deletedIndex) {
+            elem.second -= 1;
+        }
+        toBeInsertedSet.emplace_back(elem);
+    }
+    for(auto& elem : toBeInsertedSet) { avoid.insert(elem); }
 }
 }; // namespace utils

@@ -40,9 +40,7 @@ class ClauseForm {
     }
     ClauseForm(const std::shared_ptr<ClauseForm>& other) {
         clauseForm.reserve(other->clauseForm.size());
-        for (auto &clause : other->clauseForm) {
-            clauseForm.push_back(clause->createDeepCopy());
-        }
+        for(auto& clause : other->clauseForm) { clauseForm.push_back(clause->createDeepCopy()); }
         allFunctionNames = other->allFunctionNames;
         allVariableNames = other->allVariableNames;
         allConstantNames = other->allConstantNames;

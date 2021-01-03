@@ -53,25 +53,16 @@ bool DepthOrderedTheoremProver::run() {
     };
     do {
         outputData();
-        int times = 0;
-        if(factoringStep()) {
-            outputStream << "derived empty clause!\n";
-            outputData();
-            return false;
-        } else {
-            times += 1;
-        }
         if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
-            outputStream << "derived empty clause!\n";
+            outputStream << "proved by deriving the empty clause!\n";
             outputData();
             return false;
         } else {
-            times += 1;
-        }
-        if(times == 2 and hot.empty()) {
-            outputStream << "reached saturation!\n";
-            outputData();
-            return true;
+            if(hot.empty()) {
+                outputStream << "refuted by reaching saturation!\n";
+                outputData();
+                return true;
+            }
         }
     } while(true);
 }

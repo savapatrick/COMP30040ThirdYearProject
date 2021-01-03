@@ -10,8 +10,8 @@ namespace utils {
 
 variant<bool, shared_ptr<Clause>> Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& initialClause) {
     shared_ptr<Clause> clause = initialClause->createDeepCopy();
-    auto clauseLiterals = clause->getAllLiterals();
-    bool ok             = false;
+    auto clauseLiterals       = clause->getAllLiterals();
+    bool ok                   = false;
     for(auto& keyValue : clauseLiterals) {
         if(keyValue.second > 1 or
         clauseLiterals.find({ keyValue.first.first, 1 - keyValue.first.second }) != clauseLiterals.end()) {
@@ -66,7 +66,7 @@ variant<bool, shared_ptr<Clause>> Unification::tryToUnifyTwoLiterals(std::shared
             }
         }
     } while(found);
-    if (unifiedAtLeastOnce) {
+    if(unifiedAtLeastOnce) {
         return clause;
     }
     return false;
