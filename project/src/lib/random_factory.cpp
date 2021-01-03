@@ -8,7 +8,7 @@
 using namespace std;
 
 namespace utils {
-std::string RandomFactory::getRandomTermOrFunctionName(std::unordered_set<std::string>& reservedTermNames, const std::string &pref) {
+std::string RandomFactory::getRandomTermOrFunctionName(std::unordered_set<std::string>& reservedTermNames, const std::string& pref) {
     static std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
     const int sizeOfAlphabet    = 26;
     static std::random_device RandomDevice;
@@ -16,7 +16,7 @@ std::string RandomFactory::getRandomTermOrFunctionName(std::unordered_set<std::s
     std::uniform_int_distribution<int> distribution(0, RANGEMAX());
     string result;
     do {
-        result = pref;
+        result     = pref;
         int length = distribution(generator) % 15 + 1; /// 26^15 is huge
         for(int ind = 1; ind <= length; ++ind) { result += alphabet[distribution(generator) % sizeOfAlphabet]; }
     } while(reservedTermNames.find(result) != reservedTermNames.end());

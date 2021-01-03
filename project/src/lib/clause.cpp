@@ -4,12 +4,26 @@
 
 #include "clause.h"
 #include "ad_hoc_templated.h"
+#include <algorithm>
 
 using namespace std;
 
 namespace utils {
 std::shared_ptr<Clause> Clause::createDeepCopy() {
     return std::make_shared<Clause>(shared_from_this());
+}
+bool Clause::hasNestedFunctions() {
+    for(auto& literal : clause) {
+        if(literal->hasNestedFunctions()) {
+            return true;
+        }
+    }
+    return false;
+}
+int Clause::getHighestNumberOfVariablesPerLiteral() {
+    int answer = 0;
+    for(auto& literal : clause) { answer = max(answer, static_cast<int>(literal->getAllVariables().size())); }
+    return answer;
 }
 std::unordered_set<std::string> Clause::getAllVariables() {
     unordered_set<string> result;
@@ -28,8 +42,12 @@ std::map<std::pair<std::string, bool>, int> Clause::getAllLiterals() const {
 }
 std::string Clause::getString() const {
     string result;
-    for(int index = 0; index < (int)clause.size(); ++index) {
-        result += clause[index]->getString();
+    vector<string> literals;
+    literals.reserve(clause.size());
+    for(const auto& literal : clause) { literals.push_back(literal->getString()); }
+    sort(literals.begin(), literals.end());
+    for(int index = 0; index < (int)literals.size(); ++index) {
+        result += literals[index];
         if(index + 1 != (int)clause.size()) {
             result += " | ";
         }

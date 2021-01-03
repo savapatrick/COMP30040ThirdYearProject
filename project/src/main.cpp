@@ -6,6 +6,7 @@
 #include "lib/parse_tree.h"
 #include "lib/tokenizer.h"
 #include <fstream>
+#include <lib/two_variable_theorem_prover.h>
 #include <memory>
 
 // C++ 17, because it uses variant
@@ -14,7 +15,7 @@ using namespace std;
 
 int main() {
     ifstream input("input.txt");
-    ofstream output("output.txt");
+    ofstream output("clause_form.txt");
     vector<string> formulas;
     string auxFormula;
     while(getline(input, auxFormula)) { formulas.push_back(auxFormula); }
@@ -43,5 +44,7 @@ int main() {
     output.flush();
     utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
     basicTheoremProver.run();
+    utils::TwoVariableTheoremProver twoVariableTheoremProver(clauseForm, "two_variable_theorem_prover_output.txt");
+    twoVariableTheoremProver.run();
     return 0;
 }

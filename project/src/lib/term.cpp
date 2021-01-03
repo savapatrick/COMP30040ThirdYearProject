@@ -109,20 +109,18 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Term::augmentU
     auto attempt = findPartialSubstitution(shared_from_this(), other);
     if(attempt.index() == 0) {
         if(!get<0>(attempt)) {
-            return false;
-        }
-    } else if(attempt.index()) {
-        return get<1>(attempt);
-    } else {
-        // second
-        attempt = findPartialSubstitution(other, shared_from_this());
-        if(attempt.index() == 0) {
-            if(!get<0>(attempt)) {
-                return false;
+            // second
+            attempt = findPartialSubstitution(other, shared_from_this());
+            if(attempt.index() == 0) {
+                if(!get<0>(attempt)) {
+                    return false;
+                }
+            } else if(attempt.index()) {
+                return get<1>(attempt);
             }
-        } else if(attempt.index()) {
-            return get<1>(attempt);
         }
+    } else {
+        return get<1>(attempt);
     }
     return true;
 }
@@ -130,6 +128,27 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Term::augmentU
 std::shared_ptr<Term> Term::createDeepCopy() {
     return make_shared<Term>(shared_from_this());
 }
+
+bool Term::hasNestedFunctions() {
+    queue<shared_ptr<Term>> queueTerms;
+    queueTerms.push(shared_from_this());
+    while(!queueTerms.empty()) {
+        auto& frontTerm = queueTerms.front();
+        queueTerms.pop();
+
+        if(termType == TermType::FUNCTION) {
+            for(auto& neighbour : frontTerm->arguments) {
+                if(neighbour->termType == TermType::FUNCTION) {
+                    return true;
+                }
+            }
+        }
+
+        for(auto& neighbour : frontTerm->arguments) { queueTerms.push(neighbour); }
+    }
+    return false;
+}
+
 std::unordered_set<std::string> Term::getAllVariables() {
     std::unordered_set<std::string> result;
     queue<shared_ptr<Term>> queueTerms;
@@ -138,8 +157,8 @@ std::unordered_set<std::string> Term::getAllVariables() {
         auto& frontTerm = queueTerms.front();
         queueTerms.pop();
 
-        if(termType == TermType::VARIABLE) {
-            result.insert(termName);
+        if(frontTerm->termType == TermType::VARIABLE) {
+            result.insert(frontTerm->termName);
         }
 
         for(auto& neighbour : frontTerm->arguments) { queueTerms.push(neighbour); }
@@ -208,6 +227,21 @@ void Term::renameFunction(const pair<std::string, std::string>& substitution) {
             queueForTerm.push(arg);
         }
     }
+}
+
+void Term::getDepths(const shared_ptr<Term>& node, unordered_map<std::string, int>& soFar, int currentDepth) {
+    if(node->termType == TermType::VARIABLE) {
+        soFar[node->termName] = max(soFar[node->termName], currentDepth);
+    }
+    for(auto& neighbour : arguments) { getDepths(neighbour, soFar, currentDepth + 1); }
+}
+
+std::pair<int, std::unordered_map<std::string, int>> Term::getDepths() {
+    unordered_map<std::string, int> depths;
+    getDepths(shared_from_this(), depths, 0);
+    int maxDepth = 0;
+    for(auto& keyValue : depths) { maxDepth = max(maxDepth, keyValue.second); }
+    return { maxDepth, depths };
 }
 
 }; // namespace utils

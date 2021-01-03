@@ -140,14 +140,12 @@ std::string ParseTree::getEulerTraversal() {
 
 int ParseTree::createCopyForSubtree(int node) {
     int newNode = getNextNode();
-    if (information.find(node) != information.end()) {
+    if(information.find(node) != information.end()) {
         information[newNode] = make_shared<Entity>(information[node]);
     }
     graph[newNode].clear();
     graph[newNode].reserve(graph[node].size());
-    for (auto &neighbour : graph[node]) {
-        graph[newNode].push_back(createCopyForSubtree(neighbour));
-    }
+    for(auto& neighbour : graph[node]) { graph[newNode].push_back(createCopyForSubtree(neighbour)); }
     return newNode;
 }
 } // namespace utils

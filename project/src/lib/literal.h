@@ -9,12 +9,21 @@
 #include "term.h"
 #include <memory>
 #include <set>
+#include <unordered_map>
 
 namespace utils {
+class TheoremProver;
 class BasicTheoremProver;
+class DepthOrderedTheoremProver;
+class TwoVariableTheoremProver;
+class Unification;
 class Literal : public std::enable_shared_from_this<Literal> {
     private:
+    friend class TheoremProver;
     friend class BasicTheoremProver;
+    friend class DepthOrderedTheoremProver;
+    friend class TwoVariableTheoremProver;
+    friend class Unification;
     bool isNegated;
     std::string predicateName;
     std::vector<std::shared_ptr<Term>> terms;
@@ -43,12 +52,14 @@ class Literal : public std::enable_shared_from_this<Literal> {
     bool equalsWithoutSign(const std::shared_ptr<Literal>& other);
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Literal>& other);
     std::shared_ptr<Literal> createDeepCopy();
+    bool hasNestedFunctions();
     std::unordered_set<std::string> getAllVariables();
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);
     std::pair<std::string, bool> getLiteral();
     std::string getString() const;
+    std::pair<int, std::unordered_map<std::string, int>> getDepths();
 };
 
 }; // namespace utils

@@ -88,4 +88,21 @@ std::string ClauseForm::getString() const {
     return result;
 }
 
+std::string ClauseForm::getStringWithIndex() const {
+    string result;
+    for(int index = 0; index < (int)clauseForm.size(); ++index) {
+        result += to_string(index) + " " + clauseForm[index]->getString() + "\n";
+    }
+    return result;
+}
+
+bool ClauseForm::isTwoVariableFragment() {
+    for(auto& clause : clauseForm) {
+        if(clause->hasNestedFunctions() or clause->getAllVariables().size() > 2) {
+            return false;
+        }
+    }
+    return true;
+}
+
 }; // namespace utils

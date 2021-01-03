@@ -10,10 +10,16 @@
 #include <map>
 
 namespace utils {
+class TheoremProver;
 class BasicTheoremProver;
+class TwoVariableTheoremProver;
+class Unification;
 class Clause : public std::enable_shared_from_this<Clause> {
     private:
+    friend class TheoremProver;
     friend class BasicTheoremProver;
+    friend class TwoVariableTheoremProver;
+    friend class Unification;
     std::vector<std::shared_ptr<Literal>> clause;
 
     public:
@@ -30,8 +36,14 @@ class Clause : public std::enable_shared_from_this<Clause> {
         auto& otherClauses = other->clause;
         for(auto& otherClause : otherClauses) { clause.push_back(otherClause->createDeepCopy()); }
     }
+    Clause(const std::shared_ptr<Literal>& literal) {
+        clause.reserve(1);
+        clause.push_back(literal->createDeepCopy());
+    }
     std::shared_ptr<Clause> createDeepCopy();
+    bool hasNestedFunctions();
     std::unordered_set<std::string> getAllVariables();
+    int getHighestNumberOfVariablesPerLiteral();
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);

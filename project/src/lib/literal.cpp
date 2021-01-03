@@ -45,6 +45,16 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Literal::augme
     }
     return true;
 }
+
+bool Literal::hasNestedFunctions() {
+    for(auto& term : terms) {
+        if(term->hasNestedFunctions()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 std::unordered_set<std::string> Literal::getAllVariables() {
     unordered_set<string> result;
     for(auto& term : terms) {
@@ -74,6 +84,18 @@ void Literal::applySubstitution(const pair<std::string, std::string>& mapping) {
 }
 void Literal::renameFunction(const pair<std::string, std::string>& mapping) {
     for(auto& term : terms) { term->renameFunction({ mapping.first, mapping.second }); }
+}
+std::pair<int, std::unordered_map<std::string, int>> Literal::getDepths() {
+    std::unordered_map<string, int> result;
+    int maxDepth = 0;
+    for(auto& term : terms) {
+        auto termDepths = term->getDepths();
+        maxDepth        = max(maxDepth, termDepths.first);
+        for(auto& keyValue : termDepths.second) {
+            result[keyValue.first] = max(result[keyValue.first], keyValue.second);
+        }
+    }
+    return { maxDepth, result };
 }
 
 }; // namespace utils

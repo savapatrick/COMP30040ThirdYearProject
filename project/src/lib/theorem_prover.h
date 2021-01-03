@@ -9,21 +9,31 @@
 #include "unordered_map"
 #include <fstream>
 #include <map>
+#include <sstream>
 #include <utility>
 #include <vector>
 
 namespace utils {
 class TheoremProver {
     private:
+    void clearFile();
+
     protected:
     std::shared_ptr<ClauseForm> clauseForm;
-    std::ofstream outputStream;
+    std::stringstream outputStream;
+    std::string filename;
+    std::string allData;
 
     public:
-    TheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
-    : clauseForm(std::move(_clauseForm)), outputStream(_fileName.c_str(), std::ios::out) {
+    TheoremProver(const std::shared_ptr<ClauseForm>& _clauseForm, std::string _fileName = "theorem_prover.txt")
+    : clauseForm(), outputStream(), filename(std::move(_fileName)) {
+        clauseForm = std::make_shared<ClauseForm>(_clauseForm);
+        clearFile();
     }
-    virtual void run() = 0;
+    std::string getData() const;
+    void outputData();
+    static bool isTautology(std::shared_ptr<Clause>& clause);
+    virtual bool run() = 0;
 };
 } // namespace utils
 

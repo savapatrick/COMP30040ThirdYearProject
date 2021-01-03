@@ -24,6 +24,7 @@ class Term : public std::enable_shared_from_this<Term> {
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>>
     findPartialSubstitution(const std::shared_ptr<Term>& first, const std::shared_ptr<Term>& second) const;
     std::string preOrderTraversal(const std::shared_ptr<Term>& node);
+    void getDepths(const std::shared_ptr<Term>& node, std::unordered_map<std::string, int>& soFar, int currentDepth);
 
     public:
     explicit Term(std::string newVariable) : termName(std::move(newVariable)), termType(VARIABLE) {
@@ -64,7 +65,9 @@ class Term : public std::enable_shared_from_this<Term> {
     void applySubstitution(const std::pair<std::string, std::string>& substitution);
     void renameFunction(const std::pair<std::string, std::string>& substitution);
     std::unordered_set<std::string> getAllVariables();
+    bool hasNestedFunctions();
     std::string getString();
+    std::pair<int, std::unordered_map<std::string, int>> getDepths();
 };
 }; // namespace utils
 
