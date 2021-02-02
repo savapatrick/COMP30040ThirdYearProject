@@ -1,0 +1,41 @@
+    ( ~ constant(A)
+    | ~ decreases(A) )).
+
+cnf(a5_2,hypothesis,
+    ( ~ environment(A)
+    | ~ subpopulations(B,C,A,D)
+    | ~ greater(resilience(C),resilience(B))
+    | ~ decreases(resources(A,D))
+    | increases(difference(disbanding_rate(B,D),disbanding_rate(C,D))) )).
+
+cnf(a5_3,hypothesis,
+    ( ~ environment(A)
+    | ~ subpopulations(B,C,A,D)
+    | ~ greater(resilience(C),resilience(B))
+    | ~ constant(resources(A,D))
+    | constant(difference(disbanding_rate(B,D),disbanding_rate(C,D))) )).
+
+cnf(a2_4,hypothesis,
+    ( greater(resilience(efficient_producers),resilience(first_movers)) )).
+
+cnf(prove_l4_5,negated_conjecture,
+    ( environment(sk1) )).
+
+cnf(prove_l4_6,negated_conjecture,
+    ( subpopulations(first_movers,efficient_producers,sk1,sk2) )).
+
+cnf(prove_l4_7,negated_conjecture,
+    ( decreases(resources(sk1,sk2))
+    | constant(resources(sk1,sk2)) )).
+
+cnf(prove_l4_8,negated_conjecture,
+    ( decreases(resources(sk1,sk2))
+    | decreases(difference(disbanding_rate(first_movers,sk2),disbanding_rate(efficient_producers,sk2))) )).
+
+cnf(prove_l4_9,negated_conjecture,
+    ( ~ increases(difference(disbanding_rate(first_movers,sk2),disbanding_rate(efficient_producers,sk2)))
+    | constant(resources(sk1,sk2)) )).
+
+cnf(prove_l4_10,negated_conjecture,
+    ( ~ increases(difference(disbanding_rate(first_movers,sk2),disbanding_rate(efficient_producers,sk2)))
+    | decreases(difference(disbanding_rate(first_movers,sk2),disbanding_rate(efficient_producers,sk2))) )).
