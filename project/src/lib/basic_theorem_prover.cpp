@@ -79,7 +79,6 @@ bool BasicTheoremProver::run() {
         } else {
             if(hot.empty()) {
                 outputStream << "refuted by reaching saturation!\n";
-//                outputStream << clauseForm->getStringWithIndex();
                 outputData();
                 return true;
             }
