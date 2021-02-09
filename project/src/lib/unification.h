@@ -41,7 +41,7 @@ ResolventPredicate resolventPredicate) {
     if(!ok) {
         return std::vector<std::shared_ptr<Clause>>({});
     }
-    std::vector <std::shared_ptr<Clause>> clauses;
+    std::vector<std::shared_ptr<Clause>> clauses;
     std::pair<int, int> indexes;
     for(int index = 0; index < (int)first->clause.size(); ++index) {
         for(int index2 = 0; index2 < (int)second->clause.size(); ++index2) {
@@ -51,7 +51,8 @@ ResolventPredicate resolventPredicate) {
                 auto firstDeepCopy  = first->createDeepCopy();
                 auto secondDeepCopy = second->createDeepCopy();
                 do {
-                    auto result = firstDeepCopy->clause[indexes.first]->augmentUnification(secondDeepCopy->clause[indexes.second]);
+                    auto result =
+                    firstDeepCopy->clause[indexes.first]->augmentUnification(secondDeepCopy->clause[indexes.second]);
                     if(result.index() == 0) {
                         if(std::get<0>(result)) {
                             unified = true;
@@ -68,15 +69,16 @@ ResolventPredicate resolventPredicate) {
                 if(unified) {
                     outputStream << "clauses " + firstDeepCopy->getString() + " and " + secondDeepCopy->getString()
                                  << " get resolution rule applied on " + firstDeepCopy->clause[indexes.first]->getString() +
-                                    " and on " + secondDeepCopy->clause[indexes.second]->getString() + "\n[ADD] the resulting clause ";
+                    " and on " + secondDeepCopy->clause[indexes.second]->getString() + "\n[ADD] the resulting clause ";
                     auto resolvedLiteral = firstDeepCopy->clause[indexes.first];
                     firstDeepCopy->clause.erase(firstDeepCopy->clause.begin() + indexes.first);
                     secondDeepCopy->clause.erase(secondDeepCopy->clause.begin() + indexes.second);
                     for(auto& literal : secondDeepCopy->clause) { firstDeepCopy->clause.push_back(literal); }
                     outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
-                    if (resolventPredicate(first->clause[index], firstDeepCopy)) {
-                        if (!resolventPredicate(second->clause[index2], firstDeepCopy)) {
-                            throw std::logic_error("resolventPredicate should never depend on the sign of the resolved literal");
+                    if(resolventPredicate(first->clause[index], firstDeepCopy)) {
+                        if(!resolventPredicate(second->clause[index2], firstDeepCopy)) {
+                            throw std::logic_error(
+                            "resolventPredicate should never depend on the sign of the resolved literal");
                         }
                         clauses.push_back(firstDeepCopy);
                     }

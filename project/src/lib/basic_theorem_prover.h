@@ -76,7 +76,7 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                     //  outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
                     //  " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
                     //  result.second->getString() << '\n';
-                    for (auto currentClause : result) {
+                    for(auto& currentClause : result) {
                         auto clauseHash = currentClause->getString();
                         if(clauses.find(clauseHash) != clauses.end()) {
                             continue;

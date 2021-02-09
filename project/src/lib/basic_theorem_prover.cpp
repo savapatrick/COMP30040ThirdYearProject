@@ -69,7 +69,7 @@ bool BasicTheoremProver::run() {
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName);
     };
     auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
-                                 const std::shared_ptr<Clause>& clause) -> bool { return true; };
+                              const std::shared_ptr<Clause>& clause) -> bool { return true; };
     do {
         outputData();
         if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
