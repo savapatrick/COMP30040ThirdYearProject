@@ -72,24 +72,26 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                 clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
                 // outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
                 avoid.insert({ index, index2 });
-                if(result.first) {
+                if(!result.empty()) {
                     //  outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
                     //  " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
                     //  result.second->getString() << '\n';
-                    auto clauseHash = result.second->getString();
-                    if(clauses.find(clauseHash) != clauses.end()) {
-                        continue;
-                    }
-                    if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
-                        continue;
-                    }
-                    clauses[clauseHash] = result.second;
-                    clausesSoFar.insert(clauseHash);
-                    hot[index] = timestamp + static_cast<long long>(clauseForm->clauseForm.size()) + 1; // then pick it again
-                    hot[index2] = timestamp + static_cast<long long>(clauseForm->clauseForm.size()) + 1; // then pick it again
-                    if(result.second->clause.empty()) {
-                        // we derived the empty clause
-                        return true;
+                    for (auto currentClause : result) {
+                        auto clauseHash = currentClause->getString();
+                        if(clauses.find(clauseHash) != clauses.end()) {
+                            continue;
+                        }
+                        if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
+                            continue;
+                        }
+                        clauses[clauseHash] = currentClause;
+                        clausesSoFar.insert(clauseHash);
+                        hot[index] = timestamp + static_cast<long long>(clauseForm->clauseForm.size()) + 1; // then pick it again
+                        hot[index2] = timestamp + static_cast<long long>(clauseForm->clauseForm.size()) + 1; // then pick it again
+                        if(currentClause->clause.empty()) {
+                            // we derived the empty clause
+                            return true;
+                        }
                     }
                 }
             }

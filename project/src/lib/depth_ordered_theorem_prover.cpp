@@ -43,7 +43,8 @@ bool DepthOrderedTheoremProver::run() {
         return true;
     };
     auto resolventPredicate = [&isAOrdering](const std::shared_ptr<Literal>& resolvedLiteral,
-                              const std::vector<std::shared_ptr<Literal>>& resolvents) -> bool {
+                              const std::shared_ptr<Clause>& clause) -> bool {
+        auto resolvents = clause->getLiterals();
         for(auto& resolvent : resolvents) {
             if(isAOrdering(resolvedLiteral, resolvent)) {
                 return false;

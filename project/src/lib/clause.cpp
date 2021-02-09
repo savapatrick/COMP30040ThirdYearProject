@@ -35,7 +35,7 @@ std::unordered_set<std::string> Clause::getAllVariables() {
 void Clause::applySubstitution(const pair<std::string, std::shared_ptr<Term>>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }
-std::map<std::pair<std::string, bool>, int> Clause::getAllLiterals() const {
+std::map<std::pair<std::string, bool>, int> Clause::getLiteralsAndCount() const {
     map<pair<string, bool>, int> accumulator;
     for(auto& literal : clause) { accumulator[literal->getLiteral()] += 1; }
     return accumulator;
@@ -59,6 +59,9 @@ void Clause::applySubstitution(const pair<std::string, std::string>& mapping) {
 }
 void Clause::renameFunction(const pair<std::string, std::string>& mapping) {
     for(auto& literal : clause) { literal->renameFunction(mapping); }
+}
+const std::vector<std::shared_ptr<Literal>>& Clause::getLiterals() const {
+    return clause;
 }
 
 

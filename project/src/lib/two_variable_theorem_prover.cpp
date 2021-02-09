@@ -17,7 +17,7 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
         (first->getAllVariables().size() == 2 or second->getAllVariables().size() == 2);
     };
     auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
-                              const std::vector<std::shared_ptr<Literal>>& resolvents) -> bool { return true; };
+                                 const std::shared_ptr<Clause>& clause) -> bool { return true; };
     do {
         outputData();
         if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
