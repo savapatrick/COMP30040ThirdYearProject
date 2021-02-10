@@ -70,39 +70,19 @@ bool BasicTheoremProver::run() {
     };
     auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
                               const std::shared_ptr<Clause>& clause) -> bool { return true; };
-    do {
+    outputData();
+    if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
+        outputStream << "proved by deriving the empty clause!\n";
         outputData();
-        if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
-            outputStream << "proved by deriving the empty clause!\n";
-            outputData();
-            return false;
-        } else {
-            if(hot.empty()) {
-                outputStream << "refuted by reaching saturation!\n";
-                outputData();
-                return true;
-            }
-        }
-    } while(true);
+        return false;
+    } else {
+        outputStream << "refuted by reaching saturation!\n";
+        outputData();
+        return true;
+    }
 }
 
 void BasicTheoremProver::updateCache(int deletedIndex) {
-    if(hot.find(deletedIndex) != hot.end()) {
-        hot.erase(hot.find(deletedIndex));
-    }
-    vector<int> toBeUpdated;
-    for(auto& elem : hot) {
-        if(elem.first > deletedIndex) {
-            toBeUpdated.push_back(elem.first);
-        }
-    }
-    vector<pair<int, long long>> toBeInserted;
-    for(auto& elem : toBeUpdated) {
-        auto value = hot[elem];
-        hot.erase(hot.find(elem));
-        toBeInserted.emplace_back(elem - 1, value);
-    }
-    for(auto& elem : toBeInserted) { hot[elem.first] = elem.second; }
     vector<pair<int, int>> toBeUpdatedSet;
     for(auto& elem : avoid) {
         if(elem.first >= deletedIndex or elem.second >= deletedIndex) {

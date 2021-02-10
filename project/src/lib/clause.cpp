@@ -4,6 +4,7 @@
 
 #include "clause.h"
 #include "ad_hoc_templated.h"
+#include "random_factory.h"
 #include <algorithm>
 
 using namespace std;
@@ -62,6 +63,16 @@ void Clause::renameFunction(const pair<std::string, std::string>& mapping) {
 }
 const std::vector<std::shared_ptr<Literal>>& Clause::getLiterals() const {
     return clause;
+}
+void Clause::disjointifyVariables(shared_ptr<Clause>& other) {
+    auto allOtherVariables = other->getAllVariables();
+    auto allVariables = this->getAllVariables();
+    for (auto &variable : allOtherVariables) {
+        if (allVariables.find(variable) != allVariables.end()) {
+            auto substitution = make_pair(variable, RandomFactory::getRandomVariableName(allVariables));
+            this->applySubstitution(substitution);
+        }
+    }
 }
 
 

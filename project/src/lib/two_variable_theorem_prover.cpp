@@ -18,20 +18,16 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
     };
     auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
                               const std::shared_ptr<Clause>& clause) -> bool { return true; };
-    do {
+    outputData();
+    if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
+        outputStream << "proved by deriving the empty clause!\n";
         outputData();
-        if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
-            outputStream << "proved by deriving the empty clause!\n";
-            outputData();
-            return false;
-        } else {
-            if(hot.empty()) {
-                outputStream << "refuted by reaching saturation!\n";
-                outputData();
-                return true;
-            }
-        }
-    } while(true);
+        return false;
+    } else {
+        outputStream << "refuted by reaching saturation!\n";
+        outputData();
+        return true;
+    }
 }
 
 

@@ -50,6 +50,7 @@ ResolventPredicate resolventPredicate) {
                 bool unified;
                 auto firstDeepCopy  = first->createDeepCopy();
                 auto secondDeepCopy = second->createDeepCopy();
+                firstDeepCopy->disjointifyVariables(secondDeepCopy);
                 do {
                     auto result =
                     firstDeepCopy->clause[indexes.first]->augmentUnification(secondDeepCopy->clause[indexes.second]);
