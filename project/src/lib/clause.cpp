@@ -66,9 +66,9 @@ const std::vector<std::shared_ptr<Literal>>& Clause::getLiterals() const {
 }
 void Clause::disjointifyVariables(shared_ptr<Clause>& other) {
     auto allOtherVariables = other->getAllVariables();
-    auto allVariables = this->getAllVariables();
-    for (auto &variable : allOtherVariables) {
-        if (allVariables.find(variable) != allVariables.end()) {
+    auto allVariables      = this->getAllVariables();
+    for(auto& variable : allOtherVariables) {
+        if(allVariables.find(variable) != allVariables.end()) {
             auto substitution = make_pair(variable, RandomFactory::getRandomVariableName(allVariables));
             this->applySubstitution(substitution);
         }
