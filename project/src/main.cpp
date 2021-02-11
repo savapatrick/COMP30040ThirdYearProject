@@ -15,13 +15,12 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
     int commandMask = 0;
-    map <string, int> whichMask({{"all", 3}, {"basic", 2}, {"two", 1}});
-    map <string, int> powerCommand({{"basic", 1}, {"two", 0}});
-    if (argc > 1) {
+    map<string, int> whichMask({ { "all", 3 }, { "basic", 2 }, { "two", 1 } });
+    map<string, int> powerCommand({ { "basic", 1 }, { "two", 0 } });
+    if(argc > 1) {
         string command(argv[1]);
         commandMask = whichMask[command];
-    }
-    else {
+    } else {
         throw std::invalid_argument("No arguments were provided!\n");
     }
     ifstream input("input.txt");
@@ -52,11 +51,11 @@ int main(int argc, char* argv[]) {
     for(auto& _clauseForm : clauseForms) { clauseForm->merge(_clauseForm); }
     output << clauseForm->getString() << '\n';
     output.flush();
-    if (commandMask & (1 << powerCommand["basic"])) {
+    if(commandMask & (1 << powerCommand["basic"])) {
         utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
         basicTheoremProver.run();
     }
-    if (commandMask & (1 << powerCommand["two"])) {
+    if(commandMask & (1 << powerCommand["two"])) {
         utils::TwoVariableTheoremProver twoVariableTheoremProver(clauseForm, "two_variable_theorem_prover_output.txt");
         twoVariableTheoremProver.run();
     }
