@@ -8,15 +8,15 @@
 ./SYN/SYN315+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
 ./SYN/SYN316+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
 ./SYN/SYN324+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
-./SYN/SYN325+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
-./SYN/SYN357+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
-./SYN/SYN358+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
-./SYN/SYN368+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
-./SYN/SYN383+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
-./SYN/SYN385+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
-./SYN/SYN396+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
-./SYN/SYN397+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
-./SYN/SYN398+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
+./SYN/SYN325+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
+./SYN/SYN357+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
+./SYN/SYN358+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
+./SYN/SYN368+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
+./SYN/SYN383+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
+./SYN/SYN385+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
+./SYN/SYN396+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
+./SYN/SYN397+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
+./SYN/SYN398+1.p:%            Number of functors    :    0 (   0 constant; --- arity) done
 ./SYN/SYN399+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
 ./SYN/SYN401+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
 ./SYN/SYN402+1.p:%            Number of functors    :    0 (   0 constant; --- arity)

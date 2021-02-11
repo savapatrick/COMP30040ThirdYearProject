@@ -85,7 +85,7 @@ bool TwoVariableTheoremProver::run() {
         outputData();
         return true;
     }
-    outputStream << "proved by always deriving empty clause!\n";
+    outputStream << "proved by deriving the empty clause!\n";
     outputData();
     return false;
 }

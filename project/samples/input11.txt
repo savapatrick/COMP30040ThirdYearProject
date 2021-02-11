@@ -1,1 +1,1 @@
-(@x(P(t) | Bigf(x))<->(P(t) | (@y : Bigf(y))))
+(@x(P(t) | Bigf(x))<->(P(t) | (@y Bigf(y))))
