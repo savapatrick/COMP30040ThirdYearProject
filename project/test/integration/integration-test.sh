@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for i in {1..22}
+for i in {1..47}
 do
   printf "=====================================\n\n"
   echo "" > basic_theorem_prover_output.txt

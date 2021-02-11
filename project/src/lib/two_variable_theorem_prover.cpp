@@ -81,7 +81,7 @@ bool TwoVariableTheoremProver::run() {
     outputStream << clauseForm->getStringWithIndex();
     vector<std::shared_ptr<Literal>> chosen;
     if(backtrackingClauseFormAndResolution(chosen)) {
-        outputStream << "refuted by saturation!\n";
+        outputStream << "refuted by reaching saturation!\n";
         outputData();
         return true;
     }
