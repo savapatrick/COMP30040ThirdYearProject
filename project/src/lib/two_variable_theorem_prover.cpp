@@ -59,7 +59,8 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(vector<std::s
         }
         return false;
     }
-    for(auto& elem : clauseForm->clauseForm[chosen.size()]->clause) {
+    int whichIndex = chosen.size();
+    for(auto& elem : clauseForm->clauseForm[whichIndex]->clause) {
         chosen.push_back(elem);
         if(backtrackingClauseFormAndResolution(chosen)) {
             return true;
