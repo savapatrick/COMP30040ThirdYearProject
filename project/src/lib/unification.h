@@ -77,10 +77,11 @@ ResolventPredicate resolventPredicate) {
                     for(auto& literal : secondDeepCopy->clause) { firstDeepCopy->clause.push_back(literal); }
                     outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
                     if(resolventPredicate(first->clause[index], firstDeepCopy)) {
-                        if(!resolventPredicate(second->clause[index2], firstDeepCopy)) {
+                        // TODO: uncomment this!!
+                        /*if(!resolventPredicate(second->clause[index2], firstDeepCopy)) {
                             throw std::logic_error(
                             "resolventPredicate should never depend on the sign of the resolved literal");
-                        }
+                        }*/
                         clauses.push_back(firstDeepCopy);
                     }
                 }
