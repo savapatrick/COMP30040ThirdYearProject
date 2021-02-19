@@ -15,7 +15,7 @@ using namespace std;
 namespace utils {
 ParseTree::ParseTree(const std::string& formula) {
     utils::Tokenizer& tokenizer = utils::Tokenizer::getInstance();
-    auto tokens                 = tokenizer.tokenize(formula);
+    auto tokens                 = utils::Tokenizer::tokenize(formula);
     graph.clear();
     information.clear();
     spareNodesBuffer.clear();
@@ -40,9 +40,9 @@ int ParseTree::getNextNode() {
         spareNodesBuffer.push_back(redundantNodes.back());
         redundantNodes.pop_back();
     }
-    if(!spareNodesBuffer.empty()) {
-        const int bufferOrder = 100;
-        for(int nodeLabel = highestNodeLabel + 1; nodeLabel <= highestNodeLabel + 100; ++nodeLabel) {
+    if(spareNodesBuffer.empty()) {
+        const int bufferOrder = 1000;
+        for(int nodeLabel = highestNodeLabel + 1; nodeLabel <= highestNodeLabel + bufferOrder; ++nodeLabel) {
             spareNodesBuffer.push_back(nodeLabel);
         }
         highestNodeLabel += bufferOrder;

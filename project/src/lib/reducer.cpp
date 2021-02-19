@@ -223,7 +223,7 @@ bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, 
 // warm-up for step 1.1)
 bool Reducer::reduceDoubleImplicationStep(int node) {
     bool isDone = true;
-    cerr << "beginning " << parseTree.getEulerTraversal() << '\n';
+//    cerr << "beginning " << parseTree.getEulerTraversal() << '\n';
     if(applyParanthesesToConjunctions(node)) {
         if(applyParanthesesToConjunctions(node)) {
             throw logic_error("it should not get modified twice when "
@@ -231,7 +231,7 @@ bool Reducer::reduceDoubleImplicationStep(int node) {
         }
         isDone = false;
     }
-    cerr << "after parantheses to conjunctions " << parseTree.getEulerTraversal() << '\n';
+//    cerr << "after parantheses to conjunctions " << parseTree.getEulerTraversal() << '\n';
     if(applyParanthesesToDisjunctions(node)) {
         if(applyParanthesesToDisjunctions(node)) {
             throw logic_error("it should not get modified twice when "
@@ -239,7 +239,7 @@ bool Reducer::reduceDoubleImplicationStep(int node) {
         }
         isDone = false;
     }
-    cerr << "after parantheses to disjunctions " << parseTree.getEulerTraversal() << '\n';
+//    cerr << "after parantheses to disjunctions " << parseTree.getEulerTraversal() << '\n';
     if(applyParanthesesToImplications(node)) {
         if(applyParanthesesToImplications(node)) {
             throw logic_error("it should not get modified twice when "
@@ -247,7 +247,7 @@ bool Reducer::reduceDoubleImplicationStep(int node) {
         }
         isDone = false;
     }
-    cerr << "after parantheses to implications " << parseTree.getEulerTraversal() << '\n';
+//    cerr << "after parantheses to implications " << parseTree.getEulerTraversal() << '\n';
     if(eliminateDoubleImplicationOrImplication(true, node)) {
         if(eliminateDoubleImplicationOrImplication(true, node)) {
             throw logic_error("it should not get modified twice when "
@@ -255,7 +255,7 @@ bool Reducer::reduceDoubleImplicationStep(int node) {
         }
         isDone = false;
     }
-    cerr << "after parantheses to double implications " << parseTree.getEulerTraversal() << '\n';
+//    cerr << "after parantheses to double implications " << parseTree.getEulerTraversal() << '\n';
     return isDone;
 }
 
@@ -268,12 +268,12 @@ bool Reducer::reduceImplicationStep(int node) {
     bool wasModified = false;
     while(!reduceDoubleImplicationStep(node)) { wasModified = true; }
     if(resolveRightAssociativityForImplications(node)) {
-        cerr << "after removing implications " << parseTree.getEulerTraversal() << '\n';
+//        cerr << "after removing implications " << parseTree.getEulerTraversal() << '\n';
         if(resolveRightAssociativityForImplications(node)) {
             throw logic_error("it should not get modified twice when "
                               "applying resolveRightAssociativityForImplications");
         }
-        cerr << "after resolving right associativity " << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
+//        cerr << "after resolving right associativity " << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
         wasModified = true;
     }
     return wasModified;
@@ -431,7 +431,7 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
                 auto term = get<0>(argument);
                 if(variablesInQuantifiers.find(term) == variablesInQuantifiers.end()) {
                     // this is a free-variable
-                    if(allBoundVariables.find(term) != allBoundVariables.end()) {
+                    if(allBoundVariables.find(term) == allBoundVariables.end()) {
                         // this free-variable share a name with a bound variable
                         if(substitution.find(term) == substitution.end()) {
                             substitution[term] = RandomFactory::getRandomConstantName(reservedTermNames);
@@ -652,18 +652,18 @@ template <typename T> T getSimplifiedClauseForm() {
 template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimplifiedClauseForm() {
     static std::vector<SimplifiedClauseForm::SimplifiedClause> clauseForm;
     if(!computedClauseForm) {
-        cerr << "before everything : " << parseTree.getEulerTraversal(parseTree.Root, true) << endl;
+//        cerr << "before everything : " << parseTree.getEulerTraversal(parseTree.Root, true) << endl;
         basicReduce();
-        cerr << "after basic reduction : " << parseTree.getEulerTraversal(parseTree.Root, true) << endl;
+//        cerr << "after basic reduction : " << parseTree.getEulerTraversal(parseTree.Root, true) << endl;
         skolemization();
-        cerr << "after skolemization : " << parseTree.getEulerTraversal() << endl;
-        cerr << parseTree.getEulerTraversal() << endl;
+//        cerr << "after skolemization : " << parseTree.getEulerTraversal() << endl;
+//        cerr << parseTree.getEulerTraversal() << endl;
         removeUniversalQuantifiers();
         unifyNormalForms(parseTree.Root);
         clauseForm =
         parseTree.information[parseTree.Root]->getEntity<shared_ptr<SimplifiedClauseForm>>()->getSimplifiedClauseForm();
         computedClauseForm = true;
-        cerr << parseTree.getEulerTraversal() << endl;
+//        cerr << parseTree.getEulerTraversal() << endl;
     }
     return clauseForm;
 }

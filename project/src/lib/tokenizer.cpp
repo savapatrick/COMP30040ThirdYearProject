@@ -11,7 +11,7 @@
 using namespace std;
 
 namespace utils {
-std::vector<std::string> Tokenizer::tokenize(const std::string& seq) const {
+std::vector<std::string> Tokenizer::tokenize(const std::string& seq) {
     /// TODO: when introducing equality, manually remove all of the equality signs and replace them
     /// with an equality predicate of arity 2, possibly with a special name
     string aux(seq);
