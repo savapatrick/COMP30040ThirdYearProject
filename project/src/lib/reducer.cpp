@@ -519,8 +519,9 @@ bool isAnd) {
     }
     // TODO: bear in mind that here we made the assumption that any free-variable in the
     // initial formula is a constant
+    auto allArgumentsFirst = first->getAllArguments();
     auto allArgumentsSecond = second->getAllArguments();
-    auto arguments          = AdHocTemplated<string>::unionIterablesVector(allBoundVariables, allArgumentsSecond);
+    auto arguments          = AdHocTemplated<string>::unionIterablesVector(allArgumentsFirst, allArgumentsSecond);
     std::vector<SimplifiedLiteral::arg> argumentsVariant;
     argumentsVariant.reserve(arguments.size());
     for(auto& arg : arguments) { argumentsVariant.emplace_back(arg); }
