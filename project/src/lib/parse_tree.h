@@ -44,7 +44,7 @@ class ParseTree {
     ParseTree() = default;
 
     explicit ParseTree(const std::string& tokens);
-    explicit ParseTree(const vector<std::string>& tokens);
+    explicit ParseTree(const std::vector<std::string>& tokens);
 
     std::string getEulerTraversal();
 
