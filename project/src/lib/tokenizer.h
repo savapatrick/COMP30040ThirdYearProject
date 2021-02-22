@@ -24,7 +24,7 @@ class Tokenizer {
         return instance;
     }
 
-    [[nodiscard]] static std::vector<std::string> tokenize(const std::string& seq) ;
+    [[nodiscard]] static std::vector<std::string> tokenize(const std::string& seq);
 
     static std::pair<std::string, std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>>
     decomposePredicate(const std::string& seq);

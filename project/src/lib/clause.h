@@ -42,7 +42,7 @@ class Clause : public std::enable_shared_from_this<Clause> {
     }
     Clause(const std::vector<std::shared_ptr<Literal>>& literals) {
         clause.reserve(literals.size());
-        for (auto &literal: literals) { clause.push_back(literal->createDeepCopy()); }
+        for(auto& literal : literals) { clause.push_back(literal->createDeepCopy()); }
     }
     void disjointifyVariables(std::shared_ptr<Clause>& other);
     std::shared_ptr<Clause> createDeepCopy();
