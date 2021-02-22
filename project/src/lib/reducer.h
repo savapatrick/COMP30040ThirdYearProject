@@ -24,16 +24,6 @@ class Reducer {
     std::unordered_set<std::string> reservedFunctionNames;
     std::unordered_set<std::string> reservedPredicateNames;
 
-    void disposeNode(int node);
-
-    int addNodeWithOperator(const std::string& which);
-
-    int addImplication(const int& nodeOne, const int& nodeTwo);
-
-    int addOrClause(const int& nodeOne, const int& nodeTwo);
-
-    int addNegationToFormula(const int& nodeOne);
-
     bool applyParanthesesToConjunctions(int node);
 
     bool applyParanthesesToDisjunctions(int node);
@@ -81,7 +71,6 @@ class Reducer {
     public:
     explicit Reducer(ParseTree& _parseTree);
 
-    void addNegationToRoot();
     template <typename T> T getSimplifiedClauseForm();
     std::shared_ptr<ClauseForm> getClauseForm();
 };

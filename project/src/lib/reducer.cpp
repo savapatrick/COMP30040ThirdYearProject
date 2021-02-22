@@ -7,8 +7,6 @@
 #include "operators.h"
 #include "random_factory.h"
 #include <algorithm>
-#include <ctime>
-#include <iostream>
 
 using namespace std;
 
@@ -53,60 +51,12 @@ std::string Reducer::getRandomPredicateName() {
     return RandomFactory::getRandomPredicateName(reservedPredicateNames);
 }
 
-void Reducer::disposeNode(int node) {
-    try {
-        parseTree.graph.erase(parseTree.graph.find(node));
-        parseTree.information.erase(parseTree.information.find(node));
-        parseTree.redundantNodes.push_back(node);
-    } catch(...) { throw invalid_argument("dispose node failed to dispose node " + to_string(node)); }
-}
-
 std::shared_ptr<Entity> Reducer::getEntityWithFlippedQuantifierAndVariable(const string& which) {
     Operators& operators          = Operators::getInstance();
     auto givenQuantifier          = operators.getQuantifierFromQuantifierAndVariable(which);
     auto givenVariable            = operators.getVariableFromQuantifierAndVariable(which);
     auto newQuantifierAndVariable = operators.flipQuantifier(givenQuantifier) + givenVariable;
     return make_shared<Entity>(EntityType::BOUNDVariable, newQuantifierAndVariable);
-}
-
-int Reducer::addNodeWithOperator(const string& which) {
-    Operators& operators = Operators::getInstance();
-    auto newNode         = parseTree.getNextNode();
-    auto givenOperator   = operators.getOperator(which);
-    if(operators.isQuantifier(givenOperator)) {
-        throw invalid_argument("given operator is a quantifier --- something went wrong");
-    }
-    parseTree.information[newNode] = make_shared<Entity>(EntityType::SIMPLIFIEDOperator, givenOperator);
-    return newNode;
-}
-
-int Reducer::addImplication(const int& nodeOne, const int& nodeTwo) {
-    auto implication = addNodeWithOperator("IMPLY");
-    auto father      = parseTree.getNextNode();
-    parseTree.graph[father].emplace_back(nodeOne);
-    parseTree.graph[father].emplace_back(implication);
-    parseTree.graph[father].emplace_back(nodeTwo);
-    return father;
-}
-
-int Reducer::addOrClause(const int& nodeOne, const int& nodeTwo) {
-    auto orOperator = addNodeWithOperator("OR");
-    auto father     = parseTree.getNextNode();
-    parseTree.graph[father].emplace_back(nodeOne);
-    parseTree.graph[father].emplace_back(orOperator);
-    parseTree.graph[father].emplace_back(nodeTwo);
-    return father;
-}
-
-int Reducer::addNegationToFormula(const int& nodeOne) {
-    auto notOperator = addNodeWithOperator("NOT");
-    parseTree.graph[notOperator].emplace_back(nodeOne);
-    if(nodeOne == parseTree.Root) {
-        parseTree.Root = parseTree.getNextNode();
-        parseTree.graph[parseTree.Root].emplace_back(notOperator);
-        return parseTree.Root;
-    }
-    return notOperator;
 }
 
 bool Reducer::applyParanthesesToOperators(int node, const std::string& targetOperator, const std::vector<std::string>& lowerOperators) {
@@ -186,12 +136,12 @@ bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, 
                 pile.pop_back();
                 auto leftPredicate = pile.back();
                 pile.pop_back();
-                disposeNode(doubleImply);
-                pile.push_back(addImplication(leftPredicate, rightPredicate));
-                pile.push_back(addNodeWithOperator("AND"));
+                parseTree.disposeNode(doubleImply);
+                pile.push_back(parseTree.addImplication(leftPredicate, rightPredicate));
+                pile.push_back(parseTree.addNodeWithOperator("AND"));
                 auto rightPredicateDeepCopy = parseTree.createCopyForSubtree(rightPredicate);
                 auto leftPredicateDeepCopy  = parseTree.createCopyForSubtree(leftPredicate);
-                pile.push_back(addImplication(rightPredicateDeepCopy, leftPredicateDeepCopy));
+                pile.push_back(parseTree.addImplication(rightPredicateDeepCopy, leftPredicateDeepCopy));
             } else if(!isDoubleImplication and whichOperator == "IMPLY") {
                 auto leftPredicate = pile.back();
                 pile.pop_back();
@@ -199,9 +149,9 @@ bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, 
                 pile.pop_back();
                 auto rightPredicate = pile.back();
                 pile.pop_back();
-                disposeNode(imply);
-                auto negatedLeftPredicate = addNegationToFormula(leftPredicate);
-                pile.push_back(addOrClause(negatedLeftPredicate, rightPredicate));
+                parseTree.disposeNode(imply);
+                auto negatedLeftPredicate = parseTree.addNegationToFormula(leftPredicate);
+                pile.push_back(parseTree.addOrClause(negatedLeftPredicate, rightPredicate));
             }
         }
     }
@@ -601,7 +551,7 @@ void Reducer::unifyNormalForms(int node) {
             throw logic_error("two instances cannot be in a relationship father-son");
         }
         swap(parseTree.information[node], parseTree.information[whichNeighbour]);
-        for(auto& x : parseTree.graph[node]) { disposeNode(x); }
+        for(auto& x : parseTree.graph[node]) { parseTree.disposeNode(x); }
         parseTree.graph[node].clear();
     }
     int totalNumberOfOperators = 0;
@@ -645,7 +595,7 @@ void Reducer::unifyNormalForms(int node) {
     }
 }
 
-template <typename T> T getSimplifiedClauseForm() {
+template <typename T> [[maybe_unused]] T getSimplifiedClauseForm() {
     throw logic_error("not implemented");
 }
 
@@ -666,10 +616,6 @@ template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimp
         //        cerr << parseTree.getEulerTraversal() << endl;
     }
     return clauseForm;
-}
-
-void Reducer::addNegationToRoot() {
-    addNegationToFormula(parseTree.Root);
 }
 
 template <> std::shared_ptr<SimplifiedClauseForm> Reducer::getSimplifiedClauseForm() {
