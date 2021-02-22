@@ -55,6 +55,7 @@ class Clause : public std::enable_shared_from_this<Clause> {
     std::map<std::pair<std::string, bool>, int> getLiteralsAndCount() const;
     const std::vector<std::shared_ptr<Literal>>& getLiterals() const;
     std::string getString() const;
+    std::string getHash() const;
 };
 }; // namespace utils
 

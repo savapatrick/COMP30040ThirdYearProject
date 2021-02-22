@@ -166,14 +166,21 @@ std::unordered_set<std::string> Term::getAllVariables() {
     return result;
 }
 
-std::string Term::preOrderTraversal(const std::shared_ptr<Term>& node) {
+std::string Term::preOrderTraversal(const std::shared_ptr<Term>& node, const unordered_map<std::string, std::string>& substitution) {
     string result;
-    result += node->termName;
+    if(!substitution.empty() and node->termType == VARIABLE) {
+        if(substitution.find(node->termName) == substitution.end()) {
+            throw std::invalid_argument("the substitution given does not include all the variables in the literal");
+        }
+        result += substitution.at(node->termName);
+    } else {
+        result += node->termName;
+    }
     if(node->termType == FUNCTION) {
         result += "(";
     }
     for(int index = 0; index < (int)node->arguments.size(); ++index) {
-        result += preOrderTraversal(node->arguments[index]);
+        result += preOrderTraversal(node->arguments[index], substitution);
         if(index + 1 != (int)node->arguments.size()) {
             result += ",";
         }
@@ -185,8 +192,21 @@ std::string Term::preOrderTraversal(const std::shared_ptr<Term>& node) {
 }
 
 std::string Term::getString() {
-    return preOrderTraversal(shared_from_this());
+    unordered_map<string, string> emptySubstitution;
+    return preOrderTraversal(shared_from_this(), emptySubstitution);
 }
+
+std::string Term::getStringWithoutVariableNames() {
+    unordered_map<string, string> substitution;
+    auto allVariables = getAllVariables();
+    for(auto& variable : allVariables) { substitution[variable] = "_v_var"; }
+    return preOrderTraversal(shared_from_this(), substitution);
+}
+
+std::string Term::getHash(const unordered_map<std::string, std::string>& substitution) {
+    return preOrderTraversal(shared_from_this(), substitution);
+}
+
 void Term::applySubstitution(const pair<std::string, std::string>& substitution) {
     queue<shared_ptr<Term>> queueForTerm;
     auto which = make_shared<Term>(substitution.second);
@@ -243,6 +263,20 @@ std::pair<int, std::unordered_map<std::string, int>> Term::getDepths() {
     int maxDepth = 0;
     for(auto& keyValue : depths) { maxDepth = max(maxDepth, keyValue.second); }
     return { maxDepth, depths };
+}
+
+void getAllVariablesInOrder(const shared_ptr<utils::Term>& node, vector<string>& variablesInOrder) {
+    if(node->termType == VARIABLE) {
+        variablesInOrder.push_back(node->termName);
+    } else {
+        for(auto& argument : node->arguments) { getAllVariablesInOrder(argument, variablesInOrder); }
+    }
+}
+
+std::vector<std::string> Term::getAllVariablesInOrder() {
+    vector<string> allVariablesInOrder;
+    utils::getAllVariablesInOrder(shared_from_this(), allVariablesInOrder);
+    return allVariablesInOrder;
 }
 
 }; // namespace utils

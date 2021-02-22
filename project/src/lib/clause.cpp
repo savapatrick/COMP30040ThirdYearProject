@@ -55,6 +55,32 @@ std::string Clause::getString() const {
     }
     return result;
 }
+
+std::string Clause::getHash() const {
+    vector<pair<string, shared_ptr<Literal>>> literals;
+    literals.reserve(clause.size());
+    for(const auto& literal : clause) { literals.emplace_back(literal->getStringWithoutVariableNames(), literal); }
+    sort(literals.begin(), literals.end());
+    unordered_map<string, string> substitution;
+    int currentLabel = 0;
+    string result;
+    for(const auto& literal : literals) {
+        auto variablesInOrder = literal.second->getAllVariablesInOrder();
+        for(auto& currentVariable : variablesInOrder) {
+            if(substitution.find(currentVariable) == substitution.end()) {
+                currentLabel += 1;
+                substitution[currentVariable] = "_v_" + to_string(currentLabel);
+            }
+        }
+        result += literal.second->getHash(substitution);
+        result += "|";
+    }
+    if(!result.empty()) {
+        result.pop_back();
+    }
+    return result;
+}
+
 void Clause::applySubstitution(const pair<std::string, std::string>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }

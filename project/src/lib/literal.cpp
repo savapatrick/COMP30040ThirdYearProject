@@ -9,6 +9,7 @@
 using namespace std;
 
 namespace utils {
+
 bool Literal::equalsWithoutSign(const std::shared_ptr<Literal>& other) {
     if(predicateName != other->predicateName) {
         return false;
@@ -66,9 +67,11 @@ std::unordered_set<std::string> Literal::getAllVariables() {
 void Literal::applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping) {
     for(auto& term : terms) { term->applySubstitution({ mapping.first, mapping.second }); }
 }
+
 std::pair<std::string, bool> Literal::getLiteral() {
     return { predicateName, isNegated };
 }
+
 std::string Literal::getString() const {
     string sign;
     if(isNegated) {
@@ -79,12 +82,26 @@ std::string Literal::getString() const {
     params.pop_back();
     return sign + predicateName + "(" + params + ")";
 }
+
+std::string Literal::getStringWithoutVariableNames() const {
+    string sign;
+    if(isNegated) {
+        sign = "~";
+    }
+    string params;
+    for(auto& term : terms) { params += term->getStringWithoutVariableNames() + ","; }
+    params.pop_back();
+    return sign + predicateName + "(" + params + ")";
+}
+
 void Literal::applySubstitution(const pair<std::string, std::string>& mapping) {
     for(auto& term : terms) { term->applySubstitution({ mapping.first, mapping.second }); }
 }
+
 void Literal::renameFunction(const pair<std::string, std::string>& mapping) {
     for(auto& term : terms) { term->renameFunction({ mapping.first, mapping.second }); }
 }
+
 std::pair<int, std::unordered_map<std::string, int>> Literal::getDepths() {
     std::unordered_map<string, int> result;
     int maxDepth = 0;
@@ -96,6 +113,26 @@ std::pair<int, std::unordered_map<std::string, int>> Literal::getDepths() {
         }
     }
     return { maxDepth, result };
+}
+
+std::string Literal::getHash(const unordered_map<std::string, std::string>& substitution) const {
+    string sign;
+    if(isNegated) {
+        sign = "~";
+    }
+    string params;
+    for(auto& term : terms) { params += term->getHash(substitution) + ","; }
+    params.pop_back();
+    return sign + predicateName + "(" + params + ")";
+}
+
+std::vector<std::string> Literal::getAllVariablesInOrder() {
+    vector<string> variablesInOrder;
+    for(auto& term : terms) {
+        auto currentVariablesInOrder = term->getAllVariablesInOrder();
+        variablesInOrder.insert(variablesInOrder.end(), currentVariablesInOrder.begin(), currentVariablesInOrder.end());
+    }
+    return variablesInOrder;
 }
 
 }; // namespace utils

@@ -66,7 +66,7 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                     //  " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
                     //  result.second->getString() << '\n';
                     for(auto& currentClause : result) {
-                        auto clauseHash = currentClause->getString();
+                        auto clauseHash = currentClause->getHash();
                         if(clauses.find(clauseHash) != clauses.end()) {
                             continue;
                         }
