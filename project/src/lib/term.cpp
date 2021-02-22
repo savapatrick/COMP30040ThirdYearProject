@@ -234,7 +234,7 @@ void Term::getDepths(const shared_ptr<Term>& node, unordered_map<std::string, in
         soFar[node->termName] = max(soFar[node->termName], currentDepth);
         return;
     }
-    for(auto& neighbour : arguments) { getDepths(neighbour, soFar, currentDepth + 1); }
+    for(auto& neighbour : node->arguments) { getDepths(neighbour, soFar, currentDepth + 1); }
 }
 
 std::pair<int, std::unordered_map<std::string, int>> Term::getDepths() {

@@ -71,17 +71,17 @@ ResolventPredicate resolventPredicate) {
                     outputStream << "clauses " + firstDeepCopy->getString() + " and " + secondDeepCopy->getString()
                                  << " get resolution rule applied on " + firstDeepCopy->clause[indexes.first]->getString() +
                     " and on " + secondDeepCopy->clause[indexes.second]->getString() + "\n[ADD] the resulting clause ";
-                    auto resolvedLiteral = firstDeepCopy->clause[indexes.first];
+                    auto resolvedLiteralOne = firstDeepCopy->clause[indexes.first];
+                    auto resolvedLiteralTwo = secondDeepCopy->clause[indexes.second];
                     firstDeepCopy->clause.erase(firstDeepCopy->clause.begin() + indexes.first);
                     secondDeepCopy->clause.erase(secondDeepCopy->clause.begin() + indexes.second);
                     for(auto& literal : secondDeepCopy->clause) { firstDeepCopy->clause.push_back(literal); }
                     outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
-                    if(resolventPredicate(first->clause[index], firstDeepCopy)) {
-                        // TODO: uncomment this!!
-                        /*if(!resolventPredicate(second->clause[index2], firstDeepCopy)) {
+                    if(resolventPredicate(resolvedLiteralOne, firstDeepCopy)) {
+                        if(!resolventPredicate(resolvedLiteralTwo, firstDeepCopy)) {
                             throw std::logic_error(
                             "resolventPredicate should never depend on the sign of the resolved literal");
-                        }*/
+                        }
                         clauses.push_back(firstDeepCopy);
                     }
                 }
