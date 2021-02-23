@@ -68,15 +68,15 @@ ResolventPredicate resolventPredicate) {
                     }
                 } while(true);
                 if(unified) {
-                    outputStream << "clauses " + firstDeepCopy->getString() + " and " + secondDeepCopy->getString()
-                                 << " get resolution rule applied on " + firstDeepCopy->clause[indexes.first]->getString() +
-                    " and on " + secondDeepCopy->clause[indexes.second]->getString() + "\n[ADD] the resulting clause ";
+                    //                    outputStream << "clauses " + firstDeepCopy->getString() + " and " + secondDeepCopy->getString()
+                    //                                 << " get resolution rule applied on " + firstDeepCopy->clause[indexes.first]->getString() +
+                    //                    " and on " + secondDeepCopy->clause[indexes.second]->getString() + "\n[ADD] the resulting clause ";
                     auto resolvedLiteralOne = firstDeepCopy->clause[indexes.first];
                     auto resolvedLiteralTwo = secondDeepCopy->clause[indexes.second];
                     firstDeepCopy->clause.erase(firstDeepCopy->clause.begin() + indexes.first);
                     secondDeepCopy->clause.erase(secondDeepCopy->clause.begin() + indexes.second);
                     for(auto& literal : secondDeepCopy->clause) { firstDeepCopy->clause.push_back(literal); }
-                    outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
+                    //                    outputStream << firstDeepCopy->getString() << " is added to the set of clauses\n";
                     if(resolventPredicate(resolvedLiteralOne, firstDeepCopy)) {
                         if(!resolventPredicate(resolvedLiteralTwo, firstDeepCopy)) {
                             throw std::logic_error(

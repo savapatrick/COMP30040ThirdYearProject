@@ -17,5 +17,5 @@ while true; do
     echo "$i: Clause form fails! have a look in input.txt"
     break
   fi
-  ((i=i+1))
+  ((i = i + 1))
 done

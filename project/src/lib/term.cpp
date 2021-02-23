@@ -8,28 +8,23 @@
 
 using namespace std;
 
+namespace {
+void getAllVariablesInOrder(const shared_ptr<const utils::Term>& node, vector<string>& variablesInOrder) {
+    if(node->getTermType() == utils::VARIABLE) {
+        variablesInOrder.push_back(node->getTermName());
+    } else {
+        for(auto& argument : node->getArguments()) { getAllVariablesInOrder(argument, variablesInOrder); }
+    }
+}
+} // namespace
+
 namespace utils {
-bool Term::equals(const std::shared_ptr<Term>& other) const {
-    if(termName != other->termName) {
-        return false;
-    }
-    if(termType != other->termType) {
-        return false;
-    }
-    if(arguments.size() != other->arguments.size()) {
-        return false;
-    }
-    for(int index = 0; index < (int)arguments.size(); ++index) {
-        auto& argument = arguments[index];
-        if(!argument->equals(other->arguments[index])) {
-            return false;
-        }
-    }
-    return true;
+bool Term::equals(const std::shared_ptr<Term>& other) {
+    return this->getString() == other->getString();
 }
 
-bool Term::containsTerm(const string& name) {
-    queue<shared_ptr<Term>> queueTerms;
+bool Term::containsTerm(const string& name) const {
+    queue<shared_ptr<const Term>> queueTerms;
     queueTerms.push(shared_from_this());
 
     while(!queueTerms.empty()) {
@@ -78,6 +73,7 @@ Term::findPartialSubstitution(const shared_ptr<Term>& first, const shared_ptr<Te
 }
 
 void Term::applySubstitution(const pair<string, shared_ptr<Term>>& substitution) {
+    clearCache();
     queue<shared_ptr<Term>> queueForTerm;
     if(termName == substitution.first) {
         auto which = substitution.second;
@@ -105,6 +101,7 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Term::augmentU
     if(this->equals(other)) {
         return true;
     }
+    clearCache();
     // first
     auto attempt = findPartialSubstitution(shared_from_this(), other);
     if(attempt.index() == 0) {
@@ -129,8 +126,8 @@ std::shared_ptr<Term> Term::createDeepCopy() {
     return make_shared<Term>(shared_from_this());
 }
 
-bool Term::hasNestedFunctions() {
-    queue<shared_ptr<Term>> queueTerms;
+bool Term::hasNestedFunctions() const {
+    queue<shared_ptr<const Term>> queueTerms;
     queueTerms.push(shared_from_this());
     while(!queueTerms.empty()) {
         auto& frontTerm = queueTerms.front();
@@ -149,9 +146,9 @@ bool Term::hasNestedFunctions() {
     return false;
 }
 
-std::unordered_set<std::string> Term::getAllVariables() {
+std::unordered_set<std::string> Term::getAllVariables() const {
     std::unordered_set<std::string> result;
-    queue<shared_ptr<Term>> queueTerms;
+    queue<shared_ptr<const Term>> queueTerms;
     queueTerms.push(shared_from_this());
     while(!queueTerms.empty()) {
         auto& frontTerm = queueTerms.front();
@@ -166,7 +163,8 @@ std::unordered_set<std::string> Term::getAllVariables() {
     return result;
 }
 
-std::string Term::preOrderTraversal(const std::shared_ptr<Term>& node, const unordered_map<std::string, std::string>& substitution) {
+std::string Term::preOrderTraversal(const std::shared_ptr<const Term>& node,
+const unordered_map<std::string, std::string>& substitution) const {
     string result;
     if(!substitution.empty() and node->termType == VARIABLE) {
         if(substitution.find(node->termName) == substitution.end()) {
@@ -192,22 +190,35 @@ std::string Term::preOrderTraversal(const std::shared_ptr<Term>& node, const uno
 }
 
 std::string Term::getString() {
+    if(!cachedGetString.empty()) {
+        return cachedGetString;
+    }
     unordered_map<string, string> emptySubstitution;
-    return preOrderTraversal(shared_from_this(), emptySubstitution);
+    cachedGetString = preOrderTraversal(shared_from_this(), emptySubstitution);
+    return cachedGetString;
 }
 
 std::string Term::getStringWithoutVariableNames() {
+    if(!cachedGetStringWithoutVariableNames.empty()) {
+        return cachedGetStringWithoutVariableNames;
+    }
     unordered_map<string, string> substitution;
     auto allVariables = getAllVariables();
     for(auto& variable : allVariables) { substitution[variable] = "_v_var"; }
-    return preOrderTraversal(shared_from_this(), substitution);
+    cachedGetStringWithoutVariableNames = preOrderTraversal(shared_from_this(), substitution);
+    return cachedGetStringWithoutVariableNames;
 }
 
 std::string Term::getHash(const unordered_map<std::string, std::string>& substitution) {
-    return preOrderTraversal(shared_from_this(), substitution);
+    if(!cachedGetHash.empty()) {
+        return cachedGetHash;
+    }
+    cachedGetHash = preOrderTraversal(shared_from_this(), substitution);
+    return cachedGetHash;
 }
 
 void Term::applySubstitution(const pair<std::string, std::string>& substitution) {
+    clearCache();
     queue<shared_ptr<Term>> queueForTerm;
     auto which = make_shared<Term>(substitution.second);
     if(termName == substitution.first) {
@@ -231,6 +242,7 @@ void Term::applySubstitution(const pair<std::string, std::string>& substitution)
     }
 }
 void Term::renameFunction(const pair<std::string, std::string>& substitution) {
+    clearCache();
     queue<shared_ptr<Term>> queueForTerm;
     if(termName == substitution.first) {
         termName = substitution.second;
@@ -249,34 +261,40 @@ void Term::renameFunction(const pair<std::string, std::string>& substitution) {
     }
 }
 
-void Term::getDepths(const shared_ptr<Term>& node, unordered_map<std::string, int>& soFar, int currentDepth) {
+void Term::getDepths(const shared_ptr<const Term>& node, unordered_map<std::string, int>& soFar, int currentDepth, int& maxDepth) const {
+    maxDepth = max(maxDepth, currentDepth);
     if(node->termType == TermType::VARIABLE) {
         soFar[node->termName] = max(soFar[node->termName], currentDepth);
         return;
     }
-    for(auto& neighbour : node->arguments) { getDepths(neighbour, soFar, currentDepth + 1); }
+    for(auto& neighbour : node->arguments) { getDepths(neighbour, soFar, currentDepth + 1, maxDepth); }
 }
 
-std::pair<int, std::unordered_map<std::string, int>> Term::getDepths() {
+std::pair<int, std::unordered_map<std::string, int>> Term::getDepths() const {
     unordered_map<std::string, int> depths;
-    getDepths(shared_from_this(), depths, 0);
     int maxDepth = 0;
-    for(auto& keyValue : depths) { maxDepth = max(maxDepth, keyValue.second); }
+    getDepths(shared_from_this(), depths, 0, maxDepth);
     return { maxDepth, depths };
 }
 
-void getAllVariablesInOrder(const shared_ptr<utils::Term>& node, vector<string>& variablesInOrder) {
-    if(node->termType == VARIABLE) {
-        variablesInOrder.push_back(node->termName);
-    } else {
-        for(auto& argument : node->arguments) { getAllVariablesInOrder(argument, variablesInOrder); }
-    }
-}
-
-std::vector<std::string> Term::getAllVariablesInOrder() {
+std::vector<std::string> Term::getAllVariablesInOrder() const {
     vector<string> allVariablesInOrder;
-    utils::getAllVariablesInOrder(shared_from_this(), allVariablesInOrder);
+    ::getAllVariablesInOrder(shared_from_this(), allVariablesInOrder);
     return allVariablesInOrder;
+}
+const string& Term::getTermName() const {
+    return termName;
+}
+TermType Term::getTermType() const {
+    return termType;
+}
+const vector<std::shared_ptr<Term>>& Term::getArguments() const {
+    return arguments;
+}
+void Term::clearCache() {
+    cachedGetHash.clear();
+    cachedGetString.clear();
+    cachedGetStringWithoutVariableNames.clear();
 }
 
 }; // namespace utils
