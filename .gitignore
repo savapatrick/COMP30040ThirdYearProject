@@ -2,3 +2,9 @@ cmake-build-debug/
 project/.idea/
 .idea
 venv/
+project/test/**/theorem_prover.txt
+project/test/**/basic_theorem_prover.txt
+project/test/**/two_variable_theorem_prover.txt
+project/test/**/clause_form.txt
+project/test/**/input.txt
+project/test/**/output.txt
