@@ -1,7 +1,0 @@
-[depth ordered theorem prover]
-we have the following clauses in our initial set!
-0 P(_c_u)
-1 ~P(_v_avmtlwnworjcj)
-clauses P(_c_u) and ~P(_c_u) get resolution rule applied on P(_c_u) and on ~P(_c_u)
-[ADD] the resulting clause  is added to the set of clauses
-proved by deriving the empty clause!

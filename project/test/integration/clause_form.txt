@@ -1,4 +1,0 @@
-the formula (?x P(x) -> ?z P(z)) is the one to be proved
-so it has to be negated to ~((?x P(x) -> ?z P(z)))
-The clause form for the given set of formulas is {P(_c_u), ~P(_v_avmtlwnworjcj)}
-{P(_c_u), ~P(_v_avmtlwnworjcj)}
