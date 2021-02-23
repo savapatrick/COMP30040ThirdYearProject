@@ -1,0 +1,1 @@
+(?x@y(Bigf(x)<->Bigf(y)))

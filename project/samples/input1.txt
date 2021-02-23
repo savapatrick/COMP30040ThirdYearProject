@@ -1,1 +1,1 @@
-?x(Artst(x)^@y(Bkpr(y)->~Hate(x,y)))
+?x@y(((F(x,x)->F(y,y))-> (F(x,y) ^ G(x)))-> G(y))

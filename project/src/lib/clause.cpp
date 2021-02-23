@@ -4,6 +4,7 @@
 
 #include "clause.h"
 #include "ad_hoc_templated.h"
+#include "random_factory.h"
 #include <algorithm>
 
 using namespace std;
@@ -35,7 +36,7 @@ std::unordered_set<std::string> Clause::getAllVariables() {
 void Clause::applySubstitution(const pair<std::string, std::shared_ptr<Term>>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }
-std::map<std::pair<std::string, bool>, int> Clause::getAllLiterals() const {
+std::map<std::pair<std::string, bool>, int> Clause::getLiteralsAndCount() const {
     map<pair<string, bool>, int> accumulator;
     for(auto& literal : clause) { accumulator[literal->getLiteral()] += 1; }
     return accumulator;
@@ -54,11 +55,50 @@ std::string Clause::getString() const {
     }
     return result;
 }
+
+std::string Clause::getHash() const {
+    vector<pair<string, shared_ptr<Literal>>> literals;
+    literals.reserve(clause.size());
+    for(const auto& literal : clause) { literals.emplace_back(literal->getStringWithoutVariableNames(), literal); }
+    sort(literals.begin(), literals.end());
+    unordered_map<string, string> substitution;
+    int currentLabel = 0;
+    string result;
+    for(const auto& literal : literals) {
+        auto variablesInOrder = literal.second->getAllVariablesInOrder();
+        for(auto& currentVariable : variablesInOrder) {
+            if(substitution.find(currentVariable) == substitution.end()) {
+                currentLabel += 1;
+                substitution[currentVariable] = "_v_" + to_string(currentLabel);
+            }
+        }
+        result += literal.second->getHash(substitution);
+        result += "|";
+    }
+    if(!result.empty()) {
+        result.pop_back();
+    }
+    return result;
+}
+
 void Clause::applySubstitution(const pair<std::string, std::string>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }
 void Clause::renameFunction(const pair<std::string, std::string>& mapping) {
     for(auto& literal : clause) { literal->renameFunction(mapping); }
+}
+const std::vector<std::shared_ptr<Literal>>& Clause::getLiterals() const {
+    return clause;
+}
+void Clause::disjointifyVariables(shared_ptr<Clause>& other) {
+    auto allOtherVariables = other->getAllVariables();
+    auto allVariables      = this->getAllVariables();
+    for(auto& variable : allOtherVariables) {
+        if(allVariables.find(variable) != allVariables.end()) {
+            auto substitution = make_pair(variable, RandomFactory::getRandomVariableName(allVariables));
+            this->applySubstitution(substitution);
+        }
+    }
 }
 
 

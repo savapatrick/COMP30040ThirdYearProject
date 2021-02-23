@@ -17,21 +17,17 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
         (first->getAllVariables().size() == 2 or second->getAllVariables().size() == 2);
     };
     auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
-                              const std::vector<std::shared_ptr<Literal>>& resolvents) -> bool { return true; };
-    do {
+                              const std::shared_ptr<Clause>& clause) -> bool { return true; };
+    outputData();
+    if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
+        outputStream << "proved by deriving the empty clause!\n";
         outputData();
-        if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
-            outputStream << "proved by deriving the empty clause!\n";
-            outputData();
-            return false;
-        } else {
-            if(hot.empty()) {
-                outputStream << "refuted by reaching saturation!\n";
-                outputData();
-                return true;
-            }
-        }
-    } while(true);
+        return false;
+    } else {
+        outputStream << "refuted by reaching saturation!\n";
+        outputData();
+        return true;
+    }
 }
 
 
@@ -52,10 +48,10 @@ void TwoVariableTheoremProver::disposeTwoVariableClauses() {
 }
 
 
-bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(vector<std::shared_ptr<Literal>>& chosen) {
+bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(vector<vector<std::shared_ptr<Literal>>>& chosen) {
     if(chosen.size() == clauseForm->clauseForm.size()) {
         shared_ptr<ClauseForm> currentClauseForm(make_shared<ClauseForm>());
-        for(auto& literal : chosen) { currentClauseForm->clauseForm.push_back({ make_shared<Clause>(literal) }); }
+        for(auto& literals : chosen) { currentClauseForm->clauseForm.push_back({ make_shared<Clause>(literals) }); }
         DepthOrderedTheoremProver prover(currentClauseForm);
         if(prover.run()) {
             outputStream << prover.getData();
@@ -63,8 +59,15 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(vector<std::s
         }
         return false;
     }
-    for(auto& elem : clauseForm->clauseForm[chosen.size()]->clause) {
-        chosen.push_back(elem);
+    map<set<string>, vector<shared_ptr<Literal>>> buckets;
+    int whichIndex = chosen.size();
+    for(auto& elem : clauseForm->clauseForm[whichIndex]->clause) {
+        auto variables = elem->getAllVariables();
+        set<string> current(variables.begin(), variables.end());
+        buckets[current].emplace_back(elem);
+    }
+    for(auto& elem : buckets) {
+        chosen.push_back(elem.second);
         if(backtrackingClauseFormAndResolution(chosen)) {
             return true;
         }
@@ -83,13 +86,13 @@ bool TwoVariableTheoremProver::run() {
     disposeTwoVariableClauses();
     outputStream << "[two variable theorem prover]\nwe have the following clauses after disposal:\n";
     outputStream << clauseForm->getStringWithIndex();
-    vector<std::shared_ptr<Literal>> chosen;
+    vector<vector<std::shared_ptr<Literal>>> chosen;
     if(backtrackingClauseFormAndResolution(chosen)) {
-        outputStream << "refuted by saturation!\n";
+        outputStream << "refuted by reaching saturation!\n";
         outputData();
         return true;
     }
-    outputStream << "proved by always deriving empty clause!\n";
+    outputStream << "proved by deriving the empty clause!\n";
     outputData();
     return false;
 }

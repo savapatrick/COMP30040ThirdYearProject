@@ -17,10 +17,8 @@ class BasicTheoremProver : public TheoremProver {
     protected:
     std::shared_ptr<Unification> unification;
     std::set<std::pair<int, int>> avoid;
-    std::unordered_map<int, long long> hot;
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
     std::unordered_set<std::string> clausesSoFar;
-    long long timestamp;
     void updateCache(int deletedIndex);
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
     void factoringStep();
@@ -31,10 +29,8 @@ class BasicTheoremProver : public TheoremProver {
     BasicTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
     : TheoremProver(_clauseForm, _fileName), unification(std::make_shared<Unification>(outputStream)) {
         avoid.clear();
-        hot.clear();
         clauses.clear();
         clausesSoFar.clear();
-        timestamp = 0;
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
             if(clausesSoFar.find(elem->getString()) == clausesSoFar.end()) {
@@ -45,6 +41,7 @@ class BasicTheoremProver : public TheoremProver {
         if(clauseForm->clauseForm.size() != newClauseForm.size()) {
             clauseForm->clauseForm = newClauseForm;
         }
+        clauseForm->makeVariableNamesUniquePerClause();
     }
     bool run() override;
 };
@@ -55,41 +52,33 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         outputData();
         clauses.clear();
         factoringStep();
-        timestamp += 1;
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-            for(int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-                if(avoid.find({ index, index2 }) != avoid.end() or (hot.find(index) != hot.end() and hot[index] < timestamp) or
-                (hot.find(index2) != hot.end() and hot[index2] < timestamp)) {
+            for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                if(avoid.find({ index, index2 }) != avoid.end()) {
                     continue;
-                }
-                if(hot.find(index) != hot.end()) {
-                    hot.erase(hot.find(index));
-                }
-                if(hot.find(index2) != hot.end()) {
-                    hot.erase(hot.find(index2));
                 }
                 auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
                 clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
                 // outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
                 avoid.insert({ index, index2 });
-                if(result.first) {
+                if(!result.empty()) {
                     //  outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
                     //  " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
                     //  result.second->getString() << '\n';
-                    auto clauseHash = result.second->getString();
-                    if(clauses.find(clauseHash) != clauses.end()) {
-                        continue;
-                    }
-                    if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
-                        continue;
-                    }
-                    clauses[clauseHash] = result.second;
-                    clausesSoFar.insert(clauseHash);
-                    hot[index] = timestamp + static_cast<long long>(clauseForm->clauseForm.size()) + 1; // then pick it again
-                    hot[index2] = timestamp + static_cast<long long>(clauseForm->clauseForm.size()) + 1; // then pick it again
-                    if(result.second->clause.empty()) {
-                        // we derived the empty clause
-                        return true;
+                    for(auto& currentClause : result) {
+                        auto clauseHash = currentClause->getHash();
+                        if(clauses.find(clauseHash) != clauses.end()) {
+                            continue;
+                        }
+                        if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
+                            continue;
+                        }
+                        clauses[clauseHash] = currentClause;
+                        clausesSoFar.insert(clauseHash);
+                        if(currentClause->clause.empty()) {
+                            // we derived the empty clause
+                            return true;
+                        }
                     }
                 }
             }

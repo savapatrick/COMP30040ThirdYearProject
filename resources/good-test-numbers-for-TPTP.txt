@@ -1,0 +1,47 @@
+./KRS/KRS027+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
+./KRS/KRS058+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
+./KRS/KRS062+1.p:%            Number of functors    :    0 (   0 constant; --- arity)
+./SET/SET043+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN048+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN052+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN053+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN315+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN316+1.p:%            Number of functors    :    0 (   0 constant; --- arity) failed  counterSatisfiable
+./SYN/SYN324+1.p:%            Number of functors    :    0 (   0 constant; --- arity) failed  counterSatisfiable
+./SYN/SYN325+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN357+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN358+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN368+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN383+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN385+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN396+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN397+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN398+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN399+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN401+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN402+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN404+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN408+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN412+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN724+1.p:%            Number of functors    :    0 (   0 constant; --- arity) hangs    theorem
+./SYN/SYN725+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  counterSatisfiable
+./SYN/SYN921+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN925+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN927+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN928+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN930+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN931+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN934+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN935+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN936+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN937+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN951+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN952+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN957+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN959+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN963+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN964+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN968+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN971+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN974+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem
+./SYN/SYN976+1.p:%            Number of functors    :    0 (   0 constant; --- arity) correct  theorem

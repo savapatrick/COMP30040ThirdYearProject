@@ -1,1 +1,1 @@
-?x(Artst(x)|(Hate(x, patrick)^Love(patrick, yoana)))
+(?y@x(P(y)->P(x)))

@@ -30,10 +30,21 @@ class ParseTree {
 
     std::string getEulerTraversal(int node, bool isLabeled);
 
+    int addNodeWithOperator(const std::string& which);
+
+    int addImplication(const int& nodeOne, const int& nodeTwo);
+
+    int addOrClause(const int& nodeOne, const int& nodeTwo);
+
+    int addNegationToFormula(const int& nodeOne);
+
+    void disposeNode(int node);
+
     public:
     ParseTree() = default;
 
     explicit ParseTree(const std::string& tokens);
+    explicit ParseTree(const std::vector<std::string>& tokens);
 
     std::string getEulerTraversal();
 

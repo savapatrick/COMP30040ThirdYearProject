@@ -15,7 +15,31 @@ using namespace std;
 namespace utils {
 ParseTree::ParseTree(const std::string& formula) {
     utils::Tokenizer& tokenizer = utils::Tokenizer::getInstance();
-    auto tokens                 = tokenizer.tokenize(formula);
+    auto tokens                 = utils::Tokenizer::tokenize(formula);
+    graph.clear();
+    information.clear();
+    spareNodesBuffer.clear();
+    redundantNodes.clear();
+    Root                  = 1;
+    const int bufferOrder = 100;
+    highestNodeLabel      = 100;
+    for(int nodeLabel = 2; nodeLabel <= bufferOrder; ++nodeLabel) { spareNodesBuffer.push_back(nodeLabel); }
+    buildTree(tokens);
+}
+ParseTree::ParseTree(const vector<std::string>& formulas) {
+    utils::Tokenizer& tokenizer = utils::Tokenizer::getInstance();
+    string formula;
+    Operators& operators = Operators::getInstance();
+    for(int index = 0; index < (int)formulas.size(); ++index) {
+        auto currentFormula = formulas[index];
+        if(index + 1 != (int)formulas.size()) {
+            formula += operators.OPENEDBracket + currentFormula + operators.CLOSEDBracket + operators.AND;
+        } else {
+            formula += operators.OPENEDBracket + operators.NOT + operators.OPENEDBracket + currentFormula +
+            operators.CLOSEDBracket + operators.CLOSEDBracket;
+        }
+    }
+    auto tokens = utils::Tokenizer::tokenize(formula);
     graph.clear();
     information.clear();
     spareNodesBuffer.clear();
@@ -40,9 +64,9 @@ int ParseTree::getNextNode() {
         spareNodesBuffer.push_back(redundantNodes.back());
         redundantNodes.pop_back();
     }
-    if(!spareNodesBuffer.empty()) {
-        const int bufferOrder = 100;
-        for(int nodeLabel = highestNodeLabel + 1; nodeLabel <= highestNodeLabel + 100; ++nodeLabel) {
+    if(spareNodesBuffer.empty()) {
+        const int bufferOrder = 1000;
+        for(int nodeLabel = highestNodeLabel + 1; nodeLabel <= highestNodeLabel + bufferOrder; ++nodeLabel) {
             spareNodesBuffer.push_back(nodeLabel);
         }
         highestNodeLabel += bufferOrder;
@@ -147,5 +171,52 @@ int ParseTree::createCopyForSubtree(int node) {
     graph[newNode].reserve(graph[node].size());
     for(auto& neighbour : graph[node]) { graph[newNode].push_back(createCopyForSubtree(neighbour)); }
     return newNode;
+}
+
+int ParseTree::addNodeWithOperator(const string& which) {
+    Operators& operators = Operators::getInstance();
+    auto newNode         = getNextNode();
+    auto givenOperator   = operators.getOperator(which);
+    if(operators.isQuantifier(givenOperator)) {
+        throw invalid_argument("given operator is a quantifier --- something went wrong");
+    }
+    information[newNode] = make_shared<Entity>(EntityType::SIMPLIFIEDOperator, givenOperator);
+    return newNode;
+}
+
+int ParseTree::addImplication(const int& nodeOne, const int& nodeTwo) {
+    auto implication = addNodeWithOperator("IMPLY");
+    auto father      = getNextNode();
+    graph[father].emplace_back(nodeOne);
+    graph[father].emplace_back(implication);
+    graph[father].emplace_back(nodeTwo);
+    return father;
+}
+
+int ParseTree::addOrClause(const int& nodeOne, const int& nodeTwo) {
+    auto orOperator = addNodeWithOperator("OR");
+    auto father     = getNextNode();
+    graph[father].emplace_back(nodeOne);
+    graph[father].emplace_back(orOperator);
+    graph[father].emplace_back(nodeTwo);
+    return father;
+}
+
+int ParseTree::addNegationToFormula(const int& nodeOne) {
+    auto notOperator = addNodeWithOperator("NOT");
+    graph[notOperator].emplace_back(nodeOne);
+    if(nodeOne == Root) {
+        Root = getNextNode();
+        graph[Root].emplace_back(notOperator);
+        return Root;
+    }
+    return notOperator;
+}
+void ParseTree::disposeNode(int node) {
+    try {
+        graph.erase(graph.find(node));
+        information.erase(information.find(node));
+        redundantNodes.push_back(node);
+    } catch(...) { throw invalid_argument("dispose node failed to dispose node " + to_string(node)); }
 }
 } // namespace utils

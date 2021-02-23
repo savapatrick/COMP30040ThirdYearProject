@@ -10,7 +10,7 @@ namespace utils {
 
 variant<bool, shared_ptr<Clause>> Unification::tryToUnifyTwoLiterals(std::shared_ptr<Clause>& initialClause) {
     shared_ptr<Clause> clause = initialClause->createDeepCopy();
-    auto clauseLiterals       = clause->getAllLiterals();
+    auto clauseLiterals       = clause->getLiteralsAndCount();
     bool ok                   = false;
     for(auto& keyValue : clauseLiterals) {
         if(keyValue.second > 1 or

@@ -40,6 +40,11 @@ class Clause : public std::enable_shared_from_this<Clause> {
         clause.reserve(1);
         clause.push_back(literal->createDeepCopy());
     }
+    Clause(const std::vector<std::shared_ptr<Literal>>& literals) {
+        clause.reserve(literals.size());
+        for(auto& literal : literals) { clause.push_back(literal->createDeepCopy()); }
+    }
+    void disjointifyVariables(std::shared_ptr<Clause>& other);
     std::shared_ptr<Clause> createDeepCopy();
     bool hasNestedFunctions();
     std::unordered_set<std::string> getAllVariables();
@@ -47,8 +52,10 @@ class Clause : public std::enable_shared_from_this<Clause> {
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);
-    std::map<std::pair<std::string, bool>, int> getAllLiterals() const;
+    std::map<std::pair<std::string, bool>, int> getLiteralsAndCount() const;
+    const std::vector<std::shared_ptr<Literal>>& getLiterals() const;
     std::string getString() const;
+    std::string getHash() const;
 };
 }; // namespace utils
 

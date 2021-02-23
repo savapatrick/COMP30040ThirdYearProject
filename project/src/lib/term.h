@@ -23,8 +23,9 @@ class Term : public std::enable_shared_from_this<Term> {
     bool containsTerm(const std::string& name);
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>>
     findPartialSubstitution(const std::shared_ptr<Term>& first, const std::shared_ptr<Term>& second) const;
-    std::string preOrderTraversal(const std::shared_ptr<Term>& node);
+    std::string preOrderTraversal(const std::shared_ptr<Term>& node, const std::unordered_map<std::string, std::string>& substitution);
     void getDepths(const std::shared_ptr<Term>& node, std::unordered_map<std::string, int>& soFar, int currentDepth);
+    friend void getAllVariablesInOrder(const std::shared_ptr<utils::Term>& node, std::vector<std::string>& variablesInOrder);
 
     public:
     explicit Term(std::string newVariable) : termName(std::move(newVariable)), termType(VARIABLE) {
@@ -65,8 +66,11 @@ class Term : public std::enable_shared_from_this<Term> {
     void applySubstitution(const std::pair<std::string, std::string>& substitution);
     void renameFunction(const std::pair<std::string, std::string>& substitution);
     std::unordered_set<std::string> getAllVariables();
+    std::vector<std::string> getAllVariablesInOrder();
     bool hasNestedFunctions();
     std::string getString();
+    std::string getStringWithoutVariableNames();
+    std::string getHash(const std::unordered_map<std::string, std::string>& substitution);
     std::pair<int, std::unordered_map<std::string, int>> getDepths();
 };
 }; // namespace utils
