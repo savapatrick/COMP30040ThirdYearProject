@@ -1,0 +1,7 @@
+[basic theorem prover]
+we have the following clauses in our initial set!
+0 P(_c_foyfod)
+1 ~P(_v_diygdrmtxrka)
+clauses P(_c_foyfod) and ~P(_c_foyfod) get resolution rule applied on P(_c_foyfod) and on ~P(_c_foyfod)
+[ADD] the resulting clause  is added to the set of clauses
+proved by deriving the empty clause!

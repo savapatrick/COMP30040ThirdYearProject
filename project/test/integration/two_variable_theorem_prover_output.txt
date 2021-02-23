@@ -1,0 +1,10 @@
+[two variable theorem prover]
+we have the following clauses in our initial set!
+0 P(_c_u)
+1 ~P(_v_avmtlwnworjcj)
+refuted by reaching saturation!
+[two variable theorem prover]
+we have the following clauses after disposal:
+0 P(_c_u)
+1 ~P(_v_avmtlwnworjcj)
+proved by deriving the empty clause!
