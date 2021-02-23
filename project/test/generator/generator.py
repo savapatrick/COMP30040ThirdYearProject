@@ -1,9 +1,8 @@
-from random import randint
-from random import choice
-from random import sample
-from random import random
-
 import string
+from random import choice
+from random import randint
+from random import random
+from random import sample
 
 PREDICATE_LENGTH_MAX = 8
 PREDICATE_ARITY_MAX = 3
@@ -43,7 +42,8 @@ def terms(variables_so_far, constants_so_far, how_many):
         which_portion = len(variables_so_far)
     assert which_portion <= len(variables_so_far)
     assert how_many - which_portion <= len(constants_so_far)
-    return sample(variables_so_far, k=max(0, which_portion)) + sample(constants_so_far, k=max(0, how_many-which_portion))
+    return sample(variables_so_far, k=max(0, which_portion)) + sample(constants_so_far,
+                                                                      k=max(0, how_many - which_portion))
 
 
 def generate_predicate(predicates_so_far):
