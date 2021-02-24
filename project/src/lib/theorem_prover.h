@@ -32,7 +32,7 @@ class TheoremProver {
     }
     std::string getData() const;
     void outputData();
-    static bool isTautology(std::shared_ptr<Clause>& clause);
+    static bool isTautology(const std::shared_ptr<Clause>& clause);
     virtual bool run() = 0;
 };
 } // namespace utils

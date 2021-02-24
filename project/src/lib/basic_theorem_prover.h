@@ -19,6 +19,9 @@ class BasicTheoremProver : public TheoremProver {
     std::set<std::pair<int, int>> avoid;
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
     std::unordered_set<std::string> clausesSoFar;
+    std::vector<int> previousState;
+    long long upperLimit;
+
     void updateCache(int deletedIndex);
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
     void factoringStep();
@@ -31,10 +34,16 @@ class BasicTheoremProver : public TheoremProver {
         avoid.clear();
         clauses.clear();
         clausesSoFar.clear();
+        previousState.clear();
+        upperLimit = std::numeric_limits<long long>::max(); // something HUGE
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
-            if(clausesSoFar.find(elem->getString()) == clausesSoFar.end()) {
-                clausesSoFar.insert(elem->getString());
+            removeDuplicates(elem);
+            if(isTautology(elem)) {
+                continue;
+            }
+            if(clausesSoFar.find(elem->getHash()) == clausesSoFar.end()) {
+                clausesSoFar.insert(elem->getHash());
                 newClauseForm.push_back(elem);
             }
         }
@@ -43,6 +52,8 @@ class BasicTheoremProver : public TheoremProver {
         }
         clauseForm->makeVariableNamesUniquePerClause();
     }
+    void addNewClause(const std::shared_ptr<Clause>& newClause);
+    void revert();
     bool run() override;
 };
 
@@ -59,13 +70,13 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                 }
                 auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
                 clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
-                // outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
                 avoid.insert({ index, index2 });
                 if(!result.empty()) {
-                    //  outputStream << "[DEBUG] we managed to unify " << clauseForm->clauseForm[index]->getString() <<
-                    //  " with " << clauseForm->clauseForm[index2]->getString() << "and it results a new clause " <<
-                    //  result.second->getString() << '\n';
                     for(auto& currentClause : result) {
+                        removeDuplicates(currentClause);
+                        if(isTautology(currentClause)) {
+                            continue;
+                        }
                         auto clauseHash = currentClause->getHash();
                         if(clauses.find(clauseHash) != clauses.end()) {
                             continue;
@@ -73,10 +84,15 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                         if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
                             continue;
                         }
+                        outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
+                                     << " with " << clauseForm->clauseForm[index2]->getString()
+                                     << "and it results a new clause " << currentClause->getString() << '\n';
                         clauses[clauseHash] = currentClause;
                         clausesSoFar.insert(clauseHash);
                         if(currentClause->clause.empty()) {
                             // we derived the empty clause
+                            for(auto& keyValue : clauses) { clauseForm->clauseForm.push_back(keyValue.second); }
+                            outputData();
                             return true;
                         }
                     }
@@ -89,7 +105,7 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         } else {
             return false;
         }
-    } while(true);
+    } while(upperLimit-- > 0);
 }
 
 } // namespace utils

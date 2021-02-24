@@ -20,7 +20,7 @@ class TwoVariableTheoremProver : public BasicTheoremProver {
     }
     bool fullResolutionTwoVariableLiterals();
     void disposeTwoVariableClauses();
-    bool backtrackingClauseFormAndResolution(std::vector<std::vector<std::shared_ptr<Literal>>>& chosen);
+    bool backtrackingClauseFormAndResolution(int currentChoice, std::shared_ptr<DepthOrderedTheoremProver>& prover);
     bool run() override;
 };
 }; // namespace utils

@@ -7,7 +7,7 @@
 using namespace std;
 namespace utils {
 
-bool TheoremProver::isTautology(std::shared_ptr<Clause>& clause) {
+bool TheoremProver::isTautology(const std::shared_ptr<Clause>& clause) {
     unordered_map<string, vector<shared_ptr<Literal>>> literals;
     for(auto& currentLiteral : clause->clause) {
         for(auto& literal : literals[currentLiteral->predicateName]) {

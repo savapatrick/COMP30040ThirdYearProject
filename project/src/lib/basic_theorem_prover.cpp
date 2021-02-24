@@ -32,37 +32,50 @@ void BasicTheoremProver::factoringStep() {
     vector<shared_ptr<Clause>> newClauseForm;
     vector<shared_ptr<Clause>> toBeInserted;
     for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-        auto& clause = clauseForm->clauseForm[index];
-        changed |= removeDuplicates(clause);
+        auto& clause      = clauseForm->clauseForm[index];
+        auto previousHash = clause->getHash();
+        if(removeDuplicates(clause)) {
+            changed = true;
+            if(previousHash != clause->getHash()) {
+                clausesSoFar.erase(clausesSoFar.find(previousHash));
+                previousHash = clause->getHash();
+                clausesSoFar.insert(previousHash);
+            }
+        }
         newClauseForm.push_back(clause);
         if(isTautology(clause)) {
             outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
             newClauseForm.pop_back();
+            clausesSoFar.erase(clausesSoFar.find(previousHash));
             changed = true;
             updateCache(index);
             continue;
         }
         auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
-        if(unificationResult.index()) {
-            toBeInserted.push_back(std::get<1>(unificationResult));
-            if(isTautology(toBeInserted.back()) or clausesSoFar.find(toBeInserted.back()->getString()) != clausesSoFar.end()) {
-                toBeInserted.pop_back();
-            } else {
-                if(!removeDuplicates(toBeInserted.back())) {
-                    toBeInserted.pop_back();
-                } else {
+        if(!unificationResult.empty()) {
+            for(auto& newClause : unificationResult) {
+                // TODO: consider removing isTautology and removeDuplicates
+                if(!isTautology(newClause) and removeDuplicates(newClause) and
+                clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
+                    toBeInserted.push_back(newClause);
                     changed = true;
                 }
             }
         }
     }
     if(changed) {
-        for(auto& elem : toBeInserted) { newClauseForm.push_back(elem); }
+        for(auto& elem : toBeInserted) {
+            if(clausesSoFar.find(elem->getHash()) == clausesSoFar.end()) {
+                newClauseForm.push_back(elem);
+                clausesSoFar.insert(elem->getHash());
+            }
+        }
         clauseForm->clauseForm = newClauseForm;
     }
 }
 
 bool BasicTheoremProver::run() {
+    upperLimit = std::numeric_limits<long long>::max();
     outputStream << "[basic theorem prover]\nwe have the following clauses in our initial set!\n";
     outputStream << clauseForm->getStringWithIndex();
     auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
@@ -104,5 +117,35 @@ void BasicTheoremProver::updateCache(int deletedIndex) {
         toBeInsertedSet.emplace_back(elem);
     }
     for(auto& elem : toBeInsertedSet) { avoid.insert(elem); }
+}
+void BasicTheoremProver::addNewClause(const std::shared_ptr<Clause>& newClause) {
+    previousState.push_back(clauseForm->clauseForm.size());
+    if(clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
+        clausesSoFar.insert(newClause->getHash());
+        clauseForm->clauseForm.push_back(newClause->createDeepCopy());
+        clauseForm->makeVariableNamesUniquePerClause();
+    }
+}
+void BasicTheoremProver::revert() {
+    if(previousState.empty()) {
+        throw logic_error("[BasicTheoremProver] Cannot revert when there are no checkpoints!");
+    }
+    int previousLabel = previousState.back();
+    previousState.pop_back();
+    while(clauseForm->clauseForm.size() > previousLabel) {
+        auto whichClause = clauseForm->clauseForm.back();
+        clausesSoFar.erase(clausesSoFar.find(whichClause->getHash()));
+        clauseForm->clauseForm.pop_back();
+    }
+    vector<pair<int, int>> toBeDeleted;
+    for(auto& elem : avoid) {
+        if(elem.first >= previousLabel or elem.second >= previousLabel) {
+            toBeDeleted.push_back(elem);
+        }
+    }
+    while(!toBeDeleted.empty()) {
+        avoid.erase(avoid.find(toBeDeleted.back()));
+        toBeDeleted.pop_back();
+    }
 }
 }; // namespace utils
