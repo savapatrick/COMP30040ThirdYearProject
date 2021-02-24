@@ -119,20 +119,12 @@ void BasicTheoremProver::updateCache(int deletedIndex) {
     for(auto& elem : toBeInsertedSet) { avoid.insert(elem); }
 }
 void BasicTheoremProver::addNewClause(const std::shared_ptr<Clause>& newClause) {
-    //    outputStream << "[ADD NEW CLAUSE] " << newClause->getString() << '\n';
     previousState.push_back(clauseForm->clauseForm.size());
     if(clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
-        //        outputStream << "[ADD NEW HASH] " << newClause->getHash() << " for clause " << newClause->getString() << '\n';
         clausesSoFar.insert(newClause->getHash());
-        //        for (auto &x : clausesSoFar) {
-        //            outputStream << x << ' ';
-        //        }
-        //        outputStream << '\n';
-        //        outputStream << "[CLAUSEFORM] " << clauseForm->getStringWithIndex() << '\n';
         clauseForm->clauseForm.push_back(newClause->createDeepCopy());
         clauseForm->makeVariableNamesUniquePerClause();
     }
-    //    outputStream << clauseForm->getStringWithIndex() << '\n';
 }
 void BasicTheoremProver::revert() {
     if(previousState.empty()) {
@@ -142,13 +134,7 @@ void BasicTheoremProver::revert() {
     previousState.pop_back();
     while(clauseForm->clauseForm.size() > previousLabel) {
         auto whichClause = clauseForm->clauseForm.back();
-        //        outputStream << "[REMOVE HASH] " << whichClause->getHash() << " for clause " << whichClause->getString() << '\n';
         clausesSoFar.erase(clausesSoFar.find(whichClause->getHash()));
-        //        for (auto &x : clausesSoFar) {
-        //            outputStream << x << ' ';
-        //        }
-        //        outputStream << '\n';
-        //        outputStream << "[CLAUSEFORM] " << clauseForm->getStringWithIndex() << '\n';
         clauseForm->clauseForm.pop_back();
     }
     vector<pair<int, int>> toBeDeleted;
@@ -161,7 +147,5 @@ void BasicTheoremProver::revert() {
         avoid.erase(avoid.find(toBeDeleted.back()));
         toBeDeleted.pop_back();
     }
-    //    outputStream << "[REVERT]\n";
-    //    outputStream << clauseForm->getStringWithIndex() << '\n';
 }
 }; // namespace utils

@@ -12,24 +12,19 @@ using namespace std;
 namespace utils {
 
 bool DepthOrderedTheoremProver::run() {
-    //    outputStream << "[depth ordered theorem prover]\nwe have the following clauses in our initial set!\n";
-    //    outputStream << clauseForm->getStringWithIndex();
     auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName);
     };
     auto isAOrdering = [&](const shared_ptr<Literal>& first, const shared_ptr<Literal>& second) -> bool {
-        //        outputStream << "[" << first->getString() << ", " << second->getString() << "]\n";
         auto getDepthsFirst  = first->getDepths();
         auto getDepthsSecond = second->getDepths();
         if(getDepthsFirst.second.empty() and getDepthsSecond.second.empty() and getDepthsFirst.first <= getDepthsSecond.first) {
-            //            outputStream << "returns false\n";
             return false;
         }
         for(auto& variableAndDepth : getDepthsFirst.second) {
             auto variable = variableAndDepth.first;
             auto depth    = variableAndDepth.second;
             if(depth >= getDepthsSecond.second[variable]) {
-                //                outputStream << "returns false\n";
                 return false;
             }
         }
@@ -37,16 +32,13 @@ bool DepthOrderedTheoremProver::run() {
             auto variable = variableAndDepth.first;
             auto depth    = variableAndDepth.second;
             if(depth <= getDepthsFirst.second[variable]) {
-                //                outputStream << "returns false\n";
                 return false;
             }
         }
-        //        outputStream << "returns true\n";
         return true;
     };
     auto resolventPredicate = [&isAOrdering](const std::shared_ptr<Literal>& resolvedLiteral,
                               const std::shared_ptr<Clause>& clause) -> bool {
-        //        return true;
         auto resolvents = clause->getLiterals();
         for(auto& resolvent : resolvents) {
             if(isAOrdering(resolvedLiteral, resolvent)) {

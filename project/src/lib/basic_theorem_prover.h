@@ -60,7 +60,6 @@ class BasicTheoremProver : public TheoremProver {
 template <typename LiteralPredicate, typename ResolventPredicate>
 bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate) {
     do {
-        //        outputStream << "[DEBUG] the size of clauseForm is " + std::to_string(clauseForm->clauseForm.size()) << '\n';
         outputData();
         clauses.clear();
         factoringStep();
@@ -71,8 +70,6 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                 }
                 auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
                 clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
-                //                outputStream << "[DEBUG] " << index << " " << index2 << " were processed\n";
-                //                outputStream.flush();
                 avoid.insert({ index, index2 });
                 if(!result.empty()) {
                     for(auto& currentClause : result) {

@@ -48,10 +48,7 @@ void TwoVariableTheoremProver::disposeTwoVariableClauses() {
     }
 }
 
-int currentTimestamp = 0;
 bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentChoice, shared_ptr<DepthOrderedTheoremProver>& prover) {
-    ++currentTimestamp;                                                                          // TODO: comment
-    cerr << to_string(currentTimestamp) + " depth " + to_string(currentChoice) << " a intrat\n"; // TODO: comment
     if(currentChoice == clauseForm->clauseForm.size()) {
         if(prover->unboundedRun()) {
             outputStream << prover->getData();
@@ -60,11 +57,9 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentCh
         return false;
     } else {
         if(!prover->boundedRun()) {
-            cerr << to_string(currentTimestamp) + " depth " + to_string(currentChoice) << "a crapat\n";
             return false;
         }
     }
-    cerr.flush();
     map<set<string>, vector<shared_ptr<Literal>>> buckets;
     for(auto& elem : clauseForm->clauseForm[currentChoice]->clause) {
         auto variables = elem->getAllVariables();
