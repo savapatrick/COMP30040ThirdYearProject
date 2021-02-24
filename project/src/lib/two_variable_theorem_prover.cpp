@@ -50,7 +50,7 @@ void TwoVariableTheoremProver::disposeTwoVariableClauses() {
 
 int currentTimestamp = 0;
 bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentChoice, shared_ptr<DepthOrderedTheoremProver>& prover) {
-    ++ currentTimestamp; // TODO: comment
+    ++currentTimestamp;                                                                          // TODO: comment
     cerr << to_string(currentTimestamp) + " depth " + to_string(currentChoice) << " a intrat\n"; // TODO: comment
     if(currentChoice == clauseForm->clauseForm.size()) {
         if(prover->run()) {
@@ -58,9 +58,8 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentCh
             return true;
         }
         return false;
-    }
-    else {
-        if (!prover->run()) {
+    } else {
+        if(!prover->run()) {
             cerr << to_string(currentTimestamp) + " depth " + to_string(currentChoice) << "a crapat\n";
             return false;
         }
@@ -93,7 +92,8 @@ bool TwoVariableTheoremProver::run() {
     outputStream << "[two variable theorem prover]\nwe have the following clauses after disposal:\n";
     outputStream << clauseForm->getStringWithIndex();
     outputData();
-    shared_ptr<DepthOrderedTheoremProver> prover = make_shared<DepthOrderedTheoremProver>(make_shared<ClauseForm>(), "depth_ordered_theorem_prover.txt");
+    shared_ptr<DepthOrderedTheoremProver> prover =
+    make_shared<DepthOrderedTheoremProver>(make_shared<ClauseForm>(), "depth_ordered_theorem_prover.txt");
     if(backtrackingClauseFormAndResolution(0, prover)) {
         outputStream << "refuted by reaching saturation!\n";
         outputData();
