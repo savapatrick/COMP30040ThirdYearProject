@@ -75,6 +75,26 @@ void BasicTheoremProver::factoringStep() {
 }
 
 void BasicTheoremProver::subsumption() {
+    /*vector <bool> toBeDeleted(clauseForm->clauseForm.size(), false);
+    bool toBeModified = false;
+    vector <pair <string, int>> sortedClauses;
+    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
+        auto& clause      = clauseForm->clauseForm[index];
+        sortedClauses.emplace_back(clause->getHash(), index);
+    }
+    sort(sortedClauses.begin(), sortedClauses.end());
+    int currentSubsumed = 0;
+    for (int index = 0; index < (int)sortedClauses.size(); ++ index) {
+        currentSubsumed = max(currentSubsumed, index + 1);
+        if (toBeDeleted[index]) {
+            continue;
+        }
+        while (currentSubsumed < (int)sortedClauses.size() and sortedClauses[index].first == sortedClauses[currentSubsumed].first.substr(0, sortedClauses[index].first.size())) {
+            toBeDeleted[sortedClauses[currentSubsumed].second] = true;
+            toBeModified = true;
+            currentSubsumed += 1;
+        }
+    }*/
     vector <bool> toBeDeleted(clauseForm->clauseForm.size(), false);
     bool toBeModified = false;
     for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
