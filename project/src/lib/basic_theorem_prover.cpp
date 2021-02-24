@@ -75,6 +75,7 @@ void BasicTheoremProver::factoringStep() {
 }
 
 bool BasicTheoremProver::run() {
+    upperLimit = std::numeric_limits<long long>::max();
     outputStream << "[basic theorem prover]\nwe have the following clauses in our initial set!\n";
     outputStream << clauseForm->getStringWithIndex();
     auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {

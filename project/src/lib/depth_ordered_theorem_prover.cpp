@@ -66,4 +66,12 @@ bool DepthOrderedTheoremProver::run() {
         return true;
     }
 }
+bool DepthOrderedTheoremProver::boundedRun() {
+    upperLimit = 2;
+    return run();
+}
+bool DepthOrderedTheoremProver::unboundedRun() {
+    upperLimit = std::numeric_limits<long long>::max();
+    return run();
+}
 }; // namespace utils

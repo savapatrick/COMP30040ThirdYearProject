@@ -15,6 +15,8 @@ class DepthOrderedTheoremProver : public BasicTheoremProver {
     : BasicTheoremProver(std::move(_clauseForm), _fileName) {
     }
     bool run() override;
+    bool boundedRun();
+    bool unboundedRun();
 };
 }; // namespace utils
 

@@ -53,13 +53,13 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentCh
     ++currentTimestamp;                                                                          // TODO: comment
     cerr << to_string(currentTimestamp) + " depth " + to_string(currentChoice) << " a intrat\n"; // TODO: comment
     if(currentChoice == clauseForm->clauseForm.size()) {
-        if(prover->run()) {
+        if(prover->unboundedRun()) {
             outputStream << prover->getData();
             return true;
         }
         return false;
     } else {
-        if(!prover->run()) {
+        if(!prover->boundedRun()) {
             cerr << to_string(currentTimestamp) + " depth " + to_string(currentChoice) << "a crapat\n";
             return false;
         }
@@ -82,6 +82,7 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentCh
 }
 
 bool TwoVariableTheoremProver::run() {
+    upperLimit = std::numeric_limits<long long>::max();
     outputStream << "[two variable theorem prover]\nwe have the following clauses in our initial set!\n";
     outputStream << clauseForm->getStringWithIndex();
     if(!fullResolutionTwoVariableLiterals()) {

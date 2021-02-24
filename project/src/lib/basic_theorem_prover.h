@@ -20,6 +20,7 @@ class BasicTheoremProver : public TheoremProver {
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
     std::unordered_set<std::string> clausesSoFar;
     std::vector<int> previousState;
+    long long upperLimit;
 
     void updateCache(int deletedIndex);
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
@@ -34,6 +35,7 @@ class BasicTheoremProver : public TheoremProver {
         clauses.clear();
         clausesSoFar.clear();
         previousState.clear();
+        upperLimit = std::numeric_limits<long long>::max(); // something HUGE
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
             removeDuplicates(elem);
@@ -106,7 +108,7 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         } else {
             return false;
         }
-    } while(true);
+    } while(upperLimit-- > 0);
 }
 
 } // namespace utils
