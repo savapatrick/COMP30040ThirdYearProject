@@ -4,6 +4,7 @@
 
 #include "two_variable_theorem_prover.h"
 #include "depth_ordered_theorem_prover.h"
+#include <iostream>
 
 using namespace std;
 
@@ -47,31 +48,36 @@ void TwoVariableTheoremProver::disposeTwoVariableClauses() {
     }
 }
 
-
-bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(vector<vector<std::shared_ptr<Literal>>>& chosen) {
-    if(chosen.size() == clauseForm->clauseForm.size()) {
-        shared_ptr<ClauseForm> currentClauseForm(make_shared<ClauseForm>());
-        for(auto& literals : chosen) { currentClauseForm->clauseForm.push_back({ make_shared<Clause>(literals) }); }
-        DepthOrderedTheoremProver prover(currentClauseForm);
-        if(prover.run()) {
-            outputStream << prover.getData();
+int currentTimestamp = 0;
+bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentChoice, shared_ptr<DepthOrderedTheoremProver>& prover) {
+    ++ currentTimestamp; // TODO: comment
+    cerr << to_string(currentTimestamp) + " depth " + to_string(currentChoice) << " a intrat\n"; // TODO: comment
+    if(currentChoice == clauseForm->clauseForm.size()) {
+        if(prover->run()) {
+            outputStream << prover->getData();
             return true;
         }
         return false;
     }
+    else {
+        if (!prover->run()) {
+            cerr << to_string(currentTimestamp) + " depth " + to_string(currentChoice) << "a crapat\n";
+            return false;
+        }
+    }
+    cerr.flush();
     map<set<string>, vector<shared_ptr<Literal>>> buckets;
-    int whichIndex = chosen.size();
-    for(auto& elem : clauseForm->clauseForm[whichIndex]->clause) {
+    for(auto& elem : clauseForm->clauseForm[currentChoice]->clause) {
         auto variables = elem->getAllVariables();
         set<string> current(variables.begin(), variables.end());
         buckets[current].emplace_back(elem);
     }
     for(auto& elem : buckets) {
-        chosen.push_back(elem.second);
-        if(backtrackingClauseFormAndResolution(chosen)) {
+        prover->addNewClause(make_shared<Clause>(elem.second));
+        if(backtrackingClauseFormAndResolution(currentChoice + 1, prover)) {
             return true;
         }
-        chosen.pop_back();
+        prover->revert();
     }
     return false;
 }
@@ -86,8 +92,9 @@ bool TwoVariableTheoremProver::run() {
     disposeTwoVariableClauses();
     outputStream << "[two variable theorem prover]\nwe have the following clauses after disposal:\n";
     outputStream << clauseForm->getStringWithIndex();
-    vector<vector<std::shared_ptr<Literal>>> chosen;
-    if(backtrackingClauseFormAndResolution(chosen)) {
+    outputData();
+    shared_ptr<DepthOrderedTheoremProver> prover = make_shared<DepthOrderedTheoremProver>(make_shared<ClauseForm>(), "depth_ordered_theorem_prover.txt");
+    if(backtrackingClauseFormAndResolution(0, prover)) {
         outputStream << "refuted by reaching saturation!\n";
         outputData();
         return true;
