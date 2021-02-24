@@ -25,6 +25,7 @@ class BasicTheoremProver : public TheoremProver {
     void updateCache(int deletedIndex);
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
     void factoringStep();
+    void subsumption();
     template <typename LiteralPredicate, typename ResolventPredicate>
     bool resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate);
 
@@ -60,9 +61,12 @@ class BasicTheoremProver : public TheoremProver {
 template <typename LiteralPredicate, typename ResolventPredicate>
 bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate) {
     do {
+        outputStream << "[SIZE] clauseForm.size() is " + std::to_string(clauseForm->clauseForm.size()) << '\n';
         outputData();
         clauses.clear();
         factoringStep();
+        subsumption();
+        outputStream << "[SIZE-post factoring and subsumption] clauseForm.size() is " + std::to_string(clauseForm->clauseForm.size()) << '\n';
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
             for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
                 if(avoid.find({ index, index2 }) != avoid.end()) {

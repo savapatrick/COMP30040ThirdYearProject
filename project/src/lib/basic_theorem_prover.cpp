@@ -74,6 +74,49 @@ void BasicTheoremProver::factoringStep() {
     }
 }
 
+void BasicTheoremProver::subsumption() {
+    vector <bool> toBeDeleted(clauseForm->clauseForm.size(), false);
+    bool toBeModified = false;
+    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
+        auto& clause      = clauseForm->clauseForm[index];
+        auto hashSetOne = clause->getHashSet();
+        for (int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size(); ++ index2) {
+            if (toBeDeleted[index2]) {
+                continue;
+            }
+            auto& clause2      = clauseForm->clauseForm[index2];
+            auto hashSetTwo = clause2->getHashSet();
+            bool isSubsumed = true;
+            for (auto &x : hashSetOne) {
+                if (hashSetTwo.find(x) == hashSetTwo.end()) {
+                    isSubsumed = false;
+                    break;
+                }
+            }
+            if (!isSubsumed) {continue;}
+            toBeDeleted[index2] = true;
+            toBeModified = true;
+        }
+    }
+    if (!toBeModified) {
+        return;
+    }
+    vector<shared_ptr<Clause>> newClauseForm;
+    for (int index = 0; index < (int)clauseForm->clauseForm.size(); ++ index) {
+        auto& clause      = clauseForm->clauseForm[index];
+        auto previousHash = clause->getHash();
+        newClauseForm.push_back(clause);
+        if (toBeDeleted[index]) {
+            outputStream << "clause " + clause->getString() + " is being subsumed, so it's dropped\n";
+            newClauseForm.pop_back();
+            clausesSoFar.erase(clausesSoFar.find(previousHash));
+            updateCache(index);
+            continue;
+        }
+    }
+    clauseForm->clauseForm = newClauseForm;
+}
+
 bool BasicTheoremProver::run() {
     upperLimit = std::numeric_limits<long long>::max();
     outputStream << "[basic theorem prover]\nwe have the following clauses in our initial set!\n";
