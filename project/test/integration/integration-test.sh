@@ -22,7 +22,7 @@ do
   echo "end $(date +%s)"
 
   echo "begin $(date +%s)"
-  timeout 2400s ../../../cmake-build-debug/project/src/clauseForm two >/dev/null 2>&1
+  timeout 600s ../../../cmake-build-debug/project/src/clauseForm two >/dev/null 2>&1
   exit_code=$?
   if [[ $exit_code -eq 0 ]]; then
     matches="$(tail -1 two_variable_theorem_prover_output.txt | grep -c -f "../../samples/answer$i.ans")"
