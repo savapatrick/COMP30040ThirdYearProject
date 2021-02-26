@@ -4,8 +4,8 @@
 
 #include "basic_theorem_prover.h"
 #include <algorithm>
-#include <random>
 #include <cassert>
+#include <random>
 
 using namespace std;
 
@@ -32,7 +32,7 @@ void BasicTheoremProver::factoringStep() {
     bool changed = false;
     vector<shared_ptr<Clause>> toBeInserted;
     for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-        if (isDeleted.find(index) != isDeleted.end()) {
+        if(isDeleted.find(index) != isDeleted.end()) {
             continue;
         }
         auto& clause      = clauseForm->clauseForm[index];
@@ -48,7 +48,7 @@ void BasicTheoremProver::factoringStep() {
         if(isTautology(clause)) {
             outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
             clausesSoFar.erase(clausesSoFar.find(previousHash));
-            changed = true;
+            changed          = true;
             isDeleted[index] = previousState.back();
             continue;
         }
@@ -75,8 +75,8 @@ void BasicTheoremProver::factoringStep() {
 }
 
 void BasicTheoremProver::subsumption() {
-    vector <bool> toBeDeleted(clauseForm->clauseForm.size(), false);
-    vector <int> byWhich(clauseForm->clauseForm.size(), 0);
+    vector<bool> toBeDeleted(clauseForm->clauseForm.size(), false);
+    vector<int> byWhich(clauseForm->clauseForm.size(), 0);
     bool toBeModified = false;
     outputStream << "we have the following clauses\n";
     for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
@@ -84,38 +84,40 @@ void BasicTheoremProver::subsumption() {
         outputStream << clause->getString() << '\n';
     }
     for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-        if (toBeDeleted[index] or isDeleted.find(index) != isDeleted.end()) {
+        if(toBeDeleted[index] or isDeleted.find(index) != isDeleted.end()) {
             continue;
         }
-        auto& clause      = clauseForm->clauseForm[index];
+        auto& clause    = clauseForm->clauseForm[index];
         auto hashSetOne = clause->getHashSet();
-        for (int index2 = 0; index2 < (int)clauseForm->clauseForm.size(); ++ index2) {
-            if (index == index2 or toBeDeleted[index2] or isDeleted.find(index2) != isDeleted.end()) {
+        for(int index2 = 0; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+            if(index == index2 or toBeDeleted[index2] or isDeleted.find(index2) != isDeleted.end()) {
                 continue;
             }
-            auto& clause2      = clauseForm->clauseForm[index2];
+            auto& clause2   = clauseForm->clauseForm[index2];
             auto hashSetTwo = clause2->getHashSet();
             bool isSubsumed = true;
-            for (auto &x : hashSetOne) {
-                if (hashSetTwo.find(x) == hashSetTwo.end()) {
+            for(auto& x : hashSetOne) {
+                if(hashSetTwo.find(x) == hashSetTwo.end()) {
                     // that's a weak check; we could lose precious subsumptions
                     isSubsumed = false;
                     break;
                 }
             }
-            if (!isSubsumed) {continue;}
+            if(!isSubsumed) {
+                continue;
+            }
             toBeDeleted[index2] = true;
-            byWhich[index2] = index;
-            toBeModified = true;
+            byWhich[index2]     = index;
+            toBeModified        = true;
         }
     }
-    if (!toBeModified) {
+    if(!toBeModified) {
         return;
     }
-    for (int index = 0; index < (int)clauseForm->clauseForm.size(); ++ index) {
+    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
         auto& clause      = clauseForm->clauseForm[index];
         auto previousHash = clause->getHash();
-        if (toBeDeleted[index]) {
+        if(toBeDeleted[index]) {
             outputStream << "clause " + clause->getString() + " is being subsumed by " +
             clauseForm->clauseForm[byWhich[index]]->getString() + " so it's dropped\n";
             isDeleted[index] = previousState.back();
@@ -168,7 +170,7 @@ void BasicTheoremProver::revert() {
     previousState.pop_back();
     while(clauseForm->clauseForm.size() > previousLabel) {
         auto whichClause = clauseForm->clauseForm.back();
-        if (clausesSoFar.find(whichClause->getHash()) != clausesSoFar.end()) {
+        if(clausesSoFar.find(whichClause->getHash()) != clausesSoFar.end()) {
             clausesSoFar.erase(clausesSoFar.find(whichClause->getHash()));
         }
         clauseForm->clauseForm.pop_back();
@@ -183,15 +185,15 @@ void BasicTheoremProver::revert() {
         avoid.erase(avoid.find(toBeDeleted.back()));
         toBeDeleted.pop_back();
     }
-    vector <int> revive;
-    for (auto &elem : isDeleted) {
-        if (elem.second == previousLabel) {
+    vector<int> revive;
+    for(auto& elem : isDeleted) {
+        if(elem.second == previousLabel) {
             revive.push_back(elem.first);
         }
     }
     while(!revive.empty()) {
         isDeleted.erase(isDeleted.find(revive.back()));
-        if (revive.back() < (int)clauseForm->clauseForm.size()) {
+        if(revive.back() < (int)clauseForm->clauseForm.size()) {
             clausesSoFar.insert(clauseForm->clauseForm[revive.back()]->getHash());
         }
         revive.pop_back();

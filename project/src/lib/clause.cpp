@@ -80,7 +80,7 @@ std::unordered_set<std::string> Clause::getHashSet() const {
 std::string Clause::getHash() const {
     auto hashSet = getHashSet();
     string result;
-    for (auto &current : hashSet) {
+    for(auto& current : hashSet) {
         result += current;
         result += "|";
     }

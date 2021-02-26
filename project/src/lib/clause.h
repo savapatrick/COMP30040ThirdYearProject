@@ -57,7 +57,6 @@ class Clause : public std::enable_shared_from_this<Clause> {
     std::string getString() const;
     std::string getHash() const;
     std::unordered_set<std::string> getHashSet() const;
-
 };
 }; // namespace utils
 
