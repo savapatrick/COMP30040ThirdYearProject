@@ -3,12 +3,14 @@
 //
 
 #include "parse_tree.h"
+#include "ad_hoc_templated.h"
 #include "operators.h"
 #include "tokenizer.h"
 #include "verifier.h"
 #include <algorithm>
 #include <memory>
 #include <stack>
+#include <iostream>
 
 using namespace std;
 
@@ -49,6 +51,22 @@ ParseTree::ParseTree(const vector<std::string>& formulas) {
     highestNodeLabel      = 100;
     for(int nodeLabel = 2; nodeLabel <= bufferOrder; ++nodeLabel) { spareNodesBuffer.push_back(nodeLabel); }
     buildTree(tokens);
+}
+
+unordered_set<string> ParseTree::getAllVariablesForSubtree(int node) {
+    unordered_set<string> solution;
+    if (information.find(node) != information.end()) {
+        cerr << information[node]->getString() << '\n';
+    }
+    if (information.find(node) != information.end() and information[node]->getType() == BOUNDVariable) {
+        auto variable = information[node]->getEntity<string>();
+        solution.insert(variable);
+    }
+    for (auto &neighbour : graph[node]) {
+        auto solutionForSon = getAllVariablesForSubtree(neighbour);
+        AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(solution, solutionForSon, solution);
+    }
+    return solution;
 }
 
 int ParseTree::getNextNode() {
@@ -189,6 +207,15 @@ int ParseTree::addImplication(const int& nodeOne, const int& nodeTwo) {
     auto father      = getNextNode();
     graph[father].emplace_back(nodeOne);
     graph[father].emplace_back(implication);
+    graph[father].emplace_back(nodeTwo);
+    return father;
+}
+
+int ParseTree::addDoubleImplication(const int& nodeOne, const int& nodeTwo) {
+    auto doubleImplication = addNodeWithOperator("DOUBLEImply");
+    auto father      = getNextNode();
+    graph[father].emplace_back(nodeOne);
+    graph[father].emplace_back(doubleImplication);
     graph[father].emplace_back(nodeTwo);
     return father;
 }

@@ -30,6 +30,7 @@ class Reducer {
 
     bool applyParanthesesToImplications(int node);
 
+    void optimizeDoubleImplication(int node, std::vector <int>& conjunctionsToBeAdded);
     bool eliminateDoubleImplicationOrImplication(bool isDoubleImplication, int node);
 
     bool resolveRightAssociativityForImplications(int node);

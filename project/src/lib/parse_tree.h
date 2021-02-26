@@ -32,6 +32,7 @@ class ParseTree {
 
     int addNodeWithOperator(const std::string& which);
 
+    int addDoubleImplication(const int& nodeOne, const int& nodeTwo);
     int addImplication(const int& nodeOne, const int& nodeTwo);
 
     int addOrClause(const int& nodeOne, const int& nodeTwo);
@@ -49,6 +50,7 @@ class ParseTree {
     std::string getEulerTraversal();
 
     int createCopyForSubtree(int node);
+    std::unordered_set<std::string> getAllVariablesForSubtree(int node);
 };
 }; // namespace utils
 

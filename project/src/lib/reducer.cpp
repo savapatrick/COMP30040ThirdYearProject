@@ -7,6 +7,7 @@
 #include "operators.h"
 #include "random_factory.h"
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -116,6 +117,45 @@ bool Reducer::applyParanthesesToImplications(int node) {
     return applyParanthesesToOperators(node, "IMPLY", { "DOUBLEImply" });
 }
 
+void Reducer::optimizeDoubleImplication(int node, vector <int>& conjunctionsToBeAdded) {
+    for(auto& neigh : parseTree.graph[node]) {
+        optimizeDoubleImplication(neigh, conjunctionsToBeAdded);
+    }
+    Operators& operators = Operators::getInstance();
+    static vector<int> pile;
+    pile.clear();
+    for(auto& neigh : parseTree.graph[node]) {
+        pile.push_back(neigh);
+        if(pile.size() >= 3 and parseTree.information.find(pile[(int)pile.size() - 2]) != parseTree.information.end()) {
+            auto whichOperator = operators.whichOperator(0, parseTree.information[pile[(int)pile.size() - 2]]->getString());
+            if(whichOperator == "DOUBLEImply") {
+                auto rightPredicate = pile.back();
+                pile.pop_back();
+                auto doubleImply = pile.back();
+                pile.pop_back();
+                auto leftPredicate = pile.back();
+                pile.pop_back();
+                auto newFather = parseTree.getNextNode();
+                parseTree.graph[newFather].push_back(leftPredicate);
+                parseTree.graph[newFather].push_back(doubleImply);
+                parseTree.graph[newFather].push_back(rightPredicate);
+                auto newBrother = parseTree.getNextNode();
+                //auto variablesLeft = parseTree.getAllVariablesForSubtree(leftPredicate);
+                //auto variablesRight = parseTree.getAllVariablesForSubtree(rightPredicate);
+                unordered_set<string> jointVariables;
+                jointVariables.insert(RandomFactory::getRandomConstantName(reservedTermNames));
+                //AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(variablesLeft, variablesRight, jointVariables);
+                parseTree.information[newBrother] = make_shared<Entity>(
+                SIMPLIFIEDLiteral,make_shared<SimplifiedLiteral>(false,
+                                   RandomFactory::getRandomPredicateName(reservedPredicateNames), jointVariables));
+                auto newRootSon = parseTree.addDoubleImplication(newBrother, newFather);
+                conjunctionsToBeAdded.push_back(newRootSon);
+            }
+        }
+    }
+    parseTree.graph[node] = pile;
+}
+
 bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, int node) {
     static vector<int> pile;
     Operators& operators = Operators::getInstance();
@@ -210,6 +250,15 @@ bool Reducer::resolveRightAssociativityForImplications(int node) {
 
 // does step 1.1)
 bool Reducer::reduceImplicationStep(int node) {
+    static bool doubleImplicationOptimization = [&]() {
+        vector<int> conjunctionsToBeAdded;
+        optimizeDoubleImplication(node, conjunctionsToBeAdded);
+        for(auto& conjunction : conjunctionsToBeAdded) {
+            parseTree.graph[parseTree.Root].push_back(parseTree.addNodeWithOperator("AND"));
+            parseTree.graph[parseTree.Root].push_back(conjunction);
+        }
+        return true;
+    }();
     bool wasModified = false;
     while(!reduceDoubleImplicationStep(node)) { wasModified = true; }
     if(resolveRightAssociativityForImplications(node)) {
