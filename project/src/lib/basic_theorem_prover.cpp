@@ -4,7 +4,6 @@
 
 #include "basic_theorem_prover.h"
 #include <algorithm>
-#include <cassert>
 #include <random>
 
 using namespace std;
@@ -55,7 +54,6 @@ void BasicTheoremProver::factoringStep() {
         auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
         if(!unificationResult.empty()) {
             for(auto& newClause : unificationResult) {
-                // TODO: consider removing isTautology and removeDuplicates
                 if(!isTautology(newClause) and removeDuplicates(newClause) and
                 clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
                     toBeInserted.push_back(newClause);
@@ -78,11 +76,6 @@ void BasicTheoremProver::subsumption() {
     vector<bool> toBeDeleted(clauseForm->clauseForm.size(), false);
     vector<int> byWhich(clauseForm->clauseForm.size(), 0);
     bool toBeModified = false;
-    outputStream << "we have the following clauses\n";
-    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-        auto& clause = clauseForm->clauseForm[index];
-        outputStream << clause->getString() << '\n';
-    }
     for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
         if(toBeDeleted[index] or isDeleted.find(index) != isDeleted.end()) {
             continue;
@@ -124,12 +117,6 @@ void BasicTheoremProver::subsumption() {
             clausesSoFar.erase(clausesSoFar.find(previousHash));
             continue;
         }
-    }
-    outputStream << "we have the following clauses after subsumption\n";
-    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-        auto& clause = clauseForm->clauseForm[index];
-        assert(!clause->clause.empty());
-        outputStream << clause->getString() << '\n';
     }
 }
 

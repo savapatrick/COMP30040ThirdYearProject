@@ -12,7 +12,7 @@ string Operators::whichOperator(const int& position, const std::string& seq) {
     if(position >= (int)seq.size()) {
         throw out_of_range("position beyond end of seq");
     }
-    string aux = "";
+    string aux;
     aux += seq[position];
     if(inv.find(aux) != inv.end()) {
         return inv[aux];
