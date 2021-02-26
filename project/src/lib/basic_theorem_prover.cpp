@@ -29,9 +29,11 @@ bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
 
 void BasicTheoremProver::factoringStep() {
     bool changed = false;
-    vector<shared_ptr<Clause>> newClauseForm;
     vector<shared_ptr<Clause>> toBeInserted;
     for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
+        if(isDeleted.find(index) != isDeleted.end()) {
+            continue;
+        }
         auto& clause      = clauseForm->clauseForm[index];
         auto previousHash = clause->getHash();
         if(removeDuplicates(clause)) {
@@ -42,19 +44,16 @@ void BasicTheoremProver::factoringStep() {
                 clausesSoFar.insert(previousHash);
             }
         }
-        newClauseForm.push_back(clause);
         if(isTautology(clause)) {
             outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
-            newClauseForm.pop_back();
             clausesSoFar.erase(clausesSoFar.find(previousHash));
-            changed = true;
-            updateCache(index);
+            changed          = true;
+            isDeleted[index] = previousState.back();
             continue;
         }
         auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
         if(!unificationResult.empty()) {
             for(auto& newClause : unificationResult) {
-                // TODO: consider removing isTautology and removeDuplicates
                 if(!isTautology(newClause) and removeDuplicates(newClause) and
                 clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
                     toBeInserted.push_back(newClause);
@@ -66,11 +65,58 @@ void BasicTheoremProver::factoringStep() {
     if(changed) {
         for(auto& elem : toBeInserted) {
             if(clausesSoFar.find(elem->getHash()) == clausesSoFar.end()) {
-                newClauseForm.push_back(elem);
+                clauseForm->clauseForm.push_back(elem);
                 clausesSoFar.insert(elem->getHash());
             }
         }
-        clauseForm->clauseForm = newClauseForm;
+    }
+}
+
+void BasicTheoremProver::subsumption() {
+    vector<bool> toBeDeleted(clauseForm->clauseForm.size(), false);
+    vector<int> byWhich(clauseForm->clauseForm.size(), 0);
+    bool toBeModified = false;
+    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
+        if(toBeDeleted[index] or isDeleted.find(index) != isDeleted.end()) {
+            continue;
+        }
+        auto& clause    = clauseForm->clauseForm[index];
+        auto hashSetOne = clause->getHashSet();
+        for(int index2 = 0; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+            if(index == index2 or toBeDeleted[index2] or isDeleted.find(index2) != isDeleted.end()) {
+                continue;
+            }
+            auto& clause2   = clauseForm->clauseForm[index2];
+            auto hashSetTwo = clause2->getHashSet();
+            bool isSubsumed = true;
+            for(auto& x : hashSetOne) {
+                if(hashSetTwo.find(x) == hashSetTwo.end()) {
+                    // that's a weak check; we could lose precious subsumptions
+                    isSubsumed = false;
+                    break;
+                }
+            }
+            if(!isSubsumed) {
+                continue;
+            }
+            toBeDeleted[index2] = true;
+            byWhich[index2]     = index;
+            toBeModified        = true;
+        }
+    }
+    if(!toBeModified) {
+        return;
+    }
+    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
+        auto& clause      = clauseForm->clauseForm[index];
+        auto previousHash = clause->getHash();
+        if(toBeDeleted[index]) {
+            outputStream << "clause " + clause->getString() + " is being subsumed by " +
+            clauseForm->clauseForm[byWhich[index]]->getString() + " so it's dropped\n";
+            isDeleted[index] = previousState.back();
+            clausesSoFar.erase(clausesSoFar.find(previousHash));
+            continue;
+        }
     }
 }
 
@@ -95,29 +141,6 @@ bool BasicTheoremProver::run() {
     }
 }
 
-void BasicTheoremProver::updateCache(int deletedIndex) {
-    vector<pair<int, int>> toBeUpdatedSet;
-    for(auto& elem : avoid) {
-        if(elem.first >= deletedIndex or elem.second >= deletedIndex) {
-            toBeUpdatedSet.emplace_back(elem);
-        }
-    }
-    vector<pair<int, int>> toBeInsertedSet;
-    for(auto elem : toBeUpdatedSet) {
-        avoid.erase(avoid.find(elem));
-        if(elem.first == deletedIndex or elem.second == deletedIndex) {
-            continue;
-        }
-        if(elem.first > deletedIndex) {
-            elem.first -= 1;
-        }
-        if(elem.second > deletedIndex) {
-            elem.second -= 1;
-        }
-        toBeInsertedSet.emplace_back(elem);
-    }
-    for(auto& elem : toBeInsertedSet) { avoid.insert(elem); }
-}
 void BasicTheoremProver::addNewClause(const std::shared_ptr<Clause>& newClause) {
     previousState.push_back(clauseForm->clauseForm.size());
     if(clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
@@ -134,7 +157,9 @@ void BasicTheoremProver::revert() {
     previousState.pop_back();
     while(clauseForm->clauseForm.size() > previousLabel) {
         auto whichClause = clauseForm->clauseForm.back();
-        clausesSoFar.erase(clausesSoFar.find(whichClause->getHash()));
+        if(clausesSoFar.find(whichClause->getHash()) != clausesSoFar.end()) {
+            clausesSoFar.erase(clausesSoFar.find(whichClause->getHash()));
+        }
         clauseForm->clauseForm.pop_back();
     }
     vector<pair<int, int>> toBeDeleted;
@@ -146,6 +171,19 @@ void BasicTheoremProver::revert() {
     while(!toBeDeleted.empty()) {
         avoid.erase(avoid.find(toBeDeleted.back()));
         toBeDeleted.pop_back();
+    }
+    vector<int> revive;
+    for(auto& elem : isDeleted) {
+        if(elem.second == previousLabel) {
+            revive.push_back(elem.first);
+        }
+    }
+    while(!revive.empty()) {
+        isDeleted.erase(isDeleted.find(revive.back()));
+        if(revive.back() < (int)clauseForm->clauseForm.size()) {
+            clausesSoFar.insert(clauseForm->clauseForm[revive.back()]->getHash());
+        }
+        revive.pop_back();
     }
 }
 }; // namespace utils

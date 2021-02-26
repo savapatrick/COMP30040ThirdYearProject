@@ -56,14 +56,14 @@ std::string Clause::getString() const {
     return result;
 }
 
-std::string Clause::getHash() const {
+std::unordered_set<std::string> Clause::getHashSet() const {
     vector<pair<string, shared_ptr<Literal>>> literals;
     literals.reserve(clause.size());
     for(const auto& literal : clause) { literals.emplace_back(literal->getStringWithoutVariableNames(), literal); }
     sort(literals.begin(), literals.end());
     unordered_map<string, string> substitution;
     int currentLabel = 0;
-    string result;
+    unordered_set<string> result;
     for(const auto& literal : literals) {
         auto variablesInOrder = literal.second->getAllVariablesInOrder();
         for(auto& currentVariable : variablesInOrder) {
@@ -72,7 +72,16 @@ std::string Clause::getHash() const {
                 substitution[currentVariable] = "_v_" + to_string(currentLabel);
             }
         }
-        result += literal.second->getHash(substitution);
+        result.insert(literal.second->getHash(substitution));
+    }
+    return result;
+}
+
+std::string Clause::getHash() const {
+    auto hashSet = getHashSet();
+    string result;
+    for(auto& current : hashSet) {
+        result += current;
         result += "|";
     }
     if(!result.empty()) {

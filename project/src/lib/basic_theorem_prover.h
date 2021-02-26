@@ -20,11 +20,12 @@ class BasicTheoremProver : public TheoremProver {
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
     std::unordered_set<std::string> clausesSoFar;
     std::vector<int> previousState;
+    std::unordered_map<int, int> isDeleted;
     long long upperLimit;
 
-    void updateCache(int deletedIndex);
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
     void factoringStep();
+    void subsumption();
     template <typename LiteralPredicate, typename ResolventPredicate>
     bool resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate);
 
@@ -35,7 +36,9 @@ class BasicTheoremProver : public TheoremProver {
         clauses.clear();
         clausesSoFar.clear();
         previousState.clear();
+        isDeleted.clear();
         upperLimit = std::numeric_limits<long long>::max(); // something HUGE
+        previousState.push_back(0);
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
             removeDuplicates(elem);
@@ -60,12 +63,19 @@ class BasicTheoremProver : public TheoremProver {
 template <typename LiteralPredicate, typename ResolventPredicate>
 bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate) {
     do {
+        outputStream << "[SIZE] clauseForm.size() is " + std::to_string(clauseForm->clauseForm.size()) << '\n';
         outputData();
         clauses.clear();
         factoringStep();
+        subsumption();
+        outputStream
+        << "[SIZE-post factoring and subsumption] clauseForm.size() is " + std::to_string(clauseForm->clauseForm.size()) << '\n';
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
+            if(isDeleted.find(index) != isDeleted.end()) {
+                continue;
+            }
             for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-                if(avoid.find({ index, index2 }) != avoid.end()) {
+                if(avoid.find({ index, index2 }) != avoid.end() or isDeleted.find(index2) != isDeleted.end()) {
                     continue;
                 }
                 auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
