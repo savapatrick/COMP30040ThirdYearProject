@@ -19,6 +19,7 @@ class ParseTree {
     int Root;
     std::unordered_map<int, std::vector<int>> graph;
     std::unordered_map<int, std::shared_ptr<Entity>> information;
+    std::unordered_map<int, int> fakeNode;
     std::vector<int> spareNodesBuffer;
     int highestNodeLabel;
     /// when compacting/reducing nodes, push them here in order to reuse them later
@@ -36,6 +37,7 @@ class ParseTree {
     int addImplication(const int& nodeOne, const int& nodeTwo);
 
     int addOrClause(const int& nodeOne, const int& nodeTwo);
+    int addAndClause(const int& nodeOne, const int& nodeTwo);
 
     int addNegationToFormula(const int& nodeOne);
 

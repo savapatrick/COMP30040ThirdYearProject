@@ -140,16 +140,24 @@ void Reducer::optimizeDoubleImplication(int node, vector <int>& conjunctionsToBe
                 parseTree.graph[newFather].push_back(doubleImply);
                 parseTree.graph[newFather].push_back(rightPredicate);
                 auto newBrother = parseTree.getNextNode();
-                //auto variablesLeft = parseTree.getAllVariablesForSubtree(leftPredicate);
-                //auto variablesRight = parseTree.getAllVariablesForSubtree(rightPredicate);
+                auto variablesLeft = parseTree.getAllVariablesForSubtree(leftPredicate);
+                variablesLeft = AdHocTemplated<string>::intersectionIterablesUnorderedSet(variablesLeft, allBoundVariables);
+                auto variablesRight = parseTree.getAllVariablesForSubtree(rightPredicate);
+                variablesRight = AdHocTemplated<string>::intersectionIterablesUnorderedSet(variablesRight, allBoundVariables);
                 unordered_set<string> jointVariables;
-                jointVariables.insert(RandomFactory::getRandomConstantName(reservedTermNames));
-                //AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(variablesLeft, variablesRight, jointVariables);
+                AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(variablesLeft, variablesRight, jointVariables);
+                if (jointVariables.empty()) {
+                    jointVariables.insert(RandomFactory::getRandomConstantName(reservedTermNames));
+                }
                 parseTree.information[newBrother] = make_shared<Entity>(
                 SIMPLIFIEDLiteral,make_shared<SimplifiedLiteral>(false,
                                    RandomFactory::getRandomPredicateName(reservedPredicateNames), jointVariables));
                 auto newRootSon = parseTree.addDoubleImplication(newBrother, newFather);
                 conjunctionsToBeAdded.push_back(newRootSon);
+                auto newNode = parseTree.getNextNode();
+                parseTree.information[newNode] = make_shared<Entity>(parseTree.information[newBrother]);
+                parseTree.fakeNode[newNode] = newRootSon;
+                pile.push_back(newNode);
             }
         }
     }
@@ -302,8 +310,11 @@ bool Reducer::pushNOTStep(int node) {
     if(isNot) {
         vector<int> newNodes;
         /// at this point we know that all what we have is either a CNF or a DNF
-        for(auto& neighbour : parseTree.graph[node]) {
+        for(auto neighbour : parseTree.graph[node]) {
             newNodes.push_back(neighbour);
+            /*if (parseTree.fakeNode.find(neighbour) != parseTree.fakeNode.end()) {
+                neighbour = parseTree.fakeNode[neighbour];
+            }*/
             if(parseTree.information.find(neighbour) != parseTree.information.end()) {
                 switch(parseTree.information[neighbour]->getType()) {
                 case BOUNDVariable: {
@@ -453,6 +464,7 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
     bool wasModified    = false;
     bool wasEQuantifier = false;
     bool wasVQuantifier = false;
+    bool preserveVariable = false;
     string whichVariable;
     Operators& operators = Operators::getInstance();
     if(parseTree.information.find(node) != parseTree.information.end()) {
@@ -462,13 +474,15 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             auto variable    = operators.getVariableFromQuantifierAndVariable(information);
             if(quantifier == operators.EQuantifier) {
                 if(variablesInUniversalQuantifiers.empty()) {
-                    skolem[variable] = RandomFactory::getRandomConstantName(reservedTermNames);
+                    preserveVariable = true;
+                    skolem[variable] =
+                    make_pair(RandomFactory::getRandomFunctionName(reservedFunctionNames), vector<string>({variable}));
                 } else {
                     skolem[variable] =
                     make_pair(RandomFactory::getRandomFunctionName(reservedFunctionNames), variablesInUniversalQuantifiers);
                 }
-                wasModified |= true;
                 wasEQuantifier = true;
+                wasModified |= true;
                 whichVariable  = variable;
             } else {
                 if(quantifier != operators.VQuantifier) {
@@ -482,13 +496,19 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             wasModified |= simplifiedLiteral->substituteSkolem(skolem);
         }
     }
+    if (parseTree.fakeNode.find(node) != parseTree.fakeNode.end()) {
+        wasModified |= skolemizationStep(parseTree.fakeNode[node], variablesInUniversalQuantifiers, skolem);
+    }
     for(auto& neighbour : parseTree.graph[node]) {
         wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
     }
     if(wasEQuantifier) {
-        allBoundVariables.erase(allBoundVariables.find(whichVariable));
-        reservedTermNames.erase(reservedTermNames.find(whichVariable));
-        skolem.erase(skolem.find(whichVariable));
+        if (!preserveVariable and allBoundVariables.find(whichVariable) != allBoundVariables.end()) {
+            allBoundVariables.erase(allBoundVariables.find(whichVariable));
+        }
+        if (!preserveVariable and reservedTermNames.find(whichVariable) != reservedTermNames.end()) {
+            reservedTermNames.erase(reservedTermNames.find(whichVariable));
+        }
         /// here we delete the information for this node
         parseTree.information.erase(parseTree.information.find(node));
     }
@@ -513,12 +533,10 @@ void Reducer::disambiguateFormula() {
 }
 
 void Reducer::skolemization() {
-    // in order to disambiguate the formula, make the variables unique
-    disambiguateFormula();
     vector<std::string> variablesInUniversalQuantifiers;
     unordered_map<string, variant<string, pair<string, vector<string>>>> skolem;
     while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, skolem)) {
-        if(!variablesInUniversalQuantifiers.empty() or !skolem.empty()) {
+        if(!variablesInUniversalQuantifiers.empty()) {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }
     }
@@ -644,8 +662,14 @@ template <typename T> [[maybe_unused]] T getSimplifiedClauseForm() {
 template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimplifiedClauseForm() {
     static std::vector<SimplifiedClauseForm::SimplifiedClause> clauseForm;
     if(!computedClauseForm) {
+        // in order to disambiguate the formula, make the variables unique
+//        cerr << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
+        disambiguateFormula();
+//        cerr << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
         basicReduce();
+        cerr << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
         skolemization();
+        cerr << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
         removeUniversalQuantifiers();
         unifyNormalForms(parseTree.Root);
         clauseForm =

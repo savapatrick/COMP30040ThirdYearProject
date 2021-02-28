@@ -20,6 +20,7 @@ ParseTree::ParseTree(const std::string& formula) {
     auto tokens                 = utils::Tokenizer::tokenize(formula);
     graph.clear();
     information.clear();
+    fakeNode.clear();
     spareNodesBuffer.clear();
     redundantNodes.clear();
     Root                  = 1;
@@ -44,6 +45,7 @@ ParseTree::ParseTree(const vector<std::string>& formulas) {
     auto tokens = utils::Tokenizer::tokenize(formula);
     graph.clear();
     information.clear();
+    fakeNode.clear();
     spareNodesBuffer.clear();
     redundantNodes.clear();
     Root                  = 1;
@@ -55,12 +57,10 @@ ParseTree::ParseTree(const vector<std::string>& formulas) {
 
 unordered_set<string> ParseTree::getAllVariablesForSubtree(int node) {
     unordered_set<string> solution;
-    if (information.find(node) != information.end()) {
-        cerr << information[node]->getString() << '\n';
-    }
-    if (information.find(node) != information.end() and information[node]->getType() == BOUNDVariable) {
-        auto variable = information[node]->getEntity<string>();
-        solution.insert(variable);
+    if (information.find(node) != information.end() and information[node]->getType() == SIMPLIFIEDLiteral) {
+        auto literal = information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
+        auto variablesAndConstants = literal->getAllVariablesAndConstants();
+        for (auto &variableOrConstant : variablesAndConstants) { solution.insert(variableOrConstant); }
     }
     for (auto &neighbour : graph[node]) {
         auto solutionForSon = getAllVariablesForSubtree(neighbour);
@@ -222,6 +222,15 @@ int ParseTree::addDoubleImplication(const int& nodeOne, const int& nodeTwo) {
 
 int ParseTree::addOrClause(const int& nodeOne, const int& nodeTwo) {
     auto orOperator = addNodeWithOperator("OR");
+    auto father     = getNextNode();
+    graph[father].emplace_back(nodeOne);
+    graph[father].emplace_back(orOperator);
+    graph[father].emplace_back(nodeTwo);
+    return father;
+}
+
+int ParseTree::addAndClause(const int& nodeOne, const int& nodeTwo) {
+    auto orOperator = addNodeWithOperator("AND");
     auto father     = getNextNode();
     graph[father].emplace_back(nodeOne);
     graph[father].emplace_back(orOperator);
