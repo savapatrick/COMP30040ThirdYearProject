@@ -457,11 +457,11 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
 
 bool Reducer::skolemizationStep(int node,
 std::vector<std::string>& variablesInUniversalQuantifiers,
+std::map<std::vector<std::string>, std::string>& functionNames,
 unordered_map<string, SimplifiedLiteral::arg>& skolem) {
     bool wasModified    = false;
     bool wasEQuantifier = false;
     bool wasVQuantifier = false;
-    bool preserveVariable = false;
     string whichVariable;
     Operators& operators = Operators::getInstance();
     if(parseTree.information.find(node) != parseTree.information.end()) {
@@ -470,17 +470,26 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
             auto variable    = operators.getVariableFromQuantifierAndVariable(information);
             if(quantifier == operators.EQuantifier) {
-                if(variablesInUniversalQuantifiers.empty()) {
-                    preserveVariable = true;
-                    skolem[variable] =
-                    make_pair(RandomFactory::getRandomFunctionName(reservedFunctionNames), vector<string>({variable}));
-                } else {
-                    skolem[variable] =
-                    make_pair(RandomFactory::getRandomFunctionName(reservedFunctionNames), variablesInUniversalQuantifiers);
+                if (skolem.find(variable) == skolem.end()) {
+                    if (functionNames.find(variablesInUniversalQuantifiers) == functionNames.end()) {
+                        if (variablesInUniversalQuantifiers.empty()) {
+                            functionNames[variablesInUniversalQuantifiers] = RandomFactory::getRandomConstantName(reservedTermNames);;
+                        }
+                        else {
+                            functionNames[variablesInUniversalQuantifiers] =
+                            RandomFactory::getRandomFunctionName(reservedFunctionNames);
+                        }
+                    }
+                    if(variablesInUniversalQuantifiers.empty()) {
+                        skolem[variable] = functionNames[variablesInUniversalQuantifiers];
+                    } else {
+                        skolem[variable] = make_pair(
+                        functionNames[variablesInUniversalQuantifiers], variablesInUniversalQuantifiers);
+                    }
+                    wasModified |= true;
+                    whichVariable = variable;
                 }
                 wasEQuantifier = true;
-                wasModified |= true;
-                whichVariable  = variable;
             } else {
                 if(quantifier != operators.VQuantifier) {
                     throw logic_error("the quantifier should be either existential or universal");
@@ -494,18 +503,18 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
         }
     }
     if (parseTree.fakeNode.find(node) != parseTree.fakeNode.end()) {
-        wasModified |= skolemizationStep(parseTree.fakeNode[node], variablesInUniversalQuantifiers, skolem);
+        wasModified |= skolemizationStep(parseTree.fakeNode[node], variablesInUniversalQuantifiers, functionNames, skolem);
     }
     else {
         for(auto& neighbour : parseTree.graph[node]) {
-            wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
+            wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, functionNames, skolem);
         }
     }
     if(wasEQuantifier) {
-        if (!preserveVariable and allBoundVariables.find(whichVariable) != allBoundVariables.end()) {
+        if (allBoundVariables.find(whichVariable) != allBoundVariables.end()) {
             allBoundVariables.erase(allBoundVariables.find(whichVariable));
         }
-        if (!preserveVariable and reservedTermNames.find(whichVariable) != reservedTermNames.end()) {
+        if (reservedTermNames.find(whichVariable) != reservedTermNames.end()) {
             reservedTermNames.erase(reservedTermNames.find(whichVariable));
         }
         /// here we delete the information for this node
@@ -533,8 +542,9 @@ void Reducer::disambiguateFormula() {
 
 void Reducer::skolemization() {
     vector<std::string> variablesInUniversalQuantifiers;
+    map<vector<string>, string> functionNames;
     unordered_map<string, variant<string, pair<string, vector<string>>>> skolem;
-    while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, skolem)) {
+    while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, functionNames, skolem)) {
         if(!variablesInUniversalQuantifiers.empty()) {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }

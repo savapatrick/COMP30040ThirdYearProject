@@ -58,6 +58,7 @@ class ClauseForm {
     void makeVariableNamesUniquePerClause();
     std::string getString() const;
     std::string getStringWithIndex() const;
+    std::string getStringWithIndex(const std::unordered_map<int, int> &isDeleted) const;
     bool isTwoVariableFragment();
 };
 }; // namespace utils
