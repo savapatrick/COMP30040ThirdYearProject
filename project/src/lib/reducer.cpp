@@ -140,15 +140,7 @@ void Reducer::optimizeDoubleImplication(int node, vector <int>& conjunctionsToBe
                 parseTree.graph[newFather].push_back(doubleImply);
                 parseTree.graph[newFather].push_back(rightPredicate);
                 auto newBrother = parseTree.getNextNode();
-                auto variablesLeft = parseTree.getAllVariablesForSubtree(leftPredicate);
-                variablesLeft = AdHocTemplated<string>::intersectionIterablesUnorderedSet(variablesLeft, allBoundVariables);
-                auto variablesRight = parseTree.getAllVariablesForSubtree(rightPredicate);
-                variablesRight = AdHocTemplated<string>::intersectionIterablesUnorderedSet(variablesRight, allBoundVariables);
-                unordered_set<string> jointVariables;
-                AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(variablesLeft, variablesRight, jointVariables);
-                if (jointVariables.empty()) {
-                    jointVariables.insert(RandomFactory::getRandomConstantName(reservedTermNames));
-                }
+                unordered_set<string> jointVariables({RandomFactory::getRandomConstantName(reservedTermNames)});
                 parseTree.information[newBrother] = make_shared<Entity>(
                 SIMPLIFIEDLiteral,make_shared<SimplifiedLiteral>(false,
                                    RandomFactory::getRandomPredicateName(reservedPredicateNames), jointVariables));
@@ -261,9 +253,12 @@ bool Reducer::reduceImplicationStep(int node) {
     static bool doubleImplicationOptimization = [&]() {
         vector<int> conjunctionsToBeAdded;
         optimizeDoubleImplication(node, conjunctionsToBeAdded);
+        bool isRoot = (node == parseTree.Root);
         for(auto& conjunction : conjunctionsToBeAdded) {
-            parseTree.graph[parseTree.Root].push_back(parseTree.addNodeWithOperator("AND"));
-            parseTree.graph[parseTree.Root].push_back(conjunction);
+            parseTree.Root = parseTree.addAndClause(parseTree.Root, conjunction);
+        }
+        if (isRoot) {
+            node = parseTree.Root;
         }
         return true;
     }();
@@ -470,25 +465,23 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
             auto variable    = operators.getVariableFromQuantifierAndVariable(information);
             if(quantifier == operators.EQuantifier) {
-                if (skolem.find(variable) == skolem.end()) {
-                    if (functionNames.find(variablesInUniversalQuantifiers) == functionNames.end()) {
-                        if (variablesInUniversalQuantifiers.empty()) {
-                            functionNames[variablesInUniversalQuantifiers] = RandomFactory::getRandomConstantName(reservedTermNames);;
-                        }
-                        else {
-                            functionNames[variablesInUniversalQuantifiers] =
-                            RandomFactory::getRandomFunctionName(reservedFunctionNames);
-                        }
+                if (functionNames.find(variablesInUniversalQuantifiers) == functionNames.end()) {
+                    if (variablesInUniversalQuantifiers.empty()) {
+                        functionNames[variablesInUniversalQuantifiers] = RandomFactory::getRandomConstantName(reservedTermNames);;
                     }
-                    if(variablesInUniversalQuantifiers.empty()) {
-                        skolem[variable] = functionNames[variablesInUniversalQuantifiers];
-                    } else {
-                        skolem[variable] = make_pair(
-                        functionNames[variablesInUniversalQuantifiers], variablesInUniversalQuantifiers);
+                    else {
+                        functionNames[variablesInUniversalQuantifiers] =
+                        RandomFactory::getRandomFunctionName(reservedFunctionNames);
                     }
-                    wasModified |= true;
-                    whichVariable = variable;
                 }
+                if(variablesInUniversalQuantifiers.empty()) {
+                    skolem[variable] = functionNames[variablesInUniversalQuantifiers];
+                } else {
+                    skolem[variable] = make_pair(
+                    functionNames[variablesInUniversalQuantifiers], variablesInUniversalQuantifiers);
+                }
+                wasModified |= true;
+                whichVariable = variable;
                 wasEQuantifier = true;
             } else {
                 if(quantifier != operators.VQuantifier) {
@@ -511,12 +504,13 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
         }
     }
     if(wasEQuantifier) {
-        if (allBoundVariables.find(whichVariable) != allBoundVariables.end()) {
+        /*if (allBoundVariables.find(whichVariable) != allBoundVariables.end()) {
             allBoundVariables.erase(allBoundVariables.find(whichVariable));
         }
         if (reservedTermNames.find(whichVariable) != reservedTermNames.end()) {
             reservedTermNames.erase(reservedTermNames.find(whichVariable));
-        }
+        }*/
+        skolem.erase(skolem.find(whichVariable));
         /// here we delete the information for this node
         parseTree.information.erase(parseTree.information.find(node));
     }

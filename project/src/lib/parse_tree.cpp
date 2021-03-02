@@ -55,20 +55,6 @@ ParseTree::ParseTree(const vector<std::string>& formulas) {
     buildTree(tokens);
 }
 
-unordered_set<string> ParseTree::getAllVariablesForSubtree(int node) {
-    unordered_set<string> solution;
-    if (information.find(node) != information.end() and information[node]->getType() == SIMPLIFIEDLiteral) {
-        auto literal = information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
-        auto variablesAndConstants = literal->getAllVariablesAndConstants();
-        for (auto &variableOrConstant : variablesAndConstants) { solution.insert(variableOrConstant); }
-    }
-    for (auto &neighbour : graph[node]) {
-        auto solutionForSon = getAllVariablesForSubtree(neighbour);
-        AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(solution, solutionForSon, solution);
-    }
-    return solution;
-}
-
 int ParseTree::getNextNode() {
     auto takeNode = [&](vector<int>& nodes) -> int {
         auto result = nodes.back();

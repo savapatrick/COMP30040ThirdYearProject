@@ -52,7 +52,6 @@ class ParseTree {
     std::string getEulerTraversal();
 
     int createCopyForSubtree(int node);
-    std::unordered_set<std::string> getAllVariablesForSubtree(int node);
 };
 }; // namespace utils
 

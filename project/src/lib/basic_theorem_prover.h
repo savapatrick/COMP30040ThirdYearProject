@@ -68,9 +68,6 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         clauses.clear();
         factoringStep();
         subsumption();
-        outputStream
-        << "[SIZE-post factoring and subsumption] clauseForm.size() is " + std::to_string(clauseForm->clauseForm.size()) << '\n';
-        outputStream << "[CLAUSE-FORM] is " << clauseForm->getStringWithIndex(isDeleted) << '\n';
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
             if(isDeleted.find(index) != isDeleted.end()) {
                 continue;
