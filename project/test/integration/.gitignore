@@ -4,4 +4,4 @@ input.txt
 theorem_prover.txt
 two_variable_theorem_prover_output.txt
 depth_ordered_theorem_prover.txt
-aux
+aux.txt
