@@ -450,6 +450,8 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
 bool Reducer::skolemizationStep(int node,
 std::vector<std::string>& variablesInUniversalQuantifiers,
 unordered_map<string, SimplifiedLiteral::arg>& skolem) {
+    // crucial to call skolemizationStep(parseTree.Root)
+    // otherwise the conjunctions appended at the end of the adjacency list of Root could break the correctness
     bool wasModified    = false;
     bool wasEQuantifier = false;
     bool wasVQuantifier = false;
@@ -479,6 +481,10 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             }
         } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
             auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
+            // once we've done substituteSkolem, we know for sure that whatever we do further, the literal
+            // won't suffer any iteration
+            // why? because we can't substitute here a constant or the argument of a function
+            // this is simple substitution
             wasModified |= simplifiedLiteral->substituteSkolem(skolem);
         }
     }
@@ -490,12 +496,6 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
         }
     }
     if(wasEQuantifier) {
-        /*if (allBoundVariables.find(whichVariable) != allBoundVariables.end()) {
-            allBoundVariables.erase(allBoundVariables.find(whichVariable));
-        }
-        if (reservedTermNames.find(whichVariable) != reservedTermNames.end()) {
-            reservedTermNames.erase(reservedTermNames.find(whichVariable));
-        }*/
         skolem.erase(skolem.find(whichVariable));
         /// here we delete the information for this node
         parseTree.information.erase(parseTree.information.find(node));
@@ -524,18 +524,28 @@ void Reducer::skolemization() {
     vector<std::string> variablesInUniversalQuantifiers;
     unordered_map<string, variant<string, pair<string, vector<string>>>> skolem;
     while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, skolem)) {
-        if(!variablesInUniversalQuantifiers.empty()) {
+        if(!variablesInUniversalQuantifiers.empty() or !skolem.empty()) {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }
     }
+    removeUniversalQuantifiers();
 }
 
 void Reducer::removeUniversalQuantifiers() {
     vector<int> universalQuantifiersNodes;
+    Operators& operators = Operators::getInstance();
+    allBoundVariables.clear();
     for(auto& information : parseTree.information) {
         auto key   = information.first;
         auto value = information.second;
         if(value->getType() == BOUNDVariable) {
+            auto boundVariable = value->getEntity<string>();
+            auto quantifier    = operators.getQuantifierFromQuantifierAndVariable(boundVariable);
+            if(quantifier != operators.VQuantifier) {
+                throw std::logic_error("We still have existential quantifiers in the parse tree after skolemization!");
+            }
+            auto variable = operators.getVariableFromQuantifierAndVariable(boundVariable);
+            allBoundVariables.insert(variable);
             universalQuantifiersNodes.emplace_back(key);
         }
     }
@@ -654,7 +664,6 @@ template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimp
         disambiguateFormula();
         basicReduce();
         skolemization();
-        removeUniversalQuantifiers();
         unifyNormalForms(parseTree.Root);
         clauseForm =
         parseTree.information[parseTree.Root]->getEntity<shared_ptr<SimplifiedClauseForm>>()->getSimplifiedClauseForm();
@@ -686,6 +695,7 @@ template <> string Reducer::getSimplifiedClauseForm() {
 
 std::shared_ptr<ClauseForm> Reducer::getClauseForm() {
     auto simplifiedClauseForm = getSimplifiedClauseForm<std::shared_ptr<SimplifiedClauseForm>>();
+    // todo: here it would be ideal to do not do difference anymore; use the prefixes instead
     return make_shared<ClauseForm>(simplifiedClauseForm, reservedFunctionNames, allBoundVariables,
     AdHocTemplated<string>::differenceUnorderedSets(reservedTermNames, allBoundVariables));
 }
