@@ -96,10 +96,10 @@ std::string ClauseForm::getStringWithIndex() const {
     return result;
 }
 
-std::string ClauseForm::getStringWithIndex(const std::unordered_map<int, int> &isDeleted) const {
+std::string ClauseForm::getStringWithIndex(const std::unordered_map<int, int>& isDeleted) const {
     string result;
     for(int index = 0; index < (int)clauseForm.size(); ++index) {
-        if (isDeleted.find(index) == isDeleted.end()) {
+        if(isDeleted.find(index) == isDeleted.end()) {
             result += to_string(index) + " " + clauseForm[index]->getString() + "\n";
         }
     }

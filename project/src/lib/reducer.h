@@ -30,7 +30,7 @@ class Reducer {
 
     bool applyParanthesesToImplications(int node);
 
-    void optimizeDoubleImplication(int node, std::vector <int>& conjunctionsToBeAdded);
+    void optimizeDoubleImplication(int node, std::vector<int>& conjunctionsToBeAdded);
     bool eliminateDoubleImplicationOrImplication(bool isDoubleImplication, int node);
 
     bool resolveRightAssociativityForImplications(int node);
@@ -52,7 +52,6 @@ class Reducer {
 
     bool skolemizationStep(int node,
     std::vector<std::string>& variablesInUniversalQuantifiers,
-    std::map<std::vector<std::string>, std::string>& functionNames,
     std::unordered_map<std::string, SimplifiedLiteral::arg>& skolem);
 
     static std::shared_ptr<Entity> getEntityWithFlippedQuantifierAndVariable(const std::string& which);

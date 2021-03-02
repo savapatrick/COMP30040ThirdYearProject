@@ -31,9 +31,7 @@ class SimplifiedLiteral {
     SimplifiedLiteral(bool _isNegated, std::string _predicateName, const std::unordered_set<std::string>& _arguments)
     : isNegated(_isNegated), predicateName(std::move(_predicateName)) {
         arguments.clear();
-        for (auto &elem: _arguments) {
-            arguments.emplace_back(elem);
-        }
+        for(auto& elem : _arguments) { arguments.emplace_back(elem); }
     }
     SimplifiedLiteral(const std::shared_ptr<SimplifiedLiteral>& other)
     : isNegated(other->isNegated), predicateName(other->predicateName), arguments(other->arguments) {

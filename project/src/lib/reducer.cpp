@@ -117,10 +117,8 @@ bool Reducer::applyParanthesesToImplications(int node) {
     return applyParanthesesToOperators(node, "IMPLY", { "DOUBLEImply" });
 }
 
-void Reducer::optimizeDoubleImplication(int node, vector <int>& conjunctionsToBeAdded) {
-    for(auto& neigh : parseTree.graph[node]) {
-        optimizeDoubleImplication(neigh, conjunctionsToBeAdded);
-    }
+void Reducer::optimizeDoubleImplication(int node, vector<int>& conjunctionsToBeAdded) {
+    for(auto& neigh : parseTree.graph[node]) { optimizeDoubleImplication(neigh, conjunctionsToBeAdded); }
     Operators& operators = Operators::getInstance();
     static vector<int> pile;
     pile.clear();
@@ -140,15 +138,14 @@ void Reducer::optimizeDoubleImplication(int node, vector <int>& conjunctionsToBe
                 parseTree.graph[newFather].push_back(doubleImply);
                 parseTree.graph[newFather].push_back(rightPredicate);
                 auto newBrother = parseTree.getNextNode();
-                unordered_set<string> jointVariables({RandomFactory::getRandomConstantName(reservedTermNames)});
-                parseTree.information[newBrother] = make_shared<Entity>(
-                SIMPLIFIEDLiteral,make_shared<SimplifiedLiteral>(false,
-                                   RandomFactory::getRandomPredicateName(reservedPredicateNames), jointVariables));
-                auto newRootSon = parseTree.addDoubleImplication(newBrother, newFather);
+                unordered_set<string> jointVariables({ RandomFactory::getRandomConstantName(reservedTermNames) });
+                parseTree.information[newBrother] = make_shared<Entity>(SIMPLIFIEDLiteral,
+                make_shared<SimplifiedLiteral>(false, RandomFactory::getRandomPredicateName(reservedPredicateNames), jointVariables));
+                auto newRootSon                   = parseTree.addDoubleImplication(newBrother, newFather);
                 conjunctionsToBeAdded.push_back(newRootSon);
-                auto newNode = parseTree.getNextNode();
+                auto newNode                   = parseTree.getNextNode();
                 parseTree.information[newNode] = make_shared<Entity>(parseTree.information[newBrother]);
-                parseTree.fakeNode[newNode] = newRootSon;
+                parseTree.fakeNode[newNode]    = newRootSon;
                 pile.push_back(newNode);
             }
         }
@@ -257,7 +254,7 @@ bool Reducer::reduceImplicationStep(int node) {
         for(auto& conjunction : conjunctionsToBeAdded) {
             parseTree.Root = parseTree.addAndClause(parseTree.Root, conjunction);
         }
-        if (isRoot) {
+        if(isRoot) {
             node = parseTree.Root;
         }
         return true;
@@ -452,7 +449,6 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
 
 bool Reducer::skolemizationStep(int node,
 std::vector<std::string>& variablesInUniversalQuantifiers,
-std::map<std::vector<std::string>, std::string>& functionNames,
 unordered_map<string, SimplifiedLiteral::arg>& skolem) {
     bool wasModified    = false;
     bool wasEQuantifier = false;
@@ -465,23 +461,14 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
             auto variable    = operators.getVariableFromQuantifierAndVariable(information);
             if(quantifier == operators.EQuantifier) {
-                if (functionNames.find(variablesInUniversalQuantifiers) == functionNames.end()) {
-                    if (variablesInUniversalQuantifiers.empty()) {
-                        functionNames[variablesInUniversalQuantifiers] = RandomFactory::getRandomConstantName(reservedTermNames);;
-                    }
-                    else {
-                        functionNames[variablesInUniversalQuantifiers] =
-                        RandomFactory::getRandomFunctionName(reservedFunctionNames);
-                    }
-                }
                 if(variablesInUniversalQuantifiers.empty()) {
-                    skolem[variable] = functionNames[variablesInUniversalQuantifiers];
+                    skolem[variable] = RandomFactory::getRandomConstantName(reservedTermNames);
                 } else {
-                    skolem[variable] = make_pair(
-                    functionNames[variablesInUniversalQuantifiers], variablesInUniversalQuantifiers);
+                    skolem[variable] =
+                    make_pair(RandomFactory::getRandomFunctionName(reservedFunctionNames), variablesInUniversalQuantifiers);
                 }
                 wasModified |= true;
-                whichVariable = variable;
+                whichVariable  = variable;
                 wasEQuantifier = true;
             } else {
                 if(quantifier != operators.VQuantifier) {
@@ -495,12 +482,11 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             wasModified |= simplifiedLiteral->substituteSkolem(skolem);
         }
     }
-    if (parseTree.fakeNode.find(node) != parseTree.fakeNode.end()) {
-        wasModified |= skolemizationStep(parseTree.fakeNode[node], variablesInUniversalQuantifiers, functionNames, skolem);
-    }
-    else {
+    if(parseTree.fakeNode.find(node) != parseTree.fakeNode.end()) {
+        wasModified |= skolemizationStep(parseTree.fakeNode[node], variablesInUniversalQuantifiers, skolem);
+    } else {
         for(auto& neighbour : parseTree.graph[node]) {
-            wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, functionNames, skolem);
+            wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
         }
     }
     if(wasEQuantifier) {
@@ -536,9 +522,8 @@ void Reducer::disambiguateFormula() {
 
 void Reducer::skolemization() {
     vector<std::string> variablesInUniversalQuantifiers;
-    map<vector<string>, string> functionNames;
     unordered_map<string, variant<string, pair<string, vector<string>>>> skolem;
-    while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, functionNames, skolem)) {
+    while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, skolem)) {
         if(!variablesInUniversalQuantifiers.empty()) {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }

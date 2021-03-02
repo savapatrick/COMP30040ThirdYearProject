@@ -8,9 +8,9 @@
 #include "tokenizer.h"
 #include "verifier.h"
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <stack>
-#include <iostream>
 
 using namespace std;
 
@@ -199,7 +199,7 @@ int ParseTree::addImplication(const int& nodeOne, const int& nodeTwo) {
 
 int ParseTree::addDoubleImplication(const int& nodeOne, const int& nodeTwo) {
     auto doubleImplication = addNodeWithOperator("DOUBLEImply");
-    auto father      = getNextNode();
+    auto father            = getNextNode();
     graph[father].emplace_back(nodeOne);
     graph[father].emplace_back(doubleImplication);
     graph[father].emplace_back(nodeTwo);
