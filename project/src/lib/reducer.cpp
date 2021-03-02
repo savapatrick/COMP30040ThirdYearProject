@@ -312,9 +312,6 @@ bool Reducer::pushNOTStep(int node) {
         /// at this point we know that all what we have is either a CNF or a DNF
         for(auto neighbour : parseTree.graph[node]) {
             newNodes.push_back(neighbour);
-            /*if (parseTree.fakeNode.find(neighbour) != parseTree.fakeNode.end()) {
-                neighbour = parseTree.fakeNode[neighbour];
-            }*/
             if(parseTree.information.find(neighbour) != parseTree.information.end()) {
                 switch(parseTree.information[neighbour]->getType()) {
                 case BOUNDVariable: {
@@ -499,8 +496,10 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
     if (parseTree.fakeNode.find(node) != parseTree.fakeNode.end()) {
         wasModified |= skolemizationStep(parseTree.fakeNode[node], variablesInUniversalQuantifiers, skolem);
     }
-    for(auto& neighbour : parseTree.graph[node]) {
-        wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
+    else {
+        for(auto& neighbour : parseTree.graph[node]) {
+            wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
+        }
     }
     if(wasEQuantifier) {
         if (!preserveVariable and allBoundVariables.find(whichVariable) != allBoundVariables.end()) {
@@ -663,13 +662,9 @@ template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimp
     static std::vector<SimplifiedClauseForm::SimplifiedClause> clauseForm;
     if(!computedClauseForm) {
         // in order to disambiguate the formula, make the variables unique
-//        cerr << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
         disambiguateFormula();
-//        cerr << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
         basicReduce();
-        cerr << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
         skolemization();
-        cerr << parseTree.getEulerTraversal(parseTree.Root, true) << '\n';
         removeUniversalQuantifiers();
         unifyNormalForms(parseTree.Root);
         clauseForm =
