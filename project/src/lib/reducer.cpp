@@ -117,40 +117,91 @@ bool Reducer::applyParanthesesToImplications(int node) {
     return applyParanthesesToOperators(node, "IMPLY", { "DOUBLEImply" });
 }
 
-void Reducer::optimizeDoubleImplication(int node, vector<int>& conjunctionsToBeAdded) {
-    for(auto& neigh : parseTree.graph[node]) { optimizeDoubleImplication(neigh, conjunctionsToBeAdded); }
+void Reducer::optimizeDoubleImplication(int node, vector<int>& conjunctionsToBeAdded, bool wouldBeDoubled, vector<string>& inScopeVariables) {
     Operators& operators = Operators::getInstance();
-    static vector<int> pile;
-    pile.clear();
-    for(auto& neigh : parseTree.graph[node]) {
-        pile.push_back(neigh);
-        if(pile.size() >= 3 and parseTree.information.find(pile[(int)pile.size() - 2]) != parseTree.information.end()) {
-            auto whichOperator = operators.whichOperator(0, parseTree.information[pile[(int)pile.size() - 2]]->getString());
-            if(whichOperator == "DOUBLEImply") {
-                auto rightPredicate = pile.back();
-                pile.pop_back();
-                auto doubleImply = pile.back();
-                pile.pop_back();
-                auto leftPredicate = pile.back();
-                pile.pop_back();
-                auto newFather = parseTree.getNextNode();
-                parseTree.graph[newFather].push_back(leftPredicate);
-                parseTree.graph[newFather].push_back(doubleImply);
-                parseTree.graph[newFather].push_back(rightPredicate);
-                auto newBrother = parseTree.getNextNode();
-                unordered_set<string> jointVariables({ RandomFactory::getRandomConstantName(reservedTermNames) });
-                parseTree.information[newBrother] = make_shared<Entity>(SIMPLIFIEDLiteral,
-                make_shared<SimplifiedLiteral>(false, RandomFactory::getRandomPredicateName(reservedPredicateNames), jointVariables));
-                auto newRootSon                   = parseTree.addDoubleImplication(newBrother, newFather);
-                conjunctionsToBeAdded.push_back(newRootSon);
-                auto newNode                   = parseTree.getNextNode();
-                parseTree.information[newNode] = make_shared<Entity>(parseTree.information[newBrother]);
-                parseTree.fakeNode[newNode]    = newRootSon;
-                pile.push_back(newNode);
-            }
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            string variable  = operators.getVariableFromQuantifierAndVariable(information);
+            inScopeVariables.push_back(variable);
         }
     }
-    parseTree.graph[node] = pile;
+    if(!wouldBeDoubled) {
+        unordered_set<int> subTreesToBeDoubled;
+        for(int index = 0; index < (int)parseTree.graph[node].size(); ++index) {
+            auto currentNode = parseTree.graph[node][index];
+            if(index > 0) {
+                auto previousNeighbour = parseTree.graph[node][index - 1];
+                if(parseTree.information.find(previousNeighbour) != parseTree.information.end()) {
+                    if(operators.whichOperator(0, parseTree.information[previousNeighbour]->getString()) == "DOUBLEImply") {
+                        subTreesToBeDoubled.insert(currentNode);
+                    }
+                }
+            }
+            if(index + 1 < (int)parseTree.graph[node].size()) {
+                auto nextNeighbour = parseTree.graph[node][index + 1];
+                if(parseTree.information.find(nextNeighbour) != parseTree.information.end()) {
+                    if(operators.whichOperator(0, parseTree.information[nextNeighbour]->getString()) == "DOUBLEImply") {
+                        subTreesToBeDoubled.insert(currentNode);
+                    }
+                }
+            }
+        }
+        for(auto& neigh : parseTree.graph[node]) {
+            if(subTreesToBeDoubled.find(neigh) != subTreesToBeDoubled.end()) {
+                optimizeDoubleImplication(neigh, conjunctionsToBeAdded, true, inScopeVariables);
+            } else {
+                optimizeDoubleImplication(neigh, conjunctionsToBeAdded, false, inScopeVariables);
+            }
+        }
+    } else {
+        for(auto& neigh : parseTree.graph[node]) {
+            optimizeDoubleImplication(neigh, conjunctionsToBeAdded, true, inScopeVariables);
+        }
+    }
+    if(wouldBeDoubled) {
+        static vector<int> pile;
+        pile.clear();
+        for(auto& neigh : parseTree.graph[node]) {
+            pile.push_back(neigh);
+            if(pile.size() >= 3 and parseTree.information.find(pile[(int)pile.size() - 2]) != parseTree.information.end()) {
+                auto whichOperator = operators.whichOperator(0, parseTree.information[pile[(int)pile.size() - 2]]->getString());
+                if(whichOperator == "DOUBLEImply") {
+                    auto rightPredicate = pile.back();
+                    pile.pop_back();
+                    auto doubleImply = pile.back();
+                    pile.pop_back();
+                    auto leftPredicate = pile.back();
+                    pile.pop_back();
+                    auto newFather = parseTree.getNextNode();
+                    parseTree.graph[newFather].push_back(leftPredicate);
+                    parseTree.graph[newFather].push_back(doubleImply);
+                    parseTree.graph[newFather].push_back(rightPredicate);
+                    auto newBrother = parseTree.getNextNode();
+                    unordered_set<string> jointVariables(inScopeVariables.begin(), inScopeVariables.end());
+                    if(jointVariables.empty()) {
+                        jointVariables.insert(RandomFactory::getRandomConstantName(reservedTermNames));
+                    }
+                    parseTree.information[newBrother] = make_shared<Entity>(SIMPLIFIEDLiteral,
+                    make_shared<SimplifiedLiteral>(false, RandomFactory::getRandomPredicateName(reservedPredicateNames), jointVariables));
+                    auto newRootSon                   = parseTree.addDoubleImplication(newBrother, newFather);
+                    for(int index = (int)inScopeVariables.size() - 1; index >= 0; --index) {
+                        newRootSon = parseTree.addFatherWithUniversallyBoundedVariable(newRootSon, inScopeVariables[index]);
+                    }
+                    conjunctionsToBeAdded.push_back(newRootSon);
+                    auto newNode                   = parseTree.getNextNode();
+                    parseTree.information[newNode] = make_shared<Entity>(parseTree.information[newBrother]);
+                    pile.push_back(newNode);
+                }
+            }
+        }
+        parseTree.graph[node] = pile;
+    }
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            inScopeVariables.pop_back();
+        }
+    }
 }
 
 bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, int node) {
@@ -249,7 +300,8 @@ bool Reducer::resolveRightAssociativityForImplications(int node) {
 bool Reducer::reduceImplicationStep(int node) {
     static bool doubleImplicationOptimization = [&]() {
         vector<int> conjunctionsToBeAdded;
-        optimizeDoubleImplication(node, conjunctionsToBeAdded);
+        vector<string> inScopeVariables;
+        optimizeDoubleImplication(node, conjunctionsToBeAdded, false, inScopeVariables);
         bool isRoot = (node == parseTree.Root);
         for(auto& conjunction : conjunctionsToBeAdded) {
             parseTree.Root = parseTree.addAndClause(parseTree.Root, conjunction);
@@ -450,8 +502,6 @@ void Reducer::constantRenaming(int node, unordered_set<string>& variablesInQuant
 bool Reducer::skolemizationStep(int node,
 std::vector<std::string>& variablesInUniversalQuantifiers,
 unordered_map<string, SimplifiedLiteral::arg>& skolem) {
-    // crucial to call skolemizationStep(parseTree.Root)
-    // otherwise the conjunctions appended at the end of the adjacency list of Root could break the correctness
     bool wasModified    = false;
     bool wasEQuantifier = false;
     bool wasVQuantifier = false;
@@ -481,19 +531,11 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
             }
         } else if(parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
             auto simplifiedLiteral = parseTree.information[node]->getEntity<shared_ptr<SimplifiedLiteral>>();
-            // once we've done substituteSkolem, we know for sure that whatever we do further, the literal
-            // won't suffer any iteration
-            // why? because we can't substitute here a constant or the argument of a function
-            // this is simple substitution
             wasModified |= simplifiedLiteral->substituteSkolem(skolem);
         }
     }
-    if(parseTree.fakeNode.find(node) != parseTree.fakeNode.end()) {
-        wasModified |= skolemizationStep(parseTree.fakeNode[node], variablesInUniversalQuantifiers, skolem);
-    } else {
-        for(auto& neighbour : parseTree.graph[node]) {
-            wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
-        }
+    for(auto& neighbour : parseTree.graph[node]) {
+        wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
     }
     if(wasEQuantifier) {
         skolem.erase(skolem.find(whichVariable));

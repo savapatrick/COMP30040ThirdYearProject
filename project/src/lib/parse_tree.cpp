@@ -20,7 +20,6 @@ ParseTree::ParseTree(const std::string& formula) {
     auto tokens                 = utils::Tokenizer::tokenize(formula);
     graph.clear();
     information.clear();
-    fakeNode.clear();
     spareNodesBuffer.clear();
     redundantNodes.clear();
     Root                  = 1;
@@ -45,7 +44,6 @@ ParseTree::ParseTree(const vector<std::string>& formulas) {
     auto tokens = utils::Tokenizer::tokenize(formula);
     graph.clear();
     information.clear();
-    fakeNode.clear();
     spareNodesBuffer.clear();
     redundantNodes.clear();
     Root                  = 1;
@@ -166,6 +164,22 @@ std::string ParseTree::getEulerTraversal() {
     return getEulerTraversal(Root);
 }
 
+std::string ParseTree::inOrderTraversal(int node) {
+    string result;
+    if(information.find(node) != information.end()) {
+        result += information[node]->getString();
+    } else {
+        result += "(";
+    }
+    if(graph.find(node) != graph.end()) {
+        for(auto& neighbour : graph[node]) { result += inOrderTraversal(neighbour); }
+    }
+    if(information.find(node) == information.end()) {
+        result += ")";
+    }
+    return result;
+}
+
 int ParseTree::createCopyForSubtree(int node) {
     int newNode = getNextNode();
     if(information.find(node) != information.end()) {
@@ -186,6 +200,23 @@ int ParseTree::addNodeWithOperator(const string& which) {
     }
     information[newNode] = make_shared<Entity>(EntityType::SIMPLIFIEDOperator, givenOperator);
     return newNode;
+}
+
+int ParseTree::addNodeWithBoundedVariable(const string& variableName, bool isUniversal) {
+    Operators& operators = Operators::getInstance();
+    auto newNode         = getNextNode();
+    information[newNode] = make_shared<Entity>(EntityType::BOUNDVariable,
+    (isUniversal) ? (operators.VQuantifier + variableName) : (operators.EQuantifier + variableName));
+    return newNode;
+}
+
+int ParseTree::addFatherWithUniversallyBoundedVariable(const int& node, const string& variableName) {
+    auto father = addNodeWithBoundedVariable(variableName, true);
+    graph[father].emplace_back(node);
+    if(node == Root) {
+        Root = father;
+    }
+    return father;
 }
 
 int ParseTree::addImplication(const int& nodeOne, const int& nodeTwo) {

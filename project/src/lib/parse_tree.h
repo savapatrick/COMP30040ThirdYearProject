@@ -19,7 +19,6 @@ class ParseTree {
     int Root;
     std::unordered_map<int, std::vector<int>> graph;
     std::unordered_map<int, std::shared_ptr<Entity>> information;
-    std::unordered_map<int, int> fakeNode;
     std::vector<int> spareNodesBuffer;
     int highestNodeLabel;
     /// when compacting/reducing nodes, push them here in order to reuse them later
@@ -30,8 +29,11 @@ class ParseTree {
     void buildTree(const std::vector<std::string>& tokens);
 
     std::string getEulerTraversal(int node, bool isLabeled);
+    std::string inOrderTraversal(int node);
 
     int addNodeWithOperator(const std::string& which);
+    int addNodeWithBoundedVariable(const std::string& variableName, bool isUniversal);
+    int addFatherWithUniversallyBoundedVariable(const int& node, const std::string& variableName);
 
     int addDoubleImplication(const int& nodeOne, const int& nodeTwo);
     int addImplication(const int& nodeOne, const int& nodeTwo);
