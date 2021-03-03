@@ -354,7 +354,7 @@ bool Reducer::pushNOTStep(int node) {
     if(isNot) {
         vector<int> newNodes;
         /// at this point we know that all what we have is either a CNF or a DNF
-        for(auto neighbour : parseTree.graph[node]) {
+        for(auto &neighbour : parseTree.graph[node]) {
             newNodes.push_back(neighbour);
             if(parseTree.information.find(neighbour) != parseTree.information.end()) {
                 switch(parseTree.information[neighbour]->getType()) {
@@ -520,8 +520,8 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
                     make_pair(RandomFactory::getRandomFunctionName(reservedFunctionNames), variablesInUniversalQuantifiers);
                 }
                 wasModified |= true;
-                whichVariable  = variable;
                 wasEQuantifier = true;
+                whichVariable  = variable;
             } else {
                 if(quantifier != operators.VQuantifier) {
                     throw logic_error("the quantifier should be either existential or universal");
