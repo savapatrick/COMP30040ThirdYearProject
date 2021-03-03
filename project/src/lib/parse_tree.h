@@ -29,12 +29,17 @@ class ParseTree {
     void buildTree(const std::vector<std::string>& tokens);
 
     std::string getEulerTraversal(int node, bool isLabeled);
+    std::string inOrderTraversal(int node);
 
     int addNodeWithOperator(const std::string& which);
+    int addNodeWithBoundedVariable(const std::string& variableName, bool isUniversal);
+    int addFatherWithUniversallyBoundedVariable(const int& node, const std::string& variableName);
 
+    int addDoubleImplication(const int& nodeOne, const int& nodeTwo);
     int addImplication(const int& nodeOne, const int& nodeTwo);
 
     int addOrClause(const int& nodeOne, const int& nodeTwo);
+    int addAndClause(const int& nodeOne, const int& nodeTwo);
 
     int addNegationToFormula(const int& nodeOne);
 

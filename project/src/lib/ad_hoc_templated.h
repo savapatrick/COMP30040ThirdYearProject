@@ -58,8 +58,10 @@ template <class T, class V = std::string> class AdHocTemplated {
 
     template <template <class, typename...> class P, template <class, typename...> class Q, template <class, typename...> class S>
     static void unionIterablesUnorderedSetInPlace(const P<V>& first, const Q<V>& second, S<T>& result) {
-        for(auto& elem : first) { result.insert(elem); }
-        for(auto& elem : second) { result.insert(elem); }
+        S<T> partialResult;
+        for(auto& elem : first) { partialResult.insert(elem); }
+        for(auto& elem : second) { partialResult.insert(elem); }
+        result = partialResult;
     }
 };
 

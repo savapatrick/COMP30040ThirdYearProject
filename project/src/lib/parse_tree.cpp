@@ -3,10 +3,12 @@
 //
 
 #include "parse_tree.h"
+#include "ad_hoc_templated.h"
 #include "operators.h"
 #include "tokenizer.h"
 #include "verifier.h"
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <stack>
 
@@ -162,6 +164,22 @@ std::string ParseTree::getEulerTraversal() {
     return getEulerTraversal(Root);
 }
 
+std::string ParseTree::inOrderTraversal(int node) {
+    string result;
+    if(information.find(node) != information.end()) {
+        result += information[node]->getString();
+    } else {
+        result += "(";
+    }
+    if(graph.find(node) != graph.end()) {
+        for(auto& neighbour : graph[node]) { result += inOrderTraversal(neighbour); }
+    }
+    if(information.find(node) == information.end()) {
+        result += ")";
+    }
+    return result;
+}
+
 int ParseTree::createCopyForSubtree(int node) {
     int newNode = getNextNode();
     if(information.find(node) != information.end()) {
@@ -184,6 +202,23 @@ int ParseTree::addNodeWithOperator(const string& which) {
     return newNode;
 }
 
+int ParseTree::addNodeWithBoundedVariable(const string& variableName, bool isUniversal) {
+    Operators& operators = Operators::getInstance();
+    auto newNode         = getNextNode();
+    information[newNode] = make_shared<Entity>(EntityType::BOUNDVariable,
+    (isUniversal) ? (operators.VQuantifier + variableName) : (operators.EQuantifier + variableName));
+    return newNode;
+}
+
+int ParseTree::addFatherWithUniversallyBoundedVariable(const int& node, const string& variableName) {
+    auto father = addNodeWithBoundedVariable(variableName, true);
+    graph[father].emplace_back(node);
+    if(node == Root) {
+        Root = father;
+    }
+    return father;
+}
+
 int ParseTree::addImplication(const int& nodeOne, const int& nodeTwo) {
     auto implication = addNodeWithOperator("IMPLY");
     auto father      = getNextNode();
@@ -193,8 +228,26 @@ int ParseTree::addImplication(const int& nodeOne, const int& nodeTwo) {
     return father;
 }
 
+int ParseTree::addDoubleImplication(const int& nodeOne, const int& nodeTwo) {
+    auto doubleImplication = addNodeWithOperator("DOUBLEImply");
+    auto father            = getNextNode();
+    graph[father].emplace_back(nodeOne);
+    graph[father].emplace_back(doubleImplication);
+    graph[father].emplace_back(nodeTwo);
+    return father;
+}
+
 int ParseTree::addOrClause(const int& nodeOne, const int& nodeTwo) {
     auto orOperator = addNodeWithOperator("OR");
+    auto father     = getNextNode();
+    graph[father].emplace_back(nodeOne);
+    graph[father].emplace_back(orOperator);
+    graph[father].emplace_back(nodeTwo);
+    return father;
+}
+
+int ParseTree::addAndClause(const int& nodeOne, const int& nodeTwo) {
+    auto orOperator = addNodeWithOperator("AND");
     auto father     = getNextNode();
     graph[father].emplace_back(nodeOne);
     graph[father].emplace_back(orOperator);

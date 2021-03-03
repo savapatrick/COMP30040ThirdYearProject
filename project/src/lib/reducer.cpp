@@ -7,6 +7,7 @@
 #include "operators.h"
 #include "random_factory.h"
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -116,6 +117,93 @@ bool Reducer::applyParanthesesToImplications(int node) {
     return applyParanthesesToOperators(node, "IMPLY", { "DOUBLEImply" });
 }
 
+void Reducer::optimizeDoubleImplication(int node, vector<int>& conjunctionsToBeAdded, bool wouldBeDoubled, vector<string>& inScopeVariables) {
+    Operators& operators = Operators::getInstance();
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            string variable  = operators.getVariableFromQuantifierAndVariable(information);
+            inScopeVariables.push_back(variable);
+        }
+    }
+    if(!wouldBeDoubled) {
+        unordered_set<int> subTreesToBeDoubled;
+        for(int index = 0; index < (int)parseTree.graph[node].size(); ++index) {
+            auto currentNode = parseTree.graph[node][index];
+            if(index > 0) {
+                auto previousNeighbour = parseTree.graph[node][index - 1];
+                if(parseTree.information.find(previousNeighbour) != parseTree.information.end()) {
+                    if(operators.whichOperator(0, parseTree.information[previousNeighbour]->getString()) == "DOUBLEImply") {
+                        subTreesToBeDoubled.insert(currentNode);
+                    }
+                }
+            }
+            if(index + 1 < (int)parseTree.graph[node].size()) {
+                auto nextNeighbour = parseTree.graph[node][index + 1];
+                if(parseTree.information.find(nextNeighbour) != parseTree.information.end()) {
+                    if(operators.whichOperator(0, parseTree.information[nextNeighbour]->getString()) == "DOUBLEImply") {
+                        subTreesToBeDoubled.insert(currentNode);
+                    }
+                }
+            }
+        }
+        for(auto& neigh : parseTree.graph[node]) {
+            if(subTreesToBeDoubled.find(neigh) != subTreesToBeDoubled.end()) {
+                optimizeDoubleImplication(neigh, conjunctionsToBeAdded, true, inScopeVariables);
+            } else {
+                optimizeDoubleImplication(neigh, conjunctionsToBeAdded, false, inScopeVariables);
+            }
+        }
+    } else {
+        for(auto& neigh : parseTree.graph[node]) {
+            optimizeDoubleImplication(neigh, conjunctionsToBeAdded, true, inScopeVariables);
+        }
+    }
+    if(wouldBeDoubled) {
+        static vector<int> pile;
+        pile.clear();
+        for(auto& neigh : parseTree.graph[node]) {
+            pile.push_back(neigh);
+            if(pile.size() >= 3 and parseTree.information.find(pile[(int)pile.size() - 2]) != parseTree.information.end()) {
+                auto whichOperator = operators.whichOperator(0, parseTree.information[pile[(int)pile.size() - 2]]->getString());
+                if(whichOperator == "DOUBLEImply") {
+                    auto rightPredicate = pile.back();
+                    pile.pop_back();
+                    auto doubleImply = pile.back();
+                    pile.pop_back();
+                    auto leftPredicate = pile.back();
+                    pile.pop_back();
+                    auto newFather = parseTree.getNextNode();
+                    parseTree.graph[newFather].push_back(leftPredicate);
+                    parseTree.graph[newFather].push_back(doubleImply);
+                    parseTree.graph[newFather].push_back(rightPredicate);
+                    auto newBrother = parseTree.getNextNode();
+                    unordered_set<string> jointVariables(inScopeVariables.begin(), inScopeVariables.end());
+                    if(jointVariables.empty()) {
+                        jointVariables.insert(RandomFactory::getRandomConstantName(reservedTermNames));
+                    }
+                    parseTree.information[newBrother] = make_shared<Entity>(SIMPLIFIEDLiteral,
+                    make_shared<SimplifiedLiteral>(false, RandomFactory::getRandomPredicateName(reservedPredicateNames), jointVariables));
+                    auto newRootSon                   = parseTree.addDoubleImplication(newBrother, newFather);
+                    for(int index = (int)inScopeVariables.size() - 1; index >= 0; --index) {
+                        newRootSon = parseTree.addFatherWithUniversallyBoundedVariable(newRootSon, inScopeVariables[index]);
+                    }
+                    conjunctionsToBeAdded.push_back(newRootSon);
+                    auto newNode                   = parseTree.getNextNode();
+                    parseTree.information[newNode] = make_shared<Entity>(parseTree.information[newBrother]);
+                    pile.push_back(newNode);
+                }
+            }
+        }
+        parseTree.graph[node] = pile;
+    }
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            inScopeVariables.pop_back();
+        }
+    }
+}
+
 bool Reducer::eliminateDoubleImplicationOrImplication(bool isDoubleImplication, int node) {
     static vector<int> pile;
     Operators& operators = Operators::getInstance();
@@ -210,6 +298,19 @@ bool Reducer::resolveRightAssociativityForImplications(int node) {
 
 // does step 1.1)
 bool Reducer::reduceImplicationStep(int node) {
+    static bool doubleImplicationOptimization = [&]() {
+        vector<int> conjunctionsToBeAdded;
+        vector<string> inScopeVariables;
+        optimizeDoubleImplication(node, conjunctionsToBeAdded, false, inScopeVariables);
+        bool isRoot = (node == parseTree.Root);
+        for(auto& conjunction : conjunctionsToBeAdded) {
+            parseTree.Root = parseTree.addAndClause(parseTree.Root, conjunction);
+        }
+        if(isRoot) {
+            node = parseTree.Root;
+        }
+        return true;
+    }();
     bool wasModified = false;
     while(!reduceDoubleImplicationStep(node)) { wasModified = true; }
     if(resolveRightAssociativityForImplications(node)) {
@@ -437,8 +538,6 @@ unordered_map<string, SimplifiedLiteral::arg>& skolem) {
         wasModified |= skolemizationStep(neighbour, variablesInUniversalQuantifiers, skolem);
     }
     if(wasEQuantifier) {
-        allBoundVariables.erase(allBoundVariables.find(whichVariable));
-        reservedTermNames.erase(reservedTermNames.find(whichVariable));
         skolem.erase(skolem.find(whichVariable));
         /// here we delete the information for this node
         parseTree.information.erase(parseTree.information.find(node));
@@ -464,8 +563,6 @@ void Reducer::disambiguateFormula() {
 }
 
 void Reducer::skolemization() {
-    // in order to disambiguate the formula, make the variables unique
-    disambiguateFormula();
     vector<std::string> variablesInUniversalQuantifiers;
     unordered_map<string, variant<string, pair<string, vector<string>>>> skolem;
     while(skolemizationStep(parseTree.Root, variablesInUniversalQuantifiers, skolem)) {
@@ -473,14 +570,24 @@ void Reducer::skolemization() {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }
     }
+    removeUniversalQuantifiers();
 }
 
 void Reducer::removeUniversalQuantifiers() {
     vector<int> universalQuantifiersNodes;
+    Operators& operators = Operators::getInstance();
+    allBoundVariables.clear();
     for(auto& information : parseTree.information) {
         auto key   = information.first;
         auto value = information.second;
         if(value->getType() == BOUNDVariable) {
+            auto boundVariable = value->getEntity<string>();
+            auto quantifier    = operators.getQuantifierFromQuantifierAndVariable(boundVariable);
+            if(quantifier != operators.VQuantifier) {
+                throw std::logic_error("We still have existential quantifiers in the parse tree after skolemization!");
+            }
+            auto variable = operators.getVariableFromQuantifierAndVariable(boundVariable);
+            allBoundVariables.insert(variable);
             universalQuantifiersNodes.emplace_back(key);
         }
     }
@@ -595,9 +702,10 @@ template <typename T> [[maybe_unused]] T getSimplifiedClauseForm() {
 template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimplifiedClauseForm() {
     static std::vector<SimplifiedClauseForm::SimplifiedClause> clauseForm;
     if(!computedClauseForm) {
+        // in order to disambiguate the formula, make the variables unique
+        disambiguateFormula();
         basicReduce();
         skolemization();
-        removeUniversalQuantifiers();
         unifyNormalForms(parseTree.Root);
         clauseForm =
         parseTree.information[parseTree.Root]->getEntity<shared_ptr<SimplifiedClauseForm>>()->getSimplifiedClauseForm();
@@ -629,6 +737,7 @@ template <> string Reducer::getSimplifiedClauseForm() {
 
 std::shared_ptr<ClauseForm> Reducer::getClauseForm() {
     auto simplifiedClauseForm = getSimplifiedClauseForm<std::shared_ptr<SimplifiedClauseForm>>();
+    // todo: here it would be ideal to do not do difference anymore; use the prefixes instead
     return make_shared<ClauseForm>(simplifiedClauseForm, reservedFunctionNames, allBoundVariables,
     AdHocTemplated<string>::differenceUnorderedSets(reservedTermNames, allBoundVariables));
 }
