@@ -42,6 +42,9 @@ std::map<std::pair<std::string, bool>, int> Clause::getLiteralsAndCount() const 
     return accumulator;
 }
 std::string Clause::getString() const {
+    if (clause.empty()) {
+        return "<empty clause>"; // empty clause
+    }
     string result;
     vector<string> literals;
     literals.reserve(clause.size());

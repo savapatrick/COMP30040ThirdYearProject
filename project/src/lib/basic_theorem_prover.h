@@ -10,6 +10,9 @@
 #include "theorem_prover.h"
 #include "unification.h"
 
+#include <algorithm>
+#include <execution>
+#include <mutex>
 #include <utility>
 
 namespace utils {
@@ -68,52 +71,71 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         clauses.clear();
         factoringStep();
         subsumption();
-        for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-            if(isDeleted.find(index) != isDeleted.end()) {
-                continue;
-            }
-            for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-                if(avoid.find({ index, index2 }) != avoid.end() or isDeleted.find(index2) != isDeleted.end()) {
-                    continue;
-                }
-                auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
-                clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
-                avoid.insert({ index, index2 });
-                if(!result.empty()) {
-                    for(auto& currentClause : result) {
-                        removeDuplicates(currentClause);
-                        if(isTautology(currentClause)) {
-                            continue;
-                        }
-                        auto clauseHash = currentClause->getHash();
-                        if(clauses.find(clauseHash) != clauses.end()) {
-                            continue;
-                        }
-                        if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
-                            continue;
-                        }
-                        outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
-                                     << " with " << clauseForm->clauseForm[index2]->getString()
-                                     << "and it results a new clause " << currentClause->getString() << '\n';
-                        clauses[clauseHash] = currentClause;
-                        clausesSoFar.insert(clauseHash);
-                        if(currentClause->clause.empty()) {
-                            // we derived the empty clause
-                            for(auto& keyValue : clauses) { clauseForm->clauseForm.push_back(keyValue.second); }
-                            outputData();
-                            return true;
+        std::mutex setGuard;
+        std::mutex insertGuard;
+        std::mutex removeDuplicatesGuard;
+        std::vector <int> indexes;
+        indexes.reserve((int)clauseForm->clauseForm.size());
+        for (int index = 0; index < (int)clauseForm->clauseForm.size(); ++ index) {
+            indexes.push_back(index);
+        }
+        std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index){
+          if(isDeleted.find(index) == isDeleted.end()) {
+                for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                    if(avoid.find({ index, index2 }) != avoid.end() or isDeleted.find(index2) != isDeleted.end()) {
+                        continue;
+                    }
+                    auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
+                    clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
+                    setGuard.lock();
+                    avoid.insert({ index, index2 });
+                    setGuard.unlock();
+                    if(!result.empty()) {
+                        for(auto& currentClause : result) {
+                            if(isTautology(currentClause)) {
+                                continue;
+                            }
+                            removeDuplicatesGuard.lock();
+                            removeDuplicates(currentClause);
+                            removeDuplicatesGuard.unlock();
+                            auto clauseHash = currentClause->getHash();
+                            if(clauses.find(clauseHash) != clauses.end()) {
+                                continue;
+                            }
+                            if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
+                                continue;
+                            }
+                            /*outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
+                                         << " with " << clauseForm->clauseForm[index2]->getString()
+                                         << "and it results a new clause " << currentClause->getString() << '\n';*/
+                            insertGuard.lock();
+                            clauses[clauseHash] = currentClause;
+                            clausesSoFar.insert(clauseHash);
+                            insertGuard.unlock();
                         }
                     }
                 }
             }
-        }
+        });
         if(!clauses.empty()) {
-            for(auto& keyValue : clauses) { clauseForm->clauseForm.push_back(keyValue.second); }
+            bool derivedEmpty = false;
+            for(auto& keyValue : clauses) {
+                auto &currentClause = keyValue.second;
+                clauseForm->clauseForm.push_back(currentClause);
+                if (currentClause->clause.empty()) {
+                    derivedEmpty = true;
+                }
+            }
+            if (derivedEmpty) {
+                outputData();
+                return true;
+            }
             clauseForm->makeVariableNamesUniquePerClause();
         } else {
             return false;
         }
     } while(upperLimit-- > 0);
+    return false;
 }
 
 } // namespace utils
