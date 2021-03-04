@@ -38,7 +38,7 @@ std::string RandomFactory::getRandomPredicateName(std::unordered_set<std::string
             int length = distribution(generator) % 15 + 1; /// 26^15 is huge
             result += startingLetterAlphabet[distribution(generator) % sizeOfAlphabet];
             for(int ind = 2; ind <= length; ++ind) { result += alphabet[distribution(generator) % sizeOfAlphabet]; }
-        } while (result == "Equality"); // this is keyword
+        } while(result == "Equality"); // this is keyword
     } while(reservedPredicateNames.find(result) != reservedPredicateNames.end());
     reservedPredicateNames.insert(result);
     return result;

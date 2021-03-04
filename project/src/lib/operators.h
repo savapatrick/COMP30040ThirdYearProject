@@ -30,7 +30,7 @@ class Operators {
 
     Operators()
     : AND("^"), OR("|"), NOT("~"), OPENEDBracket("("), CLOSEDBracket(")"), IMPLY("->"), DOUBLEImply("<->"),
-      EQuantifier("?"), VQuantifier("@"), EQUALITY("="){
+      EQuantifier("?"), VQuantifier("@"), EQUALITY("=") {
         mapping["AND"]         = AND;
         mapping["OR"]          = OR;
         mapping["NOT"]         = NOT;

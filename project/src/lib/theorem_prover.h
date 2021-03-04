@@ -27,9 +27,10 @@ class TheoremProver {
     public:
     TheoremProver(const std::shared_ptr<ClauseForm>& _clauseForm, bool allowEquality = false, std::string _fileName = "theorem_prover.txt")
     : clauseForm(), outputStream(), filename(std::move(_fileName)) {
-        if (!allowEquality) {
-            if (_clauseForm->containsEquality()) {
-                throw std::invalid_argument("The given clause form contains equality but the equality mode is disabled!");
+        if(!allowEquality) {
+            if(_clauseForm->containsEquality()) {
+                throw std::invalid_argument(
+                "The given clause form contains equality but the equality mode is disabled!");
             }
         }
         clauseForm = std::make_shared<ClauseForm>(_clauseForm);
