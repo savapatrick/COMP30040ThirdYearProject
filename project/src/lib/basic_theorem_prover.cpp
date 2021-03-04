@@ -16,12 +16,16 @@ bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
     }
     unordered_map<string, shared_ptr<Literal>> literals;
     for(auto& literal : clause->clause) { literals[literal->getString()] = literal; }
+    outputStreamGuard->lock();
     outputStream << "removing duplicates from clause " + clause->getString() << "\n";
+    outputStreamGuard->unlock();
     if(literals.size() != clause->clause.size()) {
         clause->clause.clear();
         clause->clause.reserve(literals.size());
         for(auto& keyValue : literals) { clause->clause.emplace_back(keyValue.second); }
+        outputStreamGuard->lock();
         outputStream << "it then becomes " << clause->getString() << "\n";
+        outputStreamGuard->unlock();
         return true;
     }
     return false;

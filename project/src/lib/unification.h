@@ -23,13 +23,13 @@ class Unification {
     std::vector<std::shared_ptr<Clause>> attemptToUnify(std::shared_ptr<Clause>& first,
     std::shared_ptr<Clause>& second,
     LiteralPredicate literalPredicate,
-    ResolventPredicate resolventPredicate);
+    ResolventPredicate resolventPredicate) const;
 };
 template <typename LiteralPredicate, typename ResolventPredicate>
 std::vector<std::shared_ptr<Clause>> Unification::attemptToUnify(std::shared_ptr<Clause>& first,
 std::shared_ptr<Clause>& second,
 LiteralPredicate literalPredicate,
-ResolventPredicate resolventPredicate) {
+ResolventPredicate resolventPredicate) const {
     auto literalsFirst  = first->getLiteralsAndCount();
     auto literalsSecond = second->getLiteralsAndCount();
     bool ok             = false;

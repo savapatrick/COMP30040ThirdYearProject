@@ -25,6 +25,7 @@ class BasicTheoremProver : public TheoremProver {
     std::vector<int> previousState;
     std::unordered_map<int, int> isDeleted;
     long long upperLimit;
+    std::shared_ptr<std::mutex> outputStreamGuard;
 
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
     void factoringStep();
@@ -33,14 +34,15 @@ class BasicTheoremProver : public TheoremProver {
     bool resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate);
 
     public:
-    BasicTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
+    BasicTheoremProver(const std::shared_ptr<ClauseForm>& _clauseForm, const std::string& _fileName = "theorem_prover.txt")
     : TheoremProver(_clauseForm, _fileName), unification(std::make_shared<Unification>(outputStream)) {
         avoid.clear();
         clauses.clear();
         clausesSoFar.clear();
         previousState.clear();
         isDeleted.clear();
-        upperLimit = std::numeric_limits<long long>::max(); // something HUGE
+        upperLimit        = std::numeric_limits<long long>::max(); // something HUGE
+        outputStreamGuard = std::make_shared<std::mutex>();
         previousState.push_back(0);
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
@@ -73,18 +75,18 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         subsumption();
         std::mutex setGuard;
         std::mutex insertGuard;
-        std::mutex removeDuplicatesGuard;
-        std::vector <int> indexes;
+        std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
-        for (int index = 0; index < (int)clauseForm->clauseForm.size(); ++ index) {
-            indexes.push_back(index);
-        }
-        std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index){
-          if(isDeleted.find(index) == isDeleted.end()) {
+        for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
+        std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
+            if(isDeleted.find(index) == isDeleted.end()) {
                 for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                    setGuard.lock();
                     if(avoid.find({ index, index2 }) != avoid.end() or isDeleted.find(index2) != isDeleted.end()) {
+                        setGuard.unlock();
                         continue;
                     }
+                    setGuard.unlock();
                     auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
                     clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
                     setGuard.lock();
@@ -95,19 +97,20 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                             if(isTautology(currentClause)) {
                                 continue;
                             }
-                            removeDuplicatesGuard.lock();
                             removeDuplicates(currentClause);
-                            removeDuplicatesGuard.unlock();
                             auto clauseHash = currentClause->getHash();
-                            if(clauses.find(clauseHash) != clauses.end()) {
+                            insertGuard.lock();
+                            if(clauses.find(clauseHash) != clauses.end() or
+                            clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
+                                insertGuard.unlock();
                                 continue;
                             }
-                            if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
-                                continue;
-                            }
-                            /*outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
+                            insertGuard.unlock();
+                            outputStreamGuard->lock();
+                            outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
                                          << " with " << clauseForm->clauseForm[index2]->getString()
-                                         << "and it results a new clause " << currentClause->getString() << '\n';*/
+                                         << "and it results a new clause " << currentClause->getString() << '\n';
+                            outputStreamGuard->unlock();
                             insertGuard.lock();
                             clauses[clauseHash] = currentClause;
                             clausesSoFar.insert(clauseHash);
@@ -120,13 +123,13 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         if(!clauses.empty()) {
             bool derivedEmpty = false;
             for(auto& keyValue : clauses) {
-                auto &currentClause = keyValue.second;
+                auto& currentClause = keyValue.second;
                 clauseForm->clauseForm.push_back(currentClause);
-                if (currentClause->clause.empty()) {
+                if(currentClause->clause.empty()) {
                     derivedEmpty = true;
                 }
             }
-            if (derivedEmpty) {
+            if(derivedEmpty) {
                 outputData();
                 return true;
             }
