@@ -30,8 +30,8 @@ class BasicTheoremProver : public TheoremProver {
     bool resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate);
 
     public:
-    BasicTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
-    : TheoremProver(_clauseForm, _fileName), unification(std::make_shared<Unification>(outputStream)) {
+    BasicTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, bool allowEquality = false, const std::string& _fileName = "theorem_prover.txt")
+    : TheoremProver(_clauseForm, allowEquality, _fileName), unification(std::make_shared<Unification>(outputStream)) {
         avoid.clear();
         clauses.clear();
         clausesSoFar.clear();
@@ -114,6 +114,7 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
             return false;
         }
     } while(upperLimit-- > 0);
+    return false;
 }
 
 } // namespace utils

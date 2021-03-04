@@ -48,11 +48,11 @@ int main(int argc, char* argv[]) {
     output << clauseForm->getString() << '\n';
     output.flush();
     if(commandMask & (1 << powerCommand["basic"])) {
-        utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
+        utils::BasicTheoremProver basicTheoremProver(clauseForm, false,"basic_theorem_prover_output.txt");
         basicTheoremProver.run();
     }
     if(commandMask & (1 << powerCommand["two"])) {
-        utils::TwoVariableTheoremProver twoVariableTheoremProver(clauseForm, "two_variable_theorem_prover_output.txt");
+        utils::TwoVariableTheoremProver twoVariableTheoremProver(clauseForm, true, "two_variable_theorem_prover_output.txt");
         twoVariableTheoremProver.run();
     }
     return 0;

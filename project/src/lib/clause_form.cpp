@@ -115,4 +115,8 @@ bool ClauseForm::isTwoVariableFragment() {
     return true;
 }
 
+bool ClauseForm::containsEquality() {
+    return getString().find("Equality(") != string::npos;
+}
+
 }; // namespace utils

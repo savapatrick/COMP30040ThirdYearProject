@@ -12,8 +12,6 @@ using namespace std;
 
 namespace utils {
 std::vector<std::string> Tokenizer::tokenize(const std::string& seq) {
-    /// TODO: when introducing equality, manually remove all of the equality signs and replace them
-    /// with an equality predicate of arity 2, possibly with a special name
     string aux(seq);
     /// get rid of all of the whitespaces
     aux.erase(remove_if(aux.begin(), aux.end(), [](char c) { return isspace(c); }), aux.end());
@@ -28,6 +26,11 @@ std::vector<std::string> Tokenizer::tokenize(const std::string& seq) {
                 ind += 1;
             } while(ind < (int)aux.size() and aux[ind] != ')');
             current += aux[ind];
+            if (count_if(current.begin(), current.end(), [](unsigned char currentCharacter)
+               {return isupper(currentCharacter);}) > 1) {
+                throw invalid_argument("Predicates are allowed to start with uppercase letters and contain only uppercase further"
+                                       " and variables are lowercase only!");
+            }
             ind += 1;
         } else {
             auto result = operators.whichOperator(ind, aux);
@@ -40,10 +43,11 @@ std::vector<std::string> Tokenizer::tokenize(const std::string& seq) {
                 }
                 // this should be a variable
                 // a variable could occur at this point ONLY after a quantifier
-                if(!islower(current[0]) or !(!tokens.empty() and operators.isQuantifier(tokens.back()))) {
+                if(!islower(current[0]) or !(!tokens.empty() and (operators.isEquality(tokens.back()) or operators.isQuantifier(tokens.back())))) {
                     // this means that this does not start with lowercase letter OR
                     // there are no tokens in the list
-                    throw invalid_argument("the given formula is malformed");
+                    throw invalid_argument("Something expected to be variable was either starting with non-lowercase letter"
+                                           "or occurred after something different than equality or quantifier");
                 }
                 tokens[(int)tokens.size() - 1] += current;
                 continue;
@@ -51,8 +55,29 @@ std::vector<std::string> Tokenizer::tokenize(const std::string& seq) {
         }
         tokens.emplace_back(current);
     }
-    // TODO: Incredibly important, enforce the order of the tokens to be initial one
-    return tokens;
+    vector <string> resultingTokens;
+    for (auto &token : tokens) {
+        if (isupper(token.at(0))) {
+            if (token == "Equality") {
+                throw invalid_argument("The given formula contains a predicate called Equality."
+                                       "This is a keyword and cannot be used as a predicate name.");
+            }
+        }
+        if (!resultingTokens.empty() and operators.isEquality(resultingTokens.back())) {
+            resultingTokens.pop_back();
+            if (!islower(token.at(0)) or resultingTokens.empty() or
+            (!resultingTokens.empty() and !islower(resultingTokens.back().at(0)))) {
+                throw invalid_argument("The given string violates the grammar for the equality sign");
+            }
+            auto result = "Equality(" + resultingTokens.back() + "," + token + ")";
+            resultingTokens.pop_back();
+            resultingTokens.push_back(result);
+        }
+        else {
+            resultingTokens.push_back(token);
+        }
+    }
+    return resultingTokens;
 }
 
 std::pair<std::string, std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>>

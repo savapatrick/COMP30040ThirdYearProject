@@ -15,7 +15,8 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
         auto p1 = first->getAllVariables();
         auto p2 = second->getAllVariables();
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName) and
-        (first->getAllVariables().size() == 2 or second->getAllVariables().size() == 2);
+        (first->getAllVariables().size() == 2 or second->getAllVariables().size() == 2) and
+        !first->isEquality and !second->isEquality;
     };
     auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
                               const std::shared_ptr<Clause>& clause) -> bool { return true; };
@@ -89,7 +90,7 @@ bool TwoVariableTheoremProver::run() {
     outputStream << clauseForm->getStringWithIndex();
     outputData();
     shared_ptr<DepthOrderedTheoremProver> prover =
-    make_shared<DepthOrderedTheoremProver>(make_shared<ClauseForm>(), "depth_ordered_theorem_prover.txt");
+    make_shared<DepthOrderedTheoremProver>(make_shared<ClauseForm>(), true, "depth_ordered_theorem_prover.txt");
     if(backtrackingClauseFormAndResolution(0, prover)) {
         outputStream << "refuted by reaching saturation!\n";
         outputData();

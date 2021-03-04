@@ -27,6 +27,7 @@ class Literal : public std::enable_shared_from_this<Literal> {
     bool isNegated;
     std::string predicateName;
     std::vector<std::shared_ptr<Term>> terms;
+    bool isEquality;
 
     public:
     Literal(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral,
@@ -42,11 +43,13 @@ class Literal : public std::enable_shared_from_this<Literal> {
                 terms.push_back(std::make_shared<Term>(std::get<0>(arg), variableNames, constantNames));
             }
         }
+        isEquality = (predicateName == "Equality");
     }
     Literal(const std::shared_ptr<Literal>& other) : isNegated(other->isNegated), predicateName(other->predicateName) {
         terms.reserve(other->terms.size());
         auto& otherTerms = other->terms;
         for(auto& otherTerm : otherTerms) { terms.push_back(otherTerm->createDeepCopy()); }
+        isEquality = (predicateName == "Equality");
     }
 
     bool equalsWithoutSign(const std::shared_ptr<Literal>& other);

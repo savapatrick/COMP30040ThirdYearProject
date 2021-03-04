@@ -60,6 +60,7 @@ class ClauseForm {
     std::string getStringWithIndex() const;
     std::string getStringWithIndex(const std::unordered_map<int, int>& isDeleted) const;
     bool isTwoVariableFragment();
+    bool containsEquality();
 };
 }; // namespace utils
 
