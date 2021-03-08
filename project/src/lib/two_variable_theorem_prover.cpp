@@ -36,8 +36,8 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
 void TwoVariableTheoremProver::disposeTwoVariableClauses() {
     std::vector<std::shared_ptr<Clause>> newClauseForm;
     for(auto& clause : clauseForm->clauseForm) {
-        if(clause->getHighestNumberOfVariablesPerLiteral() >= 2) {
-            if(clause->getHighestNumberOfVariablesPerLiteral() > 2) {
+        if(clause->getHighestNumberOfVariablesPerLiteralExcludingEquality() >= 2) {
+            if(clause->getHighestNumberOfVariablesPerLiteralExcludingEquality() > 2) {
                 throw logic_error("we should not have more than two variables per clause at this point!");
             }
         } else {
@@ -89,6 +89,9 @@ bool TwoVariableTheoremProver::run() {
     outputStream << "[two variable theorem prover]\nwe have the following clauses after disposal:\n";
     outputStream << clauseForm->getStringWithIndex();
     outputData();
+    if (withEquality and clauseForm->containsEquality()) {
+        clauseForm->resolveEquality();
+    }
     shared_ptr<DepthOrderedTheoremProver> prover =
     make_shared<DepthOrderedTheoremProver>(make_shared<ClauseForm>(), true, "depth_ordered_theorem_prover.txt");
     if(backtrackingClauseFormAndResolution(0, prover)) {

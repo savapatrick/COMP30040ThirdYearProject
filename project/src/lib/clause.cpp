@@ -21,11 +21,17 @@ bool Clause::hasNestedFunctions() {
     }
     return false;
 }
-int Clause::getHighestNumberOfVariablesPerLiteral() {
+
+int Clause::getHighestNumberOfVariablesPerLiteralExcludingEquality() {
     int answer = 0;
-    for(auto& literal : clause) { answer = max(answer, static_cast<int>(literal->getAllVariables().size())); }
+    for(auto& literal : clause) {
+        if (!literal->getIsEquality()) {
+            answer = max(answer, static_cast<int>(literal->getAllVariables().size()));
+        }
+    }
     return answer;
 }
+
 std::unordered_set<std::string> Clause::getAllVariables() {
     unordered_set<string> result;
     for(auto& literal : clause) {
@@ -33,14 +39,17 @@ std::unordered_set<std::string> Clause::getAllVariables() {
     }
     return result;
 }
+
 void Clause::applySubstitution(const pair<std::string, std::shared_ptr<Term>>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }
+
 std::map<std::pair<std::string, bool>, int> Clause::getLiteralsAndCount() const {
     map<pair<string, bool>, int> accumulator;
     for(auto& literal : clause) { accumulator[literal->getLiteral()] += 1; }
     return accumulator;
 }
+
 std::string Clause::getString() const {
     string result;
     vector<string> literals;
@@ -93,12 +102,15 @@ std::string Clause::getHash() const {
 void Clause::applySubstitution(const pair<std::string, std::string>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }
+
 void Clause::renameFunction(const pair<std::string, std::string>& mapping) {
     for(auto& literal : clause) { literal->renameFunction(mapping); }
 }
+
 const std::vector<std::shared_ptr<Literal>>& Clause::getLiterals() const {
     return clause;
 }
+
 void Clause::disjointifyVariables(shared_ptr<Clause>& other) {
     auto allOtherVariables = other->getAllVariables();
     auto allVariables      = this->getAllVariables();
@@ -110,5 +122,8 @@ void Clause::disjointifyVariables(shared_ptr<Clause>& other) {
     }
 }
 
+bool Clause::containsEquality() const {
+    return getString().find("Equality(") != string::npos;
+}
 
 }; // namespace utils

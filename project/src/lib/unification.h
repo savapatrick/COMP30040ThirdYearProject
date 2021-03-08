@@ -7,6 +7,8 @@
 
 #include "clause.h"
 #include "clause_form.h"
+#include "literal.h"
+
 
 #include <fstream>
 #include <utility>
