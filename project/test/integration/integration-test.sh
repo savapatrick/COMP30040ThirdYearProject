@@ -21,6 +21,20 @@ do
   fi
   echo "end $(date +%s)"
 
+  timeout 10s ../../../cmake-build-debug/project/src/clauseForm depth >/dev/null 2>&1
+  exit_code=$?
+  if [[ $exit_code -eq 0 ]]; then
+    matches="$(tail -1 depth_ordered_theorem_prover_output.txt | grep -c -f "../../samples/answer$i.ans")"
+    if (( matches > 0 )); then
+      echo "Output Depth Ordered Theorem Prover $i : correct"
+    else
+      echo "Output Depth Ordered Theorem Prover $i : wrong"
+    fi
+  else
+    echo "Output Depth Ordered Theorem Prover $i : timeout"
+  fi
+  echo "end $(date +%s)"
+
   echo "begin $(date +%s)"
   timeout 12s ../../../cmake-build-debug/project/src/clauseForm two >/dev/null 2>&1
   exit_code=$?

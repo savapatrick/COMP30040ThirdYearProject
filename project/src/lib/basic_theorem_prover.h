@@ -81,8 +81,11 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
             if(isDeleted.find(index) == isDeleted.end()) {
                 for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                    if (isDeleted.find(index2) != isDeleted.end()) {
+                        continue;
+                    }
                     setGuard.lock();
-                    if(avoid.find({ index, index2 }) != avoid.end() or isDeleted.find(index2) != isDeleted.end()) {
+                    if(avoid.find({ index, index2 }) != avoid.end()) {
                         setGuard.unlock();
                         continue;
                     }
