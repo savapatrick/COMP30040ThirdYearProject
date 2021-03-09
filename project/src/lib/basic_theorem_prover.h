@@ -72,23 +72,23 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         outputStream << "[SIZE] clauseForm.size() is " + std::to_string(clauseForm->clauseForm.size()) << '\n';
         outputData();
         clauses.clear();
-        std::cerr << "enters inside factoring!\n";
-        std::cerr.flush();
+        //        std::cerr << "enters inside factoring!\n";
+        //        std::cerr.flush();
         factoringStep();
-        std::cerr << "it's outside factoring!\n";
-        std::cerr.flush();
-        std::cerr << "enters inside subsumption!\n";
-        std::cerr.flush();
+        //        std::cerr << "it's outside factoring!\n";
+        //        std::cerr.flush();
+        //        std::cerr << "enters inside subsumption!\n";
+        //        std::cerr.flush();
         subsumption();
-        std::cerr << "it's outside subsumption!\n";
-        std::cerr.flush();
+        //        std::cerr << "it's outside subsumption!\n";
+        //        std::cerr.flush();
         std::mutex setGuard;
         std::mutex insertGuard;
         std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
-        std::cerr << "enters inside multithreading!\n";
-        std::cerr.flush();
+        //        std::cerr << "enters inside multithreading!\n";
+        //        std::cerr.flush();
         std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
             if(isDeleted.find(index) == isDeleted.end()) {
                 for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
@@ -134,8 +134,8 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                 }
             }
         });
-        std::cerr << "it's outside multithreading!\n";
-        std::cerr.flush();
+        //        std::cerr << "it's outside multithreading!\n";
+        //        std::cerr.flush();
         if(!clauses.empty()) {
             bool derivedEmpty = false;
             for(auto& keyValue : clauses) {

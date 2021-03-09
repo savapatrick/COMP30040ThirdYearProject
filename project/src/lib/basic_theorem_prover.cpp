@@ -36,6 +36,7 @@ void BasicTheoremProver::factoringStep() {
     vector<shared_ptr<Clause>> toBeInserted;
     std::mutex isDeletedGuard;
     std::mutex setGuard;
+    std::mutex changedGuard;
     std::mutex toBeInsertedGuard;
     std::vector<int> indexes;
     indexes.reserve((int)clauseForm->clauseForm.size());
@@ -50,7 +51,9 @@ void BasicTheoremProver::factoringStep() {
         auto& clause      = clauseForm->clauseForm[index];
         auto previousHash = clause->getHash();
         if(removeDuplicates(clause)) {
+            changedGuard.lock();
             changed = true;
+            changedGuard.unlock();
             if(previousHash != clause->getHash()) {
                 setGuard.lock();
                 clausesSoFar.erase(clausesSoFar.find(previousHash));
@@ -66,7 +69,9 @@ void BasicTheoremProver::factoringStep() {
             setGuard.lock();
             clausesSoFar.erase(clausesSoFar.find(previousHash));
             setGuard.unlock();
+            changedGuard.lock();
             changed = true;
+            changedGuard.unlock();
             isDeletedGuard.lock();
             isDeleted[index] = previousState.back();
             isDeletedGuard.unlock();
@@ -81,7 +86,9 @@ void BasicTheoremProver::factoringStep() {
                 toBeInsertedGuard.lock();
                 toBeInserted.push_back(newClause);
                 toBeInsertedGuard.unlock();
+                changedGuard.lock();
                 changed = true;
+                changedGuard.unlock();
                 continue;
             }
             setGuard.unlock();
@@ -101,19 +108,30 @@ void BasicTheoremProver::subsumption() {
     vector<bool> toBeDeleted(clauseForm->clauseForm.size(), false);
     vector<int> byWhich(clauseForm->clauseForm.size(), 0);
     bool toBeModified = false;
-    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-        if(toBeDeleted[index] or isDeleted.find(index) != isDeleted.end()) {
-            continue;
+    std::mutex toBeDeletedGuard;
+    std::mutex toBeModifiedGuard;
+    std::vector<int> indexes;
+    indexes.reserve((int)clauseForm->clauseForm.size());
+    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
+    std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
+        if(isDeleted.find(index) != isDeleted.end()) {
+            return;
         }
+        toBeDeletedGuard.lock();
+        if(toBeDeleted[index]) {
+            toBeDeletedGuard.unlock();
+            return;
+        }
+        toBeDeletedGuard.unlock();
         auto& clause    = clauseForm->clauseForm[index];
         auto hashSetOne = clause->getHashSet();
         for(int index2 = 0; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
             if(index == index2 or toBeDeleted[index2] or isDeleted.find(index2) != isDeleted.end()) {
                 continue;
             }
-            auto& clause2   = clauseForm->clauseForm[index2];
-            auto hashSetTwo = clause2->getHashSet();
-            bool isSubsumed = true;
+            auto& clause2         = clauseForm->clauseForm[index2];
+            const auto hashSetTwo = clause2->getHashSet();
+            bool isSubsumed       = true;
             for(auto& x : hashSetOne) {
                 if(hashSetTwo.find(x) == hashSetTwo.end()) {
                     // that's a weak check; we could lose precious subsumptions
@@ -124,11 +142,15 @@ void BasicTheoremProver::subsumption() {
             if(!isSubsumed) {
                 continue;
             }
+            toBeDeletedGuard.lock();
             toBeDeleted[index2] = true;
             byWhich[index2]     = index;
-            toBeModified        = true;
+            toBeDeletedGuard.unlock();
+            toBeModifiedGuard.lock();
+            toBeModified = true;
+            toBeModifiedGuard.unlock();
         }
-    }
+    });
     if(!toBeModified) {
         return;
     }
