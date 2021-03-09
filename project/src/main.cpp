@@ -16,8 +16,8 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
     int commandMask = 0;
-    map<string, int> whichMask({ { "none", 0 }, { "all", 7 }, {"depth", 4}, { "basic", 2 }, { "two", 1 } });
-    map<string, int> powerCommand({ {"depth", 2}, { "basic", 1 }, { "two", 0 } });
+    map<string, int> whichMask({ { "none", 0 }, { "all", 7 }, { "depth", 4 }, { "basic", 2 }, { "two", 1 } });
+    map<string, int> powerCommand({ { "depth", 2 }, { "basic", 1 }, { "two", 0 } });
     if(argc > 1) {
         string command(argv[1]);
         commandMask = whichMask[command];

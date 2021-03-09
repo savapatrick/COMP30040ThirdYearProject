@@ -41,51 +41,51 @@ void BasicTheoremProver::factoringStep() {
     indexes.reserve((int)clauseForm->clauseForm.size());
     for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
     std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
-          isDeletedGuard.lock();
-          if(isDeleted.find(index) != isDeleted.end()) {
-              isDeletedGuard.unlock();
-              return;
-          }
-          isDeletedGuard.unlock();
-          auto& clause      = clauseForm->clauseForm[index];
-          auto previousHash = clause->getHash();
-          if(removeDuplicates(clause)) {
-              changed = true;
-              if(previousHash != clause->getHash()) {
-                  setGuard.lock();
-                  clausesSoFar.erase(clausesSoFar.find(previousHash));
-                  clausesSoFar.insert(clause->getHash());
-                  setGuard.unlock();
-                  previousHash = clause->getHash();
-              }
-          }
-          if(isTautology(clause)) {
-              outputStreamGuard->lock();
-              outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
-              outputStreamGuard->unlock();
-              setGuard.lock();
-              clausesSoFar.erase(clausesSoFar.find(previousHash));
-              setGuard.unlock();
-              changed          = true;
-              isDeletedGuard.lock();
-              isDeleted[index] = previousState.back();
-              isDeletedGuard.unlock();
-              return;
-          }
-          auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
-          for(auto& newClause : unificationResult) {
-              setGuard.lock();
-              if(!isTautology(newClause) and removeDuplicates(newClause) and
-                 clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
-                  setGuard.unlock();
-                  toBeInsertedGuard.lock();
-                  toBeInserted.push_back(newClause);
-                  toBeInsertedGuard.unlock();
-                  changed = true;
-                  continue;
-              }
-              setGuard.unlock();
-          }
+        isDeletedGuard.lock();
+        if(isDeleted.find(index) != isDeleted.end()) {
+            isDeletedGuard.unlock();
+            return;
+        }
+        isDeletedGuard.unlock();
+        auto& clause      = clauseForm->clauseForm[index];
+        auto previousHash = clause->getHash();
+        if(removeDuplicates(clause)) {
+            changed = true;
+            if(previousHash != clause->getHash()) {
+                setGuard.lock();
+                clausesSoFar.erase(clausesSoFar.find(previousHash));
+                clausesSoFar.insert(clause->getHash());
+                setGuard.unlock();
+                previousHash = clause->getHash();
+            }
+        }
+        if(isTautology(clause)) {
+            outputStreamGuard->lock();
+            outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
+            outputStreamGuard->unlock();
+            setGuard.lock();
+            clausesSoFar.erase(clausesSoFar.find(previousHash));
+            setGuard.unlock();
+            changed = true;
+            isDeletedGuard.lock();
+            isDeleted[index] = previousState.back();
+            isDeletedGuard.unlock();
+            return;
+        }
+        auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
+        for(auto& newClause : unificationResult) {
+            setGuard.lock();
+            if(!isTautology(newClause) and removeDuplicates(newClause) and
+            clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
+                setGuard.unlock();
+                toBeInsertedGuard.lock();
+                toBeInserted.push_back(newClause);
+                toBeInsertedGuard.unlock();
+                changed = true;
+                continue;
+            }
+            setGuard.unlock();
+        }
     });
     if(changed) {
         for(auto& elem : toBeInserted) {
