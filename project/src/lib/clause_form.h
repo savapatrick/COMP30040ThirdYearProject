@@ -26,11 +26,11 @@ class ClauseForm {
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);
     void renameTerms(std::shared_ptr<ClauseForm>& other,
-                     std::unordered_set<std::string>& _allTermNames,
-                     std::unordered_set<std::string>& _allTermNamesOther,
-                     std::unordered_set<std::string>& forbiddenOne,
-                     std::unordered_set<std::string>& forbiddenTwo,
-                     bool isFunctionRenaming);
+    std::unordered_set<std::string>& _allTermNames,
+    std::unordered_set<std::string>& _allTermNamesOther,
+    std::unordered_set<std::string>& forbiddenOne,
+    std::unordered_set<std::string>& forbiddenTwo,
+    bool isFunctionRenaming);
     void copyToThis(const std::shared_ptr<ClauseForm>& other);
     void makeVariableNamesUniquePerClause();
     void enforcePureTwoVariableFragment();

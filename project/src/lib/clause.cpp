@@ -25,7 +25,7 @@ bool Clause::hasNestedFunctions() const {
 int Clause::getHighestNumberOfVariablesPerLiteralExcludingEquality() {
     int answer = 0;
     for(auto& literal : clause) {
-        if (!literal->getIsEquality()) {
+        if(!literal->getIsEquality()) {
             answer = max(answer, static_cast<int>(literal->getAllVariables().size()));
         }
     }

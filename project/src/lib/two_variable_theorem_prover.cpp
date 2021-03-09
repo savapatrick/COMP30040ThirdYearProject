@@ -89,7 +89,7 @@ bool TwoVariableTheoremProver::run() {
     outputStream << "[two variable theorem prover]\nwe have the following clauses after disposal:\n";
     outputStream << clauseForm->getStringWithIndex();
     outputData();
-    if (withEquality and clauseForm->containsEquality()) {
+    if(withEquality and clauseForm->containsEquality()) {
         clauseForm->resolveEquality();
     }
     shared_ptr<DepthOrderedTheoremProver> prover =
