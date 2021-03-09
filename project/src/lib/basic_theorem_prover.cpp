@@ -126,9 +126,16 @@ void BasicTheoremProver::subsumption() {
         auto& clause    = clauseForm->clauseForm[index];
         auto hashSetOne = clause->getHashSet();
         for(int index2 = 0; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-            if(index == index2 or toBeDeleted[index2] or isDeleted.find(index2) != isDeleted.end()) {
+            if(index == index2 or isDeleted.find(index2) != isDeleted.end()) {
                 continue;
             }
+            toBeDeletedGuard.lock();
+            if(toBeDeleted[index2]) {
+                toBeDeletedGuard.unlock();
+                continue;
+                ;
+            }
+            toBeDeletedGuard.unlock();
             auto& clause2         = clauseForm->clauseForm[index2];
             const auto hashSetTwo = clause2->getHashSet();
             bool isSubsumed       = true;
