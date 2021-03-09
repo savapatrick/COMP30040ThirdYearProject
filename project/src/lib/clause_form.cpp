@@ -110,12 +110,9 @@ std::string ClauseForm::getStringWithIndex(const std::unordered_map<int, int>& i
 }
 
 bool ClauseForm::isTwoVariableFragment() {
-    for(auto& clause : clauseForm) {
-        if(clause->hasNestedFunctions() or clause->getAllVariables().size() > 2) {
-            return false;
-        }
-    }
-    return true;
+    return all_of(clauseForm.begin(), clauseForm.end(), [](const shared_ptr<Clause>& clause) -> bool {
+        return (!clause->hasNestedFunctions() and clause->getAllVariables().size() <= 2);
+    });
 }
 
 bool ClauseForm::containsEquality() {
@@ -195,12 +192,12 @@ void ClauseForm::resolveEquality() {
     for (auto &clause : clauseForm) {
         if (clause->containsEquality()) {
             string currentClause;
-            map<string, vector <string>> groups;
+            map<string, vector <shared_ptr<Literal>>> groups;
             const string noVariables = "<empty>";
             auto literals = clause->getLiterals();
             for (auto &literal : literals) {
                 if (literal->getIsEquality()) {
-                    // todo: implement here the last bit left
+                    continue; // this is going to be resolved in the next for loop
                 }
                 else {
                     auto variables = literal->getAllVariables();
@@ -209,24 +206,115 @@ void ClauseForm::resolveEquality() {
                                                " should be Equality at this point!");
                     }
                     else if (variables.size() == 1) {
-                        groups[*variables.begin()].push_back(literal->getString());
+                        groups[*variables.begin()].push_back(literal);
                     }
                     else {
-                        groups[noVariables].push_back(literal->getString());
+                        groups[noVariables].push_back(literal);
                     }
                 }
+            }
+            string equalityPart;
+            for (auto &literal : literals) {
+                if (literal->getIsEquality()) {
+                    if (groups["_v_x"].empty() or groups["_v_y"].empty()) {
+                        continue;
+                    }
+                    string lhs, rhs;
+                    string lhsImplication = operators.OPENEDBracket;
+                    for (auto &currentLiteral: groups["_v_x"]) {
+                        lhsImplication += currentLiteral->getString() + operators.OR;
+                    }
+                    lhsImplication.pop_back();
+                    lhsImplication.append(operators.CLOSEDBracket);
+                    string rhsImplication = operators.OPENEDBracket;
+                    for (auto &currentLiteral: groups["_v_y"]) {
+                        auto currentLiteralDeepCopy = currentLiteral->createDeepCopy();
+                        currentLiteralDeepCopy->applySubstitution({"_v_y", "_v_x"});
+                        rhsImplication += currentLiteralDeepCopy->getString() + operators.OR;
+                    }
+                    rhsImplication.pop_back();
+                    rhsImplication.append(operators.CLOSEDBracket);
+                    rhs.append(operators.VQuantifier);
+                    rhs.append("_v_x");
+                    rhs.append(operators.OPENEDBracket);
+                    rhs.append(lhsImplication);
+                    rhs.append(operators.DOUBLEImply);
+                    rhs.append(rhsImplication);
+                    rhs.append(operators.CLOSEDBracket);
+                    vector <shared_ptr<Literal>> literalsInX;
+                    literalsInX.reserve(groups["_v_x"].size());
+                    for (auto &currentLiteral: groups["_v_x"]) {
+                        literalsInX.push_back(currentLiteral);
+                    }
+                    auto newClauseX = make_shared<Clause>(literalsInX);
+                    auto newConstant = RandomFactory::getRandomConstantName(allConstantNames);
+                    vector <string> formulas;
+                    for (auto &currentPredicate : arityOneLiterals) {
+                        auto allVariablesForPredicate = currentPredicate.second->getAllVariables();
+                        if (allVariablesForPredicate.find("_v_x") == allVariablesForPredicate.end()) {
+                            currentPredicate.second->applySubstitution({"_v_y", "_v_x"});
+                        }
+                        auto predicateX = currentPredicate.second->getString();
+                        currentPredicate.second->applySubstitution({"_v_x", newConstant});
+                        auto predicateConstant = currentPredicate.second->getString();
+                        auto newFormula = operators.OPENEDBracket;
+                        newFormula.append(predicateX);
+                        newFormula.append(operators.DOUBLEImply);
+                        newFormula.append(predicateConstant);
+                        newFormula.append(operators.CLOSEDBracket);
+                        formulas.push_back(newFormula);
+                    }
+                    auto stringNegatedClauseX = operators.OPENEDBracket;
+                    stringNegatedClauseX.append(operators.NOT);
+                    stringNegatedClauseX.append(operators.OPENEDBracket);
+                    stringNegatedClauseX.append(newClauseX->getString());
+                    stringNegatedClauseX.append(operators.CLOSEDBracket);
+                    stringNegatedClauseX.append(operators.CLOSEDBracket);
+                    newClauseX->applySubstitution({"_v_x", newConstant});
+                    lhs = operators.OPENEDBracket;
+                    lhs.append(operators.NOT);
+                    lhs.append(operators.OPENEDBracket);
+                    lhs.append(newClauseX->getString());
+                    lhs.append(operators.CLOSEDBracket);
+                    lhs.append(operators.CLOSEDBracket);
+                    for (auto & formula : formulas) {
+                        string implication = operators.VQuantifier;
+                        implication.append("_v_x");
+                        implication.append(operators.OPENEDBracket);
+                        implication.append(stringNegatedClauseX);
+                        implication.append(operators.IMPLY);
+                        implication.append(formula);
+                        implication.append(operators.CLOSEDBracket);
+                        lhs.append(operators.AND);
+                        lhs.append(implication);
+                    }
+                    string equivalence = operators.OPENEDBracket;
+                    equivalence.append(lhs);
+                    equivalence.append(operators.AND);
+                    equivalence.append(rhs);
+                    equivalence.append(operators.CLOSEDBracket);
+                    equalityPart.append(equivalence);
+                    equalityPart.append(operators.OR);
+                }
+            }
+            if (!equalityPart.empty()) {
+                equalityPart.pop_back();
             }
             for (auto &bucket : groups) {
                 for (auto &currentLiteral : bucket.second) {
                     if (bucket.first != noVariables) {
                         currentClause += operators.VQuantifier + bucket.first;
                     }
-                    currentClause += operators.OPENEDBracket + currentLiteral + operators.CLOSEDBracket;
+                    currentClause += operators.OPENEDBracket + currentLiteral->getString() + operators.CLOSEDBracket;
                     currentClause += operators.OR;
                 }
             }
             if (!currentClause.empty()) {
                 currentClause.pop_back();
+            }
+            if (!equalityPart.empty()) {
+                currentClause.append(operators.OR);
+                currentClause.append(equalityPart);
             }
             resultedClause += operators.OPENEDBracket + currentClause + operators.CLOSEDBracket + operators.AND;
         }

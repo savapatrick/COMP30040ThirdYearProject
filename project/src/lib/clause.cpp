@@ -13,7 +13,7 @@ namespace utils {
 std::shared_ptr<Clause> Clause::createDeepCopy() {
     return std::make_shared<Clause>(shared_from_this());
 }
-bool Clause::hasNestedFunctions() {
+bool Clause::hasNestedFunctions() const {
     for(auto& literal : clause) {
         if(literal->hasNestedFunctions()) {
             return true;
@@ -32,7 +32,7 @@ int Clause::getHighestNumberOfVariablesPerLiteralExcludingEquality() {
     return answer;
 }
 
-std::unordered_set<std::string> Clause::getAllVariables() {
+std::unordered_set<std::string> Clause::getAllVariables() const {
     unordered_set<string> result;
     for(auto& literal : clause) {
         AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(literal->getAllVariables(), result, result);

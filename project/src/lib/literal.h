@@ -58,8 +58,8 @@ class Literal : public std::enable_shared_from_this<Literal> {
     bool equalsWithoutSign(const std::shared_ptr<Literal>& other);
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Literal>& other);
     std::shared_ptr<Literal> createDeepCopy();
-    bool hasNestedFunctions();
-    std::unordered_set<std::string> getAllVariables();
+    bool hasNestedFunctions() const;
+    std::unordered_set<std::string> getAllVariables() const;
     std::vector<std::string> getAllVariablesInOrder() const;
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);

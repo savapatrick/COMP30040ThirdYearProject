@@ -47,7 +47,7 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Literal::augme
     return true;
 }
 
-bool Literal::hasNestedFunctions() {
+bool Literal::hasNestedFunctions() const {
     for(auto& term : terms) {
         if(term->hasNestedFunctions()) {
             return true;
@@ -56,7 +56,7 @@ bool Literal::hasNestedFunctions() {
     return false;
 }
 
-std::unordered_set<std::string> Literal::getAllVariables() {
+std::unordered_set<std::string> Literal::getAllVariables() const {
     unordered_set<string> result;
     for(auto& term : terms) {
         AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(term->getAllVariables(), result, result);

@@ -46,8 +46,8 @@ class Clause : public std::enable_shared_from_this<Clause> {
     }
     void disjointifyVariables(std::shared_ptr<Clause>& other);
     std::shared_ptr<Clause> createDeepCopy();
-    bool hasNestedFunctions();
-    std::unordered_set<std::string> getAllVariables();
+    bool hasNestedFunctions() const;
+    std::unordered_set<std::string> getAllVariables() const;
     int getHighestNumberOfVariablesPerLiteralExcludingEquality();
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
