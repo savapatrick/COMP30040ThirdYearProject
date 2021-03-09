@@ -20,7 +20,6 @@ std::vector<std::shared_ptr<Clause>> Unification::tryToUnifyTwoLiterals(std::sha
     }
     if(!ok) {
         return std::vector<std::shared_ptr<Clause>>({});
-        ;
     }
     pair<int, int> indexes;
     std::vector<std::shared_ptr<Clause>> clauses;
