@@ -19,6 +19,7 @@
 namespace utils {
 class BasicTheoremProver : public TheoremProver {
     protected:
+    std::mutex outputStreamGuard;
     std::shared_ptr<Unification> unification;
     std::set<std::pair<int, int>> avoid;
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
@@ -26,7 +27,6 @@ class BasicTheoremProver : public TheoremProver {
     std::vector<int> previousState;
     std::unordered_map<int, int> isDeleted;
     long long upperLimit;
-    std::shared_ptr<std::mutex> outputStreamGuard;
 
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
     void factoringStep();
@@ -36,14 +36,14 @@ class BasicTheoremProver : public TheoremProver {
 
     public:
     BasicTheoremProver(const std::shared_ptr<ClauseForm>& _clauseForm, const std::string& _fileName = "theorem_prover.txt")
-    : TheoremProver(_clauseForm, _fileName), unification(std::make_shared<Unification>(outputStream)) {
+    : TheoremProver(_clauseForm, _fileName), outputStreamGuard() {
+        unification = std::make_shared<Unification>(outputStreamGuard, outputStream);
         avoid.clear();
         clauses.clear();
         clausesSoFar.clear();
         previousState.clear();
         isDeleted.clear();
-        upperLimit        = std::numeric_limits<long long>::max(); // something HUGE
-        outputStreamGuard = std::make_shared<std::mutex>();
+        upperLimit = std::numeric_limits<long long>::max(); // something HUGE
         previousState.push_back(0);
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
@@ -120,11 +120,11 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                                 continue;
                             }
                             insertGuard.unlock();
-                            outputStreamGuard->lock();
+                            outputStreamGuard.lock();
                             outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
                                          << " with " << clauseForm->clauseForm[index2]->getString()
                                          << "and it results a new clause " << currentClause->getString() << '\n';
-                            outputStreamGuard->unlock();
+                            outputStreamGuard.unlock();
                             insertGuard.lock();
                             clauses[clauseHash] = currentClause;
                             clausesSoFar.insert(clauseHash);

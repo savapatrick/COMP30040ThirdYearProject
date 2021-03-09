@@ -16,16 +16,16 @@ bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
     }
     unordered_map<string, shared_ptr<Literal>> literals;
     for(auto& literal : clause->clause) { literals[literal->getString()] = literal; }
-    outputStreamGuard->lock();
+    outputStreamGuard.lock();
     outputStream << "removing duplicates from clause " + clause->getString() << "\n";
-    outputStreamGuard->unlock();
+    outputStreamGuard.unlock();
     if(literals.size() != clause->clause.size()) {
         clause->clause.clear();
         clause->clause.reserve(literals.size());
         for(auto& keyValue : literals) { clause->clause.emplace_back(keyValue.second); }
-        outputStreamGuard->lock();
+        outputStreamGuard.lock();
         outputStream << "it then becomes " << clause->getString() << "\n";
-        outputStreamGuard->unlock();
+        outputStreamGuard.unlock();
         return true;
     }
     return false;
@@ -63,9 +63,9 @@ void BasicTheoremProver::factoringStep() {
             }
         }
         if(isTautology(clause)) {
-            outputStreamGuard->lock();
+            outputStreamGuard.lock();
             outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
-            outputStreamGuard->unlock();
+            outputStreamGuard.unlock();
             setGuard.lock();
             clausesSoFar.erase(clausesSoFar.find(previousHash));
             setGuard.unlock();
@@ -133,7 +133,6 @@ void BasicTheoremProver::subsumption() {
             if(toBeDeleted[index2]) {
                 toBeDeletedGuard.unlock();
                 continue;
-                ;
             }
             toBeDeletedGuard.unlock();
             auto& clause2         = clauseForm->clauseForm[index2];

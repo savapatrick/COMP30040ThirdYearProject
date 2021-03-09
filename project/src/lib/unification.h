@@ -9,15 +9,18 @@
 #include "clause_form.h"
 
 #include <fstream>
+#include <mutex>
 #include <utility>
 
 namespace utils {
 class Unification {
     private:
+    std::mutex& outputStreamGuard;
     std::ostream& outputStream;
 
     public:
-    Unification(std::ostream& stream) : outputStream(stream){};
+    Unification(std::mutex& _outputStreamGuard, std::ostream& stream)
+    : outputStreamGuard(_outputStreamGuard), outputStream(stream){};
     std::vector<std::shared_ptr<Clause>> tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause); // and commit if possible
     template <typename LiteralPredicate, typename ResolventPredicate>
     std::vector<std::shared_ptr<Clause>> attemptToUnify(std::shared_ptr<Clause>& first,
