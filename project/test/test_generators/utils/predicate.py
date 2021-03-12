@@ -6,7 +6,9 @@ class Predicate:
         self.negated = _negated
 
     def tp_output(self):
-        pass
+        symbol = '~' if self.negated else ''
+        return f"{symbol}{self.predicate_name.lower().capitalize()}({','.join(self.terms)})"
 
     def vampire_output(self):
-        pass
+        symbol = '~' if self.negated else ''
+        return f"{symbol}{self.predicate_name.lower()}({','.join(self.terms)})"
