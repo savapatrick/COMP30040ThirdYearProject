@@ -1,9 +1,10 @@
-from utils.variables_pool import VariablesPool
-from utils.predicates_pool import PredicatesPool
-from utils.equality import Equality
-from utils.predicate import Predicate
 import argparse
 import random
+
+from utils.equality import Equality
+from utils.predicate import Predicate
+from utils.predicates_pool import PredicatesPool
+from utils.variables_pool import VariablesPool
 
 argument_parser = argparse.ArgumentParser()
 argument_parser.add_argument("-A", "--alpha", type=int,
@@ -62,12 +63,30 @@ class ScottClauseRandomGenerator:
 
     def tp_output(self):
         if self.is_alpha:
-            # todo: redo this 
-            return f"@{self.variables[0]}@{self.variables[1]}(" \
-                   f"{'|'.join([predicate.tp_output() for predicate in self.clause])}) "
+            equality_part = f" | {self.equality.tp_output()}" if self.has_equality else ""
+            return f'''@{self.variables[0].lower()}@{self.variables[1].lower()}(
+                   {'^'.join(['|'.join(predicate.tp_output() for predicate in clause) for clause in self.alpha])}) 
+                   {equality_part}'''
+        else:
+            equality_part = f" ^ {self.equality.tp_output()}" if self.has_equality else ""
+            return f'''{'^'.join([f"@{self.variables[0].lower()}?{self.variables[1].lower()}("
+                                  + '^'.join(['|'.join(predicate.tp_output() for predicate in clause)
+                                              for clause in clause_form]) + ")"
+                                  for clause_form in self.beta])}{equality_part}'''
 
     def vampire_output(self):
-        pass
+        if self.is_alpha:
+            equality_part = f" | {self.equality.vampire_output()}" if self.has_equality else ""
+            return f'''![{self.variables[0].lower().capitalize()}]: ![{self.variables[1].lower().capitalize()}]: (
+                   {'&'.join(['|'.join(predicate.vampire_output() for predicate in clause) for clause in self.alpha])})
+                   {equality_part}'''
+        else:
+            equality_part = f" & {self.equality.vampire_output()}" if self.has_equality else ""
+            return f'''{'&'.join([f"![{self.variables[0].lower().capitalize()}]: "
+                                  f"?[{self.variables[1].lower().capitalize()}]: ("
+                                  + '^'.join(['|'.join(predicate.vampire_output() for predicate in clause)
+                                              for clause in clause_form]) + ")"
+                                  for clause_form in self.beta])}{equality_part}'''
 
 
 if __name__ == "__main__":
@@ -79,6 +98,8 @@ if __name__ == "__main__":
                                       predicate_manager, _conjunctions=arguments.conjunctions)
     with open("input_th.txt", "w") as th:
         th.write(f"(({alpha.tp_output()}) ^ ({beta.tp_output()}))")
+        th.flush()
     with open("input_vampire.txt", "w") as vampire:
-        vampire.write(f"(({alpha.vampire_output()}) & ({beta.vampire_output()}))")
+        vampire.write(f"fof(one, conjecture, (({alpha.vampire_output()}) & ({beta.vampire_output()}))).")
+        vampire.flush()
     exit(0)

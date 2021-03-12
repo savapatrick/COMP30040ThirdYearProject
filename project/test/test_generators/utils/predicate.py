@@ -7,8 +7,9 @@ class Predicate:
 
     def tp_output(self):
         symbol = '~' if self.negated else ''
-        return f"{symbol}{self.predicate_name.lower().capitalize()}({','.join(self.terms)})"
+        return f"{symbol}{self.predicate_name.lower().capitalize()}({','.join([term.lower() for term in self.terms])})"
 
     def vampire_output(self):
         symbol = '~' if self.negated else ''
-        return f"{symbol}{self.predicate_name.lower()}({','.join(self.terms)})"
+        return f'''{symbol}{self.predicate_name.lower()}({','.join(
+            [term.lower()  if term.lower().startswith('v') else term.lower().capitalize() for term in self.terms])})'''
