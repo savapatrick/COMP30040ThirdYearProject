@@ -1,4 +1,4 @@
-from random_factory import RandomFactory
+from .random_factory import RandomFactory
 import random
 
 
@@ -20,7 +20,7 @@ class PredicatesPool:
 
     def __new__(cls, *args, **kwargs):
         if not cls._unique_instance:
-            cls._unique_instance = super(PredicatesPool, cls).__new__(cls, *args, **kwargs)
+            cls._unique_instance = super(PredicatesPool, cls).__new__(cls)
         return cls._unique_instance
 
     def __init__(self, _predicate_length_max, size):
