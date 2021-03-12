@@ -1,6 +1,6 @@
-from utils.predicate import Predicate
-from utils.equality import Equality
+from utils.variables_pool import VariablesPool
 import argparse
+import random
 
 argument_parser = argparse.ArgumentParser()
 argument_parser.add_argument("-A", "--alpha", type=int,
@@ -35,7 +35,32 @@ ARITY_MAX = arguments.arity_max
 MIN_LITERALS_PER_CLAUSE = arguments.min_literals_per_clause
 MAX_LITERALS_PER_CLAUSE = arguments.max_literals_per_clause
 
-if __name__ == "__main__":
-    print("works!")
-    exit(0)
 
+class ScottClause:
+    def __init__(self, _is_alpha, _has_equality, _variables, _conjunctions=None):
+        self.is_alpha = _is_alpha
+        self.has_equality = _has_equality
+        self.variables = _variables
+        if _is_alpha:
+            self.clauses = []
+            pass
+        else:
+            if _conjunctions is None:
+                raise ValueError("[Scott Clause]: for the beta clauses, the number of conjunctions has to be given")
+
+    def tp_output(self):
+        pass
+
+    def vampire_output(self):
+        pass
+
+
+if __name__ == "__main__":
+    variable_manager = VariablesPool(1, 2)
+    alpha = ScottClause(True, arguments.has_equality, variable_manager.get_variables())
+    beta = ScottClause(False, arguments.has_equality, variable_manager.get_variables())
+    with open("input_th.txt", "w") as th:
+        th.write(f"(({alpha.tp_output()}) ^ ({beta.tp_output()}))")
+    with open("input_vampire.txt", "w") as vampire:
+        vampire.write(f"(({alpha.vampire_output()}) & ({beta.vampire_output()}))")
+    exit(0)
