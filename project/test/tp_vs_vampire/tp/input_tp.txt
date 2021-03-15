@@ -1,1 +1,0 @@
-((@vx@vy((~Pf(vy,vx)|~Pc(vy,vy)|~Pc(vx,vy)))|(vx=vy)) ^ (@vx?vy(((~Pf(vy,vy)|Pf(vy,vy)|~Px(vy,vy))^(vx!=vy)))))
