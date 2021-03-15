@@ -8,6 +8,7 @@
 #include "random_factory.h"
 #include "reducer.h"
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 namespace utils {
@@ -127,7 +128,7 @@ void ClauseForm::copyToThis(const std::shared_ptr<ClauseForm>& other) {
 }
 
 void ClauseForm::enforcePureTwoVariableFragment() {
-    const vector<string> newVariables({ "_v_x, _v_y" });
+    const vector<string> newVariables({ "_v_x", "_v_y" });
     bool hasTwo = false;
     for(auto& clause : clauseForm) {
         auto clauseVariables = clause->getAllVariables();
@@ -167,9 +168,11 @@ void ClauseForm::enforcePureTwoVariableFragment() {
 void ClauseForm::resolveEquality() {
     Operators& operators = Operators::getInstance();
     enforcePureTwoVariableFragment();
+    cerr << getStringWithIndex() << '\n';
     map<string, shared_ptr<Literal>> arityOneLiterals;
     for(auto& clause : clauseForm) {
         auto literals = clause->getLiterals();
+        std::cerr << "equ: "  << clause->getString() << '\n';
         for(auto& literal : literals) {
             auto arityWithoutConstants = literal->getArityExcludingConstants();
             if(literal->getIsEquality()) {

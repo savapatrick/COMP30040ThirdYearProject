@@ -69,7 +69,7 @@ class Term : public std::enable_shared_from_this<Term> {
     explicit Term(const std::shared_ptr<Term>& other) : termName(other->termName), termType(other->termType) {
         arguments.reserve(other->arguments.size());
         auto& otherArguments = other->arguments;
-        for(auto& arg : otherArguments) { arguments.push_back(std::make_shared<Term>(arg)); }
+        for(auto& arg : otherArguments) { arguments.push_back(arg->createDeepCopy()); }
         cachedGetString.clear();
         cachedGetStringWithoutVariableNames.clear();
         cachedGetHash.clear();

@@ -135,6 +135,7 @@ std::string Literal::getHash(const unordered_map<std::string, std::string>& subs
 }
 
 std::vector<std::string> Literal::getAllVariablesInOrder() const {
+    // todo: maybe here we have to use set?
     vector<string> variablesInOrder;
     for(auto& term : terms) {
         auto currentVariablesInOrder = term->getAllVariablesInOrder();
