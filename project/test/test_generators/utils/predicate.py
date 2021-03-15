@@ -12,4 +12,4 @@ class Predicate:
     def vampire_output(self):
         symbol = '~' if self.negated else ''
         return f'''{symbol}{self.predicate_name.lower()}({','.join(
-            [term.lower()  if term.lower().startswith('v') else term.lower().capitalize() for term in self.terms])})'''
+            [term.lower().capitalize() if term.lower().startswith('v') else term.lower() for term in self.terms])})'''
