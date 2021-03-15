@@ -54,6 +54,10 @@ bool Operators::isEquality(const std::string& current) {
     return current == EQUALITY;
 }
 
+bool Operators::isInequality(const std::string& current) {
+    return current == INEQUALITY;
+}
+
 bool Operators::isQuantifierAndVariable(const string& current) {
     if(!isQuantifier(current.substr(0, 1))) {
         return false;

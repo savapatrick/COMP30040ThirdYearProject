@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
         basicTheoremProver.run();
     }
     if(commandMask & (1 << powerCommand["depth"])) {
-        utils::DepthOrderedTheoremProver depthOrderedTheoremProver(clauseForm, false,"depth_ordered_theorem_prover_output.txt");
+        utils::DepthOrderedTheoremProver depthOrderedTheoremProver(clauseForm, false, "depth_ordered_theorem_prover_output.txt");
         depthOrderedTheoremProver.run();
     }
     if(commandMask & (1 << powerCommand["two"])) {
