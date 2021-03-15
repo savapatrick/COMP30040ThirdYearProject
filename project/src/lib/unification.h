@@ -11,27 +11,30 @@
 
 
 #include <fstream>
+#include <mutex>
 #include <utility>
 
 namespace utils {
 class Unification {
     private:
+    std::mutex& outputStreamGuard;
     std::ostream& outputStream;
 
     public:
-    Unification(std::ostream& stream) : outputStream(stream){};
+    Unification(std::mutex& _outputStreamGuard, std::ostream& stream)
+    : outputStreamGuard(_outputStreamGuard), outputStream(stream){};
     std::vector<std::shared_ptr<Clause>> tryToUnifyTwoLiterals(std::shared_ptr<Clause>& clause); // and commit if possible
     template <typename LiteralPredicate, typename ResolventPredicate>
     std::vector<std::shared_ptr<Clause>> attemptToUnify(std::shared_ptr<Clause>& first,
     std::shared_ptr<Clause>& second,
     LiteralPredicate literalPredicate,
-    ResolventPredicate resolventPredicate);
+    ResolventPredicate resolventPredicate) const;
 };
 template <typename LiteralPredicate, typename ResolventPredicate>
 std::vector<std::shared_ptr<Clause>> Unification::attemptToUnify(std::shared_ptr<Clause>& first,
 std::shared_ptr<Clause>& second,
 LiteralPredicate literalPredicate,
-ResolventPredicate resolventPredicate) {
+ResolventPredicate resolventPredicate) const {
     auto literalsFirst  = first->getLiteralsAndCount();
     auto literalsSecond = second->getLiteralsAndCount();
     bool ok             = false;

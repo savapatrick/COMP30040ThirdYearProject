@@ -20,7 +20,6 @@ std::vector<std::shared_ptr<Clause>> Unification::tryToUnifyTwoLiterals(std::sha
     }
     if(!ok) {
         return std::vector<std::shared_ptr<Clause>>({});
-        ;
     }
     pair<int, int> indexes;
     std::vector<std::shared_ptr<Clause>> clauses;
@@ -47,9 +46,11 @@ std::vector<std::shared_ptr<Clause>> Unification::tryToUnifyTwoLiterals(std::sha
                     }
                 } while(true);
                 if(unified) {
+                    outputStreamGuard.lock();
                     outputStream << "clause " << clause->getString() << " is transformed into " + clauseDeepCopy->getString()
                                  << " because literals " + clauseDeepCopy->clause[indexes.first]->getString() +
                     " and " + clauseDeepCopy->clause[indexes.second]->getString() + " we're succesfully unified\n";
+                    outputStreamGuard.unlock();
                     clauses.push_back(clauseDeepCopy);
                 }
             }

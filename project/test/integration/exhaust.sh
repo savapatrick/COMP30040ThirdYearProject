@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-for i in {1..20}
+for i in {1..35}
 do
 	echo "test $i"
-	./integration-test.sh > aux.txt
+	./integration-test.sh &> "aux$i.txt"
 	echo "corect"
-	grep correct aux.txt | wc -l
+	grep correct "aux$i.txt" | wc -l
 	echo "wrong"
-	grep wrong aux.txt | wc -l
+	grep wrong "aux$i.txt" | wc -l
 	echo "timeout"
-	grep timeout aux.txt
+	grep timeout "aux$i.txt"
 done
