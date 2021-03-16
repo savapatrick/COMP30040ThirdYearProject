@@ -169,7 +169,6 @@ void ClauseForm::enforcePureTwoVariableFragment() {
 void ClauseForm::resolveEquality() {
     Operators& operators = Operators::getInstance();
     enforcePureTwoVariableFragment();
-    cerr << getStringWithIndex() << '\n';
     map<string, shared_ptr<Literal>> arityOneLiterals;
     for(auto& clause : clauseForm) {
         auto literals = clause->getLiterals();
@@ -349,7 +348,6 @@ void ClauseForm::resolveEquality() {
                                "function symbols! The intermediate representation is the following " +
         resultedClause);
     }
-    cerr << resultedClause << '\n';
     ParseTree tree(resultedClause);
     Reducer reducer(tree);
     auto newClauseForm = reducer.getClauseForm();

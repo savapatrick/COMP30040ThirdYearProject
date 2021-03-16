@@ -1,1 +1,33 @@
+step=0
+while true; do
+  python3.8 ../test_generators/generator_scott_form.py -A 1 -B 2 -C 1 -E -LMIN 3 -LMAX 3 -P 4 -VP -TP
+  cp input_tp.txt input.txt
+  ../../../cmake-build-debug/project/src/theorem_prover two >/dev/null 2>&1
+  exit_code=$?
+  if [[ $exit_code -eq 0 ]]; then
+    echo "[TP]: $step: success!"
+  else
+    echo "[TP]: $step: failure!"
+    break
+  fi
+  tp_satisfiable=$(tail -1 two_variable_theorem_prover_output.txt | grep -c "proved by deriving the empty clause!")
+  ./vampire/vampire_z3_Release_static_master_4764 <input_vampire.txt >output_vampire.txt
+  exit_code=$?
+  if [[ $exit_code -eq 0 ]]; then
+    echo "[VP]: $step: success!"
+  else
+    echo "[VP]: $step: failure!"
+    break
+  fi
+  vampire_satisfiable=$(grep -c "SZS status Theorem" output_vampire.txt)
+  if [[ ( "$tp_satisfiable" -gt 0 && "$vampire_satisfiable" -gt 0 )  ||
+  ( "$tp_satisfiable" -eq 0 && "$vampire_satisfiable" -eq 0 ) ]]
+  then
+    echo "$step: Success! Both Vampire and TP are having the same output!"
+  else
+    echo "$step: Failure! Vampire and TP are having different verdicts!"
+    break
+  fi
+  ((step = step + 1))
+done
 

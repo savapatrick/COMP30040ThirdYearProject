@@ -1,7 +1,8 @@
 step=0
 while true; do
   python3.8 ../../test_generators/generator_scott_form.py -A 1 -B 1 -C 1 -E -LMIN 3 -LMAX 3 -P 4 -TP
-  ../../../../cmake-build-debug/project/src/theorem_prover two <input_tp.txt >output_tp.txt
+  cp input_tp.txt input.txt
+  ../../../../cmake-build-debug/project/src/theorem_prover two >/dev/null 2>&1
   exit_code=$?
   if [[ $exit_code -eq 0 ]]; then
     echo "$step: success!"
