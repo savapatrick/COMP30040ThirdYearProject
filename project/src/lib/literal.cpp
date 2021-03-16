@@ -145,7 +145,9 @@ std::vector<std::string> Literal::getAllVariablesInOrder() const {
 }
 
 int Literal::getArityExcludingConstants() const {
-    return getAllVariablesInOrder().size();
+    // todo: why do we need them in order?
+    auto variablesInOrder = getAllVariablesInOrder();
+    return set<string>(variablesInOrder.begin(), variablesInOrder.end()).size();
 }
 
 bool Literal::getIsEquality() const {

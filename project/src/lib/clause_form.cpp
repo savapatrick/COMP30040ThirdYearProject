@@ -9,6 +9,7 @@
 #include "reducer.h"
 #include <algorithm>
 #include <iostream>
+#include <regex>
 
 using namespace std;
 namespace utils {
@@ -116,7 +117,7 @@ bool ClauseForm::isTwoVariableFragment() {
     });
 }
 
-bool ClauseForm::containsEquality() {
+bool ClauseForm::containsEquality() const {
     return getString().find("Equality(") != string::npos;
 }
 
@@ -172,7 +173,6 @@ void ClauseForm::resolveEquality() {
     map<string, shared_ptr<Literal>> arityOneLiterals;
     for(auto& clause : clauseForm) {
         auto literals = clause->getLiterals();
-        std::cerr << "equ: "  << clause->getString() << '\n';
         for(auto& literal : literals) {
             auto arityWithoutConstants = literal->getArityExcludingConstants();
             if(literal->getIsEquality()) {
@@ -315,7 +315,7 @@ void ClauseForm::resolveEquality() {
                 currentClause.append(operators.OR);
                 currentClause.append(equalityPart);
             }
-            resultedClause += operators.OPENEDBracket + currentClause + operators.CLOSEDBracket + operators.AND;
+            resultedClause += operators.OPENEDBracket + currentClause + operators.CLOSEDBracket;
         } else {
             auto variables = clause->getAllVariables();
             if(variables.size() > 1) {
@@ -334,6 +334,22 @@ void ClauseForm::resolveEquality() {
     if(!resultedClause.empty()) {
         resultedClause.pop_back();
     }
+    unordered_set<string> allPredicates;
+    for(auto& clause : clauseForm) {
+        auto literals = clause->getLiterals();
+        for(auto& literal : literals) { allPredicates.insert(literal->getPredicateName()); }
+    }
+    resultedClause = regex_replace(resultedClause, regex("Inequality"), RandomFactory::getRandomPredicateName(allPredicates));
+    resultedClause = regex_replace(resultedClause, regex("_v_"), "v");
+    resultedClause = regex_replace(resultedClause, regex("_c_"), "c");
+    if(regex_match(resultedClause, regex("_f_"))) {
+        throw std::logic_error("The intermediate representation of the given formula contains "
+                               "function symbols, and that's not decidable. Please give a formula "
+                               "in the Scott Normal form or try other formula which would not contain "
+                               "function symbols! The intermediate representation is the following " +
+        resultedClause);
+    }
+    cerr << resultedClause << '\n';
     ParseTree tree(resultedClause);
     Reducer reducer(tree);
     auto newClauseForm = reducer.getClauseForm();

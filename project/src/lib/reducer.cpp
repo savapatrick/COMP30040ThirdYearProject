@@ -618,13 +618,13 @@ bool isAnd) {
     // TODO: bear in mind that here we made the assumption that any free-variable in the
     // initial formula is a constant
     std::string fakePredicateName = getRandomPredicateName();
-    auto allArgumentsFirst  = first->getAllArguments();
-    auto allArgumentsSecond = second->getAllArguments();
-    auto arguments          = AdHocTemplated<string>::unionIterablesVector(allArgumentsFirst, allArgumentsSecond);
+    auto allArgumentsFirst        = first->getAllArguments();
+    auto allArgumentsSecond       = second->getAllArguments();
+    auto arguments                = AdHocTemplated<string>::unionIterablesVector(allArgumentsFirst, allArgumentsSecond);
     std::vector<SimplifiedLiteral::arg> argumentsVariant;
     argumentsVariant.reserve(arguments.size());
     for(auto& arg : arguments) {
-        if (arg.rfind("_v_", 0) == 0) { // starts with _v_, then it's variable
+        if(arg.rfind("_v_", 0) == 0) { // starts with _v_, then it's variable
             argumentsVariant.emplace_back(arg);
         }
     }

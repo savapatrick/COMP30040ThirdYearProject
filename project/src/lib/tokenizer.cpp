@@ -42,21 +42,21 @@ std::vector<std::string> Tokenizer::tokenize(const std::string& seq) {
                     current += aux[ind];
                     ind += 1;
                 }
-                bool followsEqualityOrInequality = (ind < (int)aux.size() and (
-                          operators.whichOperator(ind, aux) == "=" or operators.whichOperator(ind, aux) == "!="));
+                bool followsEqualityOrInequality = (ind < (int)aux.size() and
+                (operators.whichOperator(ind, aux) == "=" or operators.whichOperator(ind, aux) == "!="));
                 // this should be a variable
                 // a variable could occur at this point ONLY after a quantifier
                 if(!islower(current[0]) or
-                (tokens.empty() or (!operators.isEquality(tokens.back()) and !operators.isInequality(tokens.back())
-                                   and !operators.isQuantifier(tokens.back())
-                                   and !followsEqualityOrInequality))) {
+                (tokens.empty() or
+                (!operators.isEquality(tokens.back()) and !operators.isInequality(tokens.back()) and
+                !operators.isQuantifier(tokens.back()) and !followsEqualityOrInequality))) {
                     // this means that this does not start with lowercase letter OR
                     // there are no tokens in the list
                     throw invalid_argument(
                     "Something expected to be variable was either starting with non-lowercase letter"
                     "or occurred after something different than equality or quantifier");
                 }
-                if (operators.isQuantifier(tokens.back())) {
+                if(operators.isQuantifier(tokens.back())) {
                     tokens[(int)tokens.size() - 1] += current;
                     continue;
                 }

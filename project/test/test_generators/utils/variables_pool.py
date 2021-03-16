@@ -1,5 +1,6 @@
-from .random_factory import RandomFactory
 import random
+
+from .random_factory import RandomFactory
 
 
 # this is a singleton class
