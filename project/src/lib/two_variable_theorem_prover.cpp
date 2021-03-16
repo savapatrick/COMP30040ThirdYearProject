@@ -46,6 +46,17 @@ void TwoVariableTheoremProver::disposeTwoVariableClauses() {
     }
     if(newClauseForm.size() != clauseForm->clauseForm.size()) {
         clauseForm->clauseForm = newClauseForm;
+        // todo: is it really correct?
+        for (auto &clause : newClauseForm) {
+            auto variables = clause->getAllVariables();
+            if (variables.size() > 1) {
+                auto fixedVariable = *variables.begin();
+                variables.erase(variables.begin());
+                for (auto &variable : variables) {
+                    clause->applySubstitution({variable, fixedVariable});
+                }
+            }
+        }
     }
 }
 

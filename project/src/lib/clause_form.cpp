@@ -341,13 +341,14 @@ void ClauseForm::resolveEquality() {
     resultedClause = regex_replace(resultedClause, regex("Inequality"), RandomFactory::getRandomPredicateName(allPredicates));
     resultedClause = regex_replace(resultedClause, regex("_v_"), "v");
     resultedClause = regex_replace(resultedClause, regex("_c_"), "c");
-    if(regex_match(resultedClause, regex("_f_"))) {
+    if(regex_search(resultedClause, regex("_f_"))) {
         throw std::logic_error("The intermediate representation of the given formula contains "
                                "function symbols, and that's not decidable. Please give a formula "
                                "in the Scott Normal form or try other formula which would not contain "
                                "function symbols! The intermediate representation is the following " +
         resultedClause);
     }
+    cerr << resultedClause << '\n';
     ParseTree tree(resultedClause);
     Reducer reducer(tree);
     auto newClauseForm = reducer.getClauseForm();

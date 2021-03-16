@@ -628,9 +628,9 @@ bool isAnd) {
             argumentsVariant.emplace_back(arg);
         }
     }
-    if(arguments.empty()) {
+    if(argumentsVariant.empty()) {
         // we'll introduce a constant here, in order to do not allow predicates of arity 0
-        arguments.emplace_back(RandomFactory::getRandomConstantName(reservedTermNames));
+        argumentsVariant.emplace_back(RandomFactory::getRandomConstantName(reservedTermNames));
     }
     shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
     shared_ptr<SimplifiedLiteral> newLiteralNegated = make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);
