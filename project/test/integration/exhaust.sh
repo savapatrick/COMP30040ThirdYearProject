@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for i in {1..5}; do
+for i in {1..10}; do
   echo "test $i"
   ./integration-test.sh &>"aux$i.txt"
   echo "corect"

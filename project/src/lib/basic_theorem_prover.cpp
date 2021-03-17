@@ -42,6 +42,10 @@ void BasicTheoremProver::factoringStep() {
     indexes.reserve((int)clauseForm->clauseForm.size());
     for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
     std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
+        // this means that we have seen index before!
+        if (avoid.lower_bound({index, 0}) != avoid.end()) {
+            return;
+        }
         isDeletedGuard.lock();
         if(isDeleted.find(index) != isDeleted.end()) {
             isDeletedGuard.unlock();
@@ -125,8 +129,8 @@ void BasicTheoremProver::subsumption() {
         toBeDeletedGuard.unlock();
         auto& clause    = clauseForm->clauseForm[index];
         auto hashSetOne = clause->getHashSet();
-        for(int index2 = 0; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-            if(index == index2 or isDeleted.find(index2) != isDeleted.end()) {
+        for(int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+            if(isDeleted.find(index2) != isDeleted.end() or avoid.find({index, index2}) != avoid.end()) {
                 continue;
             }
             toBeDeletedGuard.lock();
@@ -146,6 +150,23 @@ void BasicTheoremProver::subsumption() {
                 }
             }
             if(!isSubsumed) {
+                isSubsumed = true;
+                for(auto& x : hashSetTwo) {
+                    if(hashSetOne.find(x) == hashSetOne.end()) {
+                        // that's a weak check; we could lose precious subsumptions
+                        isSubsumed = false;
+                        break;
+                    }
+                }
+                if (isSubsumed) {
+                    toBeDeletedGuard.lock();
+                    toBeDeleted[index] = true;
+                    byWhich[index]     = index2;
+                    toBeDeletedGuard.unlock();
+                    toBeModifiedGuard.lock();
+                    toBeModified = true;
+                    toBeModifiedGuard.unlock();
+                }
                 continue;
             }
             toBeDeletedGuard.lock();
