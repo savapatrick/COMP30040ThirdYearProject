@@ -10,11 +10,16 @@
 #include "theorem_prover.h"
 #include "unification.h"
 
+#include <algorithm>
+#include <execution>
+#include <iostream>
+#include <mutex>
 #include <utility>
 
 namespace utils {
 class BasicTheoremProver : public TheoremProver {
     protected:
+    std::mutex outputStreamGuard;
     std::shared_ptr<Unification> unification;
     std::set<std::pair<int, int>> avoid;
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
@@ -30,8 +35,9 @@ class BasicTheoremProver : public TheoremProver {
     bool resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate);
 
     public:
-    BasicTheoremProver(std::shared_ptr<ClauseForm> _clauseForm, const std::string& _fileName = "theorem_prover.txt")
-    : TheoremProver(_clauseForm, _fileName), unification(std::make_shared<Unification>(outputStream)) {
+    BasicTheoremProver(const std::shared_ptr<ClauseForm>& _clauseForm, bool allowEquality = false, const std::string& _fileName = "theorem_prover.txt")
+    : TheoremProver(_clauseForm, allowEquality, _fileName), outputStreamGuard() {
+        unification = std::make_shared<Unification>(outputStreamGuard, outputStream);
         avoid.clear();
         clauses.clear();
         clausesSoFar.clear();
@@ -63,57 +69,93 @@ class BasicTheoremProver : public TheoremProver {
 template <typename LiteralPredicate, typename ResolventPredicate>
 bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, ResolventPredicate resolventPredicate) {
     do {
-        outputStream << "[SIZE] clauseForm.size() is " + std::to_string(clauseForm->clauseForm.size()) << '\n';
+        std::cerr << "[SIZE] clauseForm.size() is " + std::to_string(clauseForm->clauseForm.size()) << '\n';
+        std::cerr.flush();
         outputData();
         clauses.clear();
+        std::cerr << "enters inside factoring!\n";
+        std::cerr.flush();
         factoringStep();
+        std::cerr << "it's outside factoring!\n";
+        std::cerr.flush();
+        std::cerr << "enters inside subsumption!\n";
+        std::cerr.flush();
         subsumption();
-        for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-            if(isDeleted.find(index) != isDeleted.end()) {
-                continue;
-            }
-            for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-                if(avoid.find({ index, index2 }) != avoid.end() or isDeleted.find(index2) != isDeleted.end()) {
-                    continue;
-                }
-                auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
-                clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
-                avoid.insert({ index, index2 });
-                if(!result.empty()) {
-                    for(auto& currentClause : result) {
-                        removeDuplicates(currentClause);
-                        if(isTautology(currentClause)) {
-                            continue;
-                        }
-                        auto clauseHash = currentClause->getHash();
-                        if(clauses.find(clauseHash) != clauses.end()) {
-                            continue;
-                        }
-                        if(clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
-                            continue;
-                        }
-                        outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
-                                     << " with " << clauseForm->clauseForm[index2]->getString()
-                                     << "and it results a new clause " << currentClause->getString() << '\n';
-                        clauses[clauseHash] = currentClause;
-                        clausesSoFar.insert(clauseHash);
-                        if(currentClause->clause.empty()) {
-                            // we derived the empty clause
-                            for(auto& keyValue : clauses) { clauseForm->clauseForm.push_back(keyValue.second); }
-                            outputData();
-                            return true;
+        std::cerr << "it's outside subsumption!\n";
+        std::cerr.flush();
+        std::mutex setGuard;
+        std::mutex insertGuard;
+        std::vector<int> indexes;
+        indexes.reserve((int)clauseForm->clauseForm.size());
+        for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
+        std::cerr << "enters inside multithreading!\n";
+        std::cerr.flush();
+        std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
+            if(isDeleted.find(index) == isDeleted.end()) {
+                for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                    if(isDeleted.find(index2) != isDeleted.end()) {
+                        continue;
+                    }
+                    setGuard.lock();
+                    if(avoid.find({ index, index2 }) != avoid.end()) {
+                        setGuard.unlock();
+                        continue;
+                    }
+                    setGuard.unlock();
+                    auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
+                    clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
+                    setGuard.lock();
+                    avoid.insert({ index, index2 });
+                    setGuard.unlock();
+                    if(!result.empty()) {
+                        for(auto& currentClause : result) {
+                            if(isTautology(currentClause)) {
+                                continue;
+                            }
+                            removeDuplicates(currentClause);
+                            auto clauseHash = currentClause->getHash();
+                            insertGuard.lock();
+                            if(clauses.find(clauseHash) != clauses.end() or
+                            clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
+                                insertGuard.unlock();
+                                continue;
+                            }
+                            insertGuard.unlock();
+                            outputStreamGuard.lock();
+                            outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
+                                         << " with " << clauseForm->clauseForm[index2]->getString()
+                                         << "and it results a new clause " << currentClause->getString() << '\n';
+                            outputStreamGuard.unlock();
+                            insertGuard.lock();
+                            clauses[clauseHash] = currentClause;
+                            clausesSoFar.insert(clauseHash);
+                            insertGuard.unlock();
                         }
                     }
                 }
             }
-        }
+        });
+        std::cerr << "it's outside multithreading!\n";
+        std::cerr.flush();
         if(!clauses.empty()) {
-            for(auto& keyValue : clauses) { clauseForm->clauseForm.push_back(keyValue.second); }
+            bool derivedEmpty = false;
+            for(auto& keyValue : clauses) {
+                auto& currentClause = keyValue.second;
+                clauseForm->clauseForm.push_back(currentClause);
+                if(currentClause->clause.empty()) {
+                    derivedEmpty = true;
+                }
+            }
+            if(derivedEmpty) {
+                outputData();
+                return true;
+            }
             clauseForm->makeVariableNamesUniquePerClause();
         } else {
             return false;
         }
     } while(upperLimit-- > 0);
+    return false;
 }
 
 } // namespace utils

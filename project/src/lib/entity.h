@@ -36,7 +36,7 @@ class Entity {
     public:
     Entity() = default;
 
-    Entity(const std::shared_ptr<Entity>& other) : type(other->type) {
+    explicit Entity(const std::shared_ptr<Entity>& other) : type(other->type) {
         if(type == 0 or type == 2) {
             entity = std::get<0>(other->entity);
         } else if(type == 1) {

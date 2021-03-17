@@ -209,12 +209,8 @@ std::string Term::getStringWithoutVariableNames() {
     return cachedGetStringWithoutVariableNames;
 }
 
-std::string Term::getHash(const unordered_map<std::string, std::string>& substitution) {
-    if(!cachedGetHash.empty()) {
-        return cachedGetHash;
-    }
-    cachedGetHash = preOrderTraversal(shared_from_this(), substitution);
-    return cachedGetHash;
+std::string Term::getHash(const unordered_map<std::string, std::string>& substitution) const {
+    return preOrderTraversal(shared_from_this(), substitution);
 }
 
 void Term::applySubstitution(const pair<std::string, std::string>& substitution) {
@@ -292,7 +288,6 @@ const vector<std::shared_ptr<Term>>& Term::getArguments() const {
     return arguments;
 }
 void Term::clearCache() {
-    cachedGetHash.clear();
     cachedGetString.clear();
     cachedGetStringWithoutVariableNames.clear();
 }

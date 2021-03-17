@@ -16,12 +16,16 @@ bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
     }
     unordered_map<string, shared_ptr<Literal>> literals;
     for(auto& literal : clause->clause) { literals[literal->getString()] = literal; }
+    outputStreamGuard.lock();
     outputStream << "removing duplicates from clause " + clause->getString() << "\n";
+    outputStreamGuard.unlock();
     if(literals.size() != clause->clause.size()) {
         clause->clause.clear();
         clause->clause.reserve(literals.size());
         for(auto& keyValue : literals) { clause->clause.emplace_back(keyValue.second); }
+        outputStreamGuard.lock();
         outputStream << "it then becomes " << clause->getString() << "\n";
+        outputStreamGuard.unlock();
         return true;
     }
     return false;
@@ -30,38 +34,66 @@ bool BasicTheoremProver::removeDuplicates(std::shared_ptr<Clause>& clause) {
 void BasicTheoremProver::factoringStep() {
     bool changed = false;
     vector<shared_ptr<Clause>> toBeInserted;
-    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
+    std::mutex isDeletedGuard;
+    std::mutex setGuard;
+    std::mutex changedGuard;
+    std::mutex toBeInsertedGuard;
+    std::vector<int> indexes;
+    indexes.reserve((int)clauseForm->clauseForm.size());
+    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
+    std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
+        isDeletedGuard.lock();
         if(isDeleted.find(index) != isDeleted.end()) {
-            continue;
+            isDeletedGuard.unlock();
+            return;
         }
+        isDeletedGuard.unlock();
         auto& clause      = clauseForm->clauseForm[index];
         auto previousHash = clause->getHash();
         if(removeDuplicates(clause)) {
+            changedGuard.lock();
             changed = true;
+            changedGuard.unlock();
             if(previousHash != clause->getHash()) {
+                setGuard.lock();
                 clausesSoFar.erase(clausesSoFar.find(previousHash));
+                clausesSoFar.insert(clause->getHash());
+                setGuard.unlock();
                 previousHash = clause->getHash();
-                clausesSoFar.insert(previousHash);
             }
         }
         if(isTautology(clause)) {
+            outputStreamGuard.lock();
             outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
+            outputStreamGuard.unlock();
+            setGuard.lock();
             clausesSoFar.erase(clausesSoFar.find(previousHash));
-            changed          = true;
+            setGuard.unlock();
+            changedGuard.lock();
+            changed = true;
+            changedGuard.unlock();
+            isDeletedGuard.lock();
             isDeleted[index] = previousState.back();
-            continue;
+            isDeletedGuard.unlock();
+            return;
         }
         auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
-        if(!unificationResult.empty()) {
-            for(auto& newClause : unificationResult) {
-                if(!isTautology(newClause) and removeDuplicates(newClause) and
-                clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
-                    toBeInserted.push_back(newClause);
-                    changed = true;
-                }
+        for(auto& newClause : unificationResult) {
+            setGuard.lock();
+            if(!isTautology(newClause) and removeDuplicates(newClause) and
+            clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
+                setGuard.unlock();
+                toBeInsertedGuard.lock();
+                toBeInserted.push_back(newClause);
+                toBeInsertedGuard.unlock();
+                changedGuard.lock();
+                changed = true;
+                changedGuard.unlock();
+                continue;
             }
+            setGuard.unlock();
         }
-    }
+    });
     if(changed) {
         for(auto& elem : toBeInserted) {
             if(clausesSoFar.find(elem->getHash()) == clausesSoFar.end()) {
@@ -76,19 +108,36 @@ void BasicTheoremProver::subsumption() {
     vector<bool> toBeDeleted(clauseForm->clauseForm.size(), false);
     vector<int> byWhich(clauseForm->clauseForm.size(), 0);
     bool toBeModified = false;
-    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-        if(toBeDeleted[index] or isDeleted.find(index) != isDeleted.end()) {
-            continue;
+    std::mutex toBeDeletedGuard;
+    std::mutex toBeModifiedGuard;
+    std::vector<int> indexes;
+    indexes.reserve((int)clauseForm->clauseForm.size());
+    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
+    std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
+        if(isDeleted.find(index) != isDeleted.end()) {
+            return;
         }
+        toBeDeletedGuard.lock();
+        if(toBeDeleted[index]) {
+            toBeDeletedGuard.unlock();
+            return;
+        }
+        toBeDeletedGuard.unlock();
         auto& clause    = clauseForm->clauseForm[index];
         auto hashSetOne = clause->getHashSet();
         for(int index2 = 0; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-            if(index == index2 or toBeDeleted[index2] or isDeleted.find(index2) != isDeleted.end()) {
+            if(index == index2 or isDeleted.find(index2) != isDeleted.end()) {
                 continue;
             }
-            auto& clause2   = clauseForm->clauseForm[index2];
-            auto hashSetTwo = clause2->getHashSet();
-            bool isSubsumed = true;
+            toBeDeletedGuard.lock();
+            if(toBeDeleted[index2]) {
+                toBeDeletedGuard.unlock();
+                continue;
+            }
+            toBeDeletedGuard.unlock();
+            auto& clause2         = clauseForm->clauseForm[index2];
+            const auto hashSetTwo = clause2->getHashSet();
+            bool isSubsumed       = true;
             for(auto& x : hashSetOne) {
                 if(hashSetTwo.find(x) == hashSetTwo.end()) {
                     // that's a weak check; we could lose precious subsumptions
@@ -99,11 +148,15 @@ void BasicTheoremProver::subsumption() {
             if(!isSubsumed) {
                 continue;
             }
+            toBeDeletedGuard.lock();
             toBeDeleted[index2] = true;
             byWhich[index2]     = index;
-            toBeModified        = true;
+            toBeDeletedGuard.unlock();
+            toBeModifiedGuard.lock();
+            toBeModified = true;
+            toBeModifiedGuard.unlock();
         }
-    }
+    });
     if(!toBeModified) {
         return;
     }

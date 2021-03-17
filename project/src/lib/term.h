@@ -22,7 +22,6 @@ class Term : public std::enable_shared_from_this<Term> {
     std::vector<std::shared_ptr<Term>> arguments;
     std::string cachedGetString;
     std::string cachedGetStringWithoutVariableNames;
-    std::string cachedGetHash;
     bool containsTerm(const std::string& name) const;
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>>
     findPartialSubstitution(const std::shared_ptr<Term>& first, const std::shared_ptr<Term>& second) const;
@@ -35,7 +34,6 @@ class Term : public std::enable_shared_from_this<Term> {
         arguments.clear();
         cachedGetString.clear();
         cachedGetStringWithoutVariableNames.clear();
-        cachedGetHash.clear();
     }
     explicit Term(const std::string& term,
     const std::unordered_set<std::string>& variableNames,
@@ -52,7 +50,6 @@ class Term : public std::enable_shared_from_this<Term> {
         arguments.clear();
         cachedGetString.clear();
         cachedGetStringWithoutVariableNames.clear();
-        cachedGetHash.clear();
     }
     explicit Term(const std::pair<std::string, std::vector<std::string>>& function,
     const std::unordered_set<std::string>& variableNames,
@@ -64,15 +61,13 @@ class Term : public std::enable_shared_from_this<Term> {
         }
         cachedGetString.clear();
         cachedGetStringWithoutVariableNames.clear();
-        cachedGetHash.clear();
     }
     explicit Term(const std::shared_ptr<Term>& other) : termName(other->termName), termType(other->termType) {
         arguments.reserve(other->arguments.size());
         auto& otherArguments = other->arguments;
-        for(auto& arg : otherArguments) { arguments.push_back(std::make_shared<Term>(arg)); }
+        for(auto& arg : otherArguments) { arguments.push_back(arg->createDeepCopy()); }
         cachedGetString.clear();
         cachedGetStringWithoutVariableNames.clear();
-        cachedGetHash.clear();
     }
     const std::string& getTermName() const;
     TermType getTermType() const;
@@ -81,6 +76,7 @@ class Term : public std::enable_shared_from_this<Term> {
     std::vector<std::string> getAllVariablesInOrder() const;
     bool hasNestedFunctions() const;
     std::pair<int, std::unordered_map<std::string, int>> getDepths() const;
+    std::string getHash(const std::unordered_map<std::string, std::string>& substitution) const;
 
     public: // non-const ones
     [[nodiscard]] bool equals(const std::shared_ptr<Term>& other);
@@ -91,7 +87,6 @@ class Term : public std::enable_shared_from_this<Term> {
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Term>& other);
     std::string getString();
     std::string getStringWithoutVariableNames();
-    std::string getHash(const std::unordered_map<std::string, std::string>& substitution);
     void clearCache();
 };
 }; // namespace utils

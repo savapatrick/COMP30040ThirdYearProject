@@ -22,6 +22,8 @@ class Operators {
     const std::string DOUBLEImply;
     const std::string EQuantifier;
     const std::string VQuantifier;
+    const std::string EQUALITY;
+    const std::string INEQUALITY;
 
     private:
     std::unordered_map<std::string, std::string> mapping;
@@ -29,7 +31,7 @@ class Operators {
 
     Operators()
     : AND("^"), OR("|"), NOT("~"), OPENEDBracket("("), CLOSEDBracket(")"), IMPLY("->"), DOUBLEImply("<->"),
-      EQuantifier("?"), VQuantifier("@") {
+      EQuantifier("?"), VQuantifier("@"), EQUALITY("="), INEQUALITY("!=") {
         mapping["AND"]         = AND;
         mapping["OR"]          = OR;
         mapping["NOT"]         = NOT;
@@ -39,6 +41,8 @@ class Operators {
         mapping["DOUBLEImply"] = DOUBLEImply;
         mapping["E"]           = EQuantifier;
         mapping["@"]           = VQuantifier;
+        mapping["="]           = EQUALITY;
+        mapping["!="]          = INEQUALITY;
         for(auto& elem : mapping) { inv[elem.second] = elem.first; }
     }
 
@@ -57,6 +61,8 @@ class Operators {
     std::string advanceOperator(int& position, const std::string& seq, const std::string& result);
 
     bool isQuantifier(const std::string& current);
+    bool isEquality(const std::string& current);
+    bool isInequality(const std::string& current);
 
     bool isQuantifierAndVariable(const std::string& current);
 

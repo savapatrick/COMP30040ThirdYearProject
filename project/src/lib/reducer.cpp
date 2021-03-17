@@ -609,7 +609,6 @@ bool isAnd) {
         firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
         return make_shared<SimplifiedClauseForm>(firstClauses);
     }
-    std::string fakePredicateName = getRandomPredicateName();
     // uncomment here if you want to escape from the optimization
     if(firstClauses.size() == 1 and secondClauses.size() == 1) {
         /// trivial case
@@ -618,15 +617,20 @@ bool isAnd) {
     }
     // TODO: bear in mind that here we made the assumption that any free-variable in the
     // initial formula is a constant
-    auto allArgumentsFirst  = first->getAllArguments();
-    auto allArgumentsSecond = second->getAllArguments();
-    auto arguments          = AdHocTemplated<string>::unionIterablesVector(allArgumentsFirst, allArgumentsSecond);
+    std::string fakePredicateName = getRandomPredicateName();
+    auto allArgumentsFirst        = first->getAllArguments();
+    auto allArgumentsSecond       = second->getAllArguments();
+    auto arguments                = AdHocTemplated<string>::unionIterablesVector(allArgumentsFirst, allArgumentsSecond);
     std::vector<SimplifiedLiteral::arg> argumentsVariant;
     argumentsVariant.reserve(arguments.size());
-    for(auto& arg : arguments) { argumentsVariant.emplace_back(arg); }
-    if(arguments.empty()) {
+    for(auto& arg : arguments) {
+        if(arg.rfind("_v_", 0) == 0) { // starts with _v_, then it's variable
+            argumentsVariant.emplace_back(arg);
+        }
+    }
+    if(argumentsVariant.empty()) {
         // we'll introduce a constant here, in order to do not allow predicates of arity 0
-        arguments.emplace_back(RandomFactory::getRandomConstantName(reservedTermNames));
+        argumentsVariant.emplace_back(RandomFactory::getRandomConstantName(reservedTermNames));
     }
     shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
     shared_ptr<SimplifiedLiteral> newLiteralNegated = make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);

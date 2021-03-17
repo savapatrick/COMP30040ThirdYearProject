@@ -1,5 +1,5 @@
 link_directories(lib)
 add_subdirectory(lib)
 set(SOURCES main.cpp)
-add_executable(clauseForm main.cpp)
-target_link_libraries(clauseForm utils)
+add_executable(theorem_prover main.cpp)
+target_link_libraries(theorem_prover utils -ltbb)

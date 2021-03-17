@@ -12,8 +12,6 @@ using namespace std;
 
 namespace utils {
 std::vector<std::string> Tokenizer::tokenize(const std::string& seq) {
-    /// TODO: when introducing equality, manually remove all of the equality signs and replace them
-    /// with an equality predicate of arity 2, possibly with a special name
     string aux(seq);
     /// get rid of all of the whitespaces
     aux.erase(remove_if(aux.begin(), aux.end(), [](char c) { return isspace(c); }), aux.end());
@@ -28,6 +26,12 @@ std::vector<std::string> Tokenizer::tokenize(const std::string& seq) {
                 ind += 1;
             } while(ind < (int)aux.size() and aux[ind] != ')');
             current += aux[ind];
+            if(count_if(current.begin(), current.end(),
+               [](unsigned char currentCharacter) { return isupper(currentCharacter); }) > 1) {
+                throw invalid_argument(
+                "Predicates are allowed to start with uppercase letters and contain only uppercase further"
+                " and variables are lowercase only!");
+            }
             ind += 1;
         } else {
             auto result = operators.whichOperator(ind, aux);
@@ -38,21 +42,78 @@ std::vector<std::string> Tokenizer::tokenize(const std::string& seq) {
                     current += aux[ind];
                     ind += 1;
                 }
+                bool followsEqualityOrInequality = (ind < (int)aux.size() and
+                (operators.whichOperator(ind, aux) == "=" or operators.whichOperator(ind, aux) == "!="));
                 // this should be a variable
                 // a variable could occur at this point ONLY after a quantifier
-                if(!islower(current[0]) or !(!tokens.empty() and operators.isQuantifier(tokens.back()))) {
+                if(!islower(current[0]) or
+                (tokens.empty() or
+                (!operators.isEquality(tokens.back()) and !operators.isInequality(tokens.back()) and
+                !operators.isQuantifier(tokens.back()) and !followsEqualityOrInequality))) {
                     // this means that this does not start with lowercase letter OR
                     // there are no tokens in the list
-                    throw invalid_argument("the given formula is malformed");
+                    throw invalid_argument(
+                    "Something expected to be variable was either starting with non-lowercase letter "
+                    "or occurred after something different than equality or quantifier");
                 }
-                tokens[(int)tokens.size() - 1] += current;
-                continue;
+                if(operators.isQuantifier(tokens.back())) {
+                    tokens[(int)tokens.size() - 1] += current;
+                    continue;
+                }
             }
         }
         tokens.emplace_back(current);
     }
-    // TODO: Incredibly important, enforce the order of the tokens to be initial one
-    return tokens;
+    bool hasInequality = false;
+    vector<string> resultingTokens;
+    for(auto& token : tokens) {
+        if(isupper(token.at(0))) {
+            if(token == "Equality") {
+                throw invalid_argument("The given formula contains a predicate called Equality."
+                                       "This is a keyword and cannot be used as a predicate name.");
+            }
+            if(token == "Inequality") {
+                throw invalid_argument("The given formula contains a predicate called Inequality."
+                                       "This is a keyword and cannot be used as a predicate name.");
+            }
+        }
+        if(!resultingTokens.empty() and operators.isEquality(resultingTokens.back())) {
+            resultingTokens.pop_back();
+            if(!islower(token.at(0)) or resultingTokens.empty() or
+            (!resultingTokens.empty() and !islower(resultingTokens.back().at(0)))) {
+                throw invalid_argument("The given string violates the grammar for the equality sign");
+            }
+            auto result = "Equality(" + resultingTokens.back() + "," + token + ")";
+            resultingTokens.pop_back();
+            resultingTokens.push_back(result);
+        } else if(!resultingTokens.empty() and operators.isInequality(resultingTokens.back())) {
+            resultingTokens.pop_back();
+            if(!islower(token.at(0)) or resultingTokens.empty() or
+            (!resultingTokens.empty() and !islower(resultingTokens.back().at(0)))) {
+                throw invalid_argument("The given string violates the grammar for the inequality sign");
+            }
+            auto result = "Inequality(" + resultingTokens.back() + "," + token + ")";
+            resultingTokens.pop_back();
+            resultingTokens.push_back(result);
+            hasInequality = true;
+        } else {
+            resultingTokens.push_back(token);
+        }
+    }
+    if(hasInequality) {
+        // we have to manually add the conjunction
+        reverse(resultingTokens.begin(), resultingTokens.end());
+        resultingTokens.push_back(operators.OPENEDBracket);
+        reverse(resultingTokens.begin(), resultingTokens.end());
+        resultingTokens.push_back(operators.CLOSEDBracket);
+        resultingTokens.push_back(operators.AND);
+        resultingTokens.push_back(operators.VQuantifier + "x");
+        resultingTokens.push_back(operators.OPENEDBracket);
+        resultingTokens.push_back(operators.NOT);
+        resultingTokens.emplace_back("Inequality(x,x)");
+        resultingTokens.push_back(operators.CLOSEDBracket);
+    }
+    return resultingTokens;
 }
 
 std::pair<std::string, std::vector<std::variant<std::string, std::pair<std::string, std::vector<std::string>>>>>

@@ -6,6 +6,7 @@
 #include "lib/parse_tree.h"
 #include "lib/tokenizer.h"
 #include <fstream>
+#include <lib/depth_ordered_theorem_prover.h>
 #include <lib/two_variable_theorem_prover.h>
 #include <memory>
 
@@ -15,8 +16,8 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
     int commandMask = 0;
-    map<string, int> whichMask({ { "none", 4 }, { "all", 3 }, { "basic", 2 }, { "two", 1 } });
-    map<string, int> powerCommand({ { "basic", 1 }, { "two", 0 } });
+    map<string, int> whichMask({ { "none", 0 }, { "all", 7 }, { "depth", 4 }, { "basic", 2 }, { "two", 1 } });
+    map<string, int> powerCommand({ { "depth", 2 }, { "basic", 1 }, { "two", 0 } });
     if(argc > 1) {
         string command(argv[1]);
         commandMask = whichMask[command];
@@ -48,11 +49,15 @@ int main(int argc, char* argv[]) {
     output << clauseForm->getString() << '\n';
     output.flush();
     if(commandMask & (1 << powerCommand["basic"])) {
-        utils::BasicTheoremProver basicTheoremProver(clauseForm, "basic_theorem_prover_output.txt");
+        utils::BasicTheoremProver basicTheoremProver(clauseForm, false, "basic_theorem_prover_output.txt");
         basicTheoremProver.run();
     }
+    if(commandMask & (1 << powerCommand["depth"])) {
+        utils::DepthOrderedTheoremProver depthOrderedTheoremProver(clauseForm, false, "depth_ordered_theorem_prover_output.txt");
+        depthOrderedTheoremProver.run();
+    }
     if(commandMask & (1 << powerCommand["two"])) {
-        utils::TwoVariableTheoremProver twoVariableTheoremProver(clauseForm, "two_variable_theorem_prover_output.txt");
+        utils::TwoVariableTheoremProver twoVariableTheoremProver(clauseForm, true, "two_variable_theorem_prover_output.txt");
         twoVariableTheoremProver.run();
     }
     return 0;

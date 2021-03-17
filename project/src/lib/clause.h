@@ -46,9 +46,9 @@ class Clause : public std::enable_shared_from_this<Clause> {
     }
     void disjointifyVariables(std::shared_ptr<Clause>& other);
     std::shared_ptr<Clause> createDeepCopy();
-    bool hasNestedFunctions();
-    std::unordered_set<std::string> getAllVariables();
-    int getHighestNumberOfVariablesPerLiteral();
+    bool hasNestedFunctions() const;
+    std::unordered_set<std::string> getAllVariables() const;
+    int getHighestNumberOfVariablesPerLiteralExcludingEquality();
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);
@@ -57,6 +57,7 @@ class Clause : public std::enable_shared_from_this<Clause> {
     std::string getString() const;
     std::string getHash() const;
     std::unordered_set<std::string> getHashSet() const;
+    bool containsEquality() const;
 };
 }; // namespace utils
 

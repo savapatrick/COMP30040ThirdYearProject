@@ -47,7 +47,7 @@ std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> Literal::augme
     return true;
 }
 
-bool Literal::hasNestedFunctions() {
+bool Literal::hasNestedFunctions() const {
     for(auto& term : terms) {
         if(term->hasNestedFunctions()) {
             return true;
@@ -56,7 +56,7 @@ bool Literal::hasNestedFunctions() {
     return false;
 }
 
-std::unordered_set<std::string> Literal::getAllVariables() {
+std::unordered_set<std::string> Literal::getAllVariables() const {
     unordered_set<string> result;
     for(auto& term : terms) {
         AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(term->getAllVariables(), result, result);
@@ -72,15 +72,23 @@ std::pair<std::string, bool> Literal::getLiteral() {
     return { predicateName, isNegated };
 }
 
+std::string Literal::getPredicateName() const {
+    return predicateName;
+}
+
+std::string Literal::getTerms() const {
+    string params;
+    for(auto& term : terms) { params += term->getString() + ","; }
+    params.pop_back();
+    return params;
+}
+
 std::string Literal::getString() const {
     string sign;
     if(isNegated) {
         sign = "~";
     }
-    string params;
-    for(auto& term : terms) { params += term->getString() + ","; }
-    params.pop_back();
-    return sign + predicateName + "(" + params + ")";
+    return sign + predicateName + "(" + getTerms() + ")";
 }
 
 std::string Literal::getStringWithoutVariableNames() const {
@@ -126,13 +134,32 @@ std::string Literal::getHash(const unordered_map<std::string, std::string>& subs
     return sign + predicateName + "(" + params + ")";
 }
 
-std::vector<std::string> Literal::getAllVariablesInOrder() {
+std::vector<std::string> Literal::getAllVariablesInOrder() const {
+    // todo: maybe here we have to use set?
     vector<string> variablesInOrder;
     for(auto& term : terms) {
         auto currentVariablesInOrder = term->getAllVariablesInOrder();
         variablesInOrder.insert(variablesInOrder.end(), currentVariablesInOrder.begin(), currentVariablesInOrder.end());
     }
     return variablesInOrder;
+}
+
+int Literal::getArityExcludingConstants() const {
+    // todo: why do we need them in order?
+    auto variablesInOrder = getAllVariablesInOrder();
+    return set<string>(variablesInOrder.begin(), variablesInOrder.end()).size();
+}
+
+bool Literal::getIsEquality() const {
+    return isEquality;
+}
+
+bool Literal::getIsNegated() const {
+    return isNegated;
+}
+
+void Literal::negate() {
+    isNegated ^= true;
 }
 
 }; // namespace utils

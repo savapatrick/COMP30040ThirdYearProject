@@ -22,6 +22,19 @@ class ClauseForm {
     std::unordered_set<std::string> allVariableNames;
     std::unordered_set<std::string> allConstantNames;
 
+    void merge(std::shared_ptr<ClauseForm>& other);
+    void applySubstitution(const std::pair<std::string, std::string>& mapping);
+    void renameFunction(const std::pair<std::string, std::string>& mapping);
+    void renameTerms(std::shared_ptr<ClauseForm>& other,
+    std::unordered_set<std::string>& _allTermNames,
+    std::unordered_set<std::string>& _allTermNamesOther,
+    std::unordered_set<std::string>& forbiddenOne,
+    std::unordered_set<std::string>& forbiddenTwo,
+    bool isFunctionRenaming);
+    void copyToThis(const std::shared_ptr<ClauseForm>& other);
+    void makeVariableNamesUniquePerClause();
+    void enforcePureTwoVariableFragment();
+
     public:
     ClauseForm() = default;
     ClauseForm(const std::shared_ptr<SimplifiedClauseForm>& simplifiedClauseForm,
@@ -46,20 +59,12 @@ class ClauseForm {
         allConstantNames = other->allConstantNames;
         makeVariableNamesUniquePerClause();
     }
-    void merge(std::shared_ptr<ClauseForm>& other);
-    void applySubstitution(const std::pair<std::string, std::string>& mapping);
-    void renameFunction(const std::pair<std::string, std::string>& mapping);
-    void renameTerms(std::shared_ptr<ClauseForm>& other,
-    std::unordered_set<std::string>& _allTermNames,
-    std::unordered_set<std::string>& _allTermNamesOther,
-    std::unordered_set<std::string>& forbiddenOne,
-    std::unordered_set<std::string>& forbiddenTwo,
-    bool isFunctionRenaming);
-    void makeVariableNamesUniquePerClause();
     std::string getString() const;
     std::string getStringWithIndex() const;
     std::string getStringWithIndex(const std::unordered_map<int, int>& isDeleted) const;
     bool isTwoVariableFragment();
+    bool containsEquality() const;
+    void resolveEquality();
 };
 }; // namespace utils
 

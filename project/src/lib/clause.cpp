@@ -13,7 +13,7 @@ namespace utils {
 std::shared_ptr<Clause> Clause::createDeepCopy() {
     return std::make_shared<Clause>(shared_from_this());
 }
-bool Clause::hasNestedFunctions() {
+bool Clause::hasNestedFunctions() const {
     for(auto& literal : clause) {
         if(literal->hasNestedFunctions()) {
             return true;
@@ -21,27 +21,39 @@ bool Clause::hasNestedFunctions() {
     }
     return false;
 }
-int Clause::getHighestNumberOfVariablesPerLiteral() {
+
+int Clause::getHighestNumberOfVariablesPerLiteralExcludingEquality() {
     int answer = 0;
-    for(auto& literal : clause) { answer = max(answer, static_cast<int>(literal->getAllVariables().size())); }
+    for(auto& literal : clause) {
+        if(!literal->getIsEquality()) {
+            answer = max(answer, static_cast<int>(literal->getAllVariables().size()));
+        }
+    }
     return answer;
 }
-std::unordered_set<std::string> Clause::getAllVariables() {
+
+std::unordered_set<std::string> Clause::getAllVariables() const {
     unordered_set<string> result;
     for(auto& literal : clause) {
         AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(literal->getAllVariables(), result, result);
     }
     return result;
 }
+
 void Clause::applySubstitution(const pair<std::string, std::shared_ptr<Term>>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }
+
 std::map<std::pair<std::string, bool>, int> Clause::getLiteralsAndCount() const {
     map<pair<string, bool>, int> accumulator;
     for(auto& literal : clause) { accumulator[literal->getLiteral()] += 1; }
     return accumulator;
 }
+
 std::string Clause::getString() const {
+    if(clause.empty()) {
+        return "<empty clause>"; // empty clause
+    }
     string result;
     vector<string> literals;
     literals.reserve(clause.size());
@@ -93,12 +105,15 @@ std::string Clause::getHash() const {
 void Clause::applySubstitution(const pair<std::string, std::string>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }
+
 void Clause::renameFunction(const pair<std::string, std::string>& mapping) {
     for(auto& literal : clause) { literal->renameFunction(mapping); }
 }
+
 const std::vector<std::shared_ptr<Literal>>& Clause::getLiterals() const {
     return clause;
 }
+
 void Clause::disjointifyVariables(shared_ptr<Clause>& other) {
     auto allOtherVariables = other->getAllVariables();
     auto allVariables      = this->getAllVariables();
@@ -110,5 +125,8 @@ void Clause::disjointifyVariables(shared_ptr<Clause>& other) {
     }
 }
 
+bool Clause::containsEquality() const {
+    return getString().find("Equality(") != string::npos;
+}
 
 }; // namespace utils

@@ -27,6 +27,7 @@ class Literal : public std::enable_shared_from_this<Literal> {
     bool isNegated;
     std::string predicateName;
     std::vector<std::shared_ptr<Term>> terms;
+    bool isEquality;
 
     public:
     Literal(const std::shared_ptr<SimplifiedLiteral>& simplifiedLiteral,
@@ -42,19 +43,24 @@ class Literal : public std::enable_shared_from_this<Literal> {
                 terms.push_back(std::make_shared<Term>(std::get<0>(arg), variableNames, constantNames));
             }
         }
+        isEquality = (predicateName == "Equality");
     }
     Literal(const std::shared_ptr<Literal>& other) : isNegated(other->isNegated), predicateName(other->predicateName) {
         terms.reserve(other->terms.size());
         auto& otherTerms = other->terms;
         for(auto& otherTerm : otherTerms) { terms.push_back(otherTerm->createDeepCopy()); }
+        isEquality = (predicateName == "Equality");
     }
-
+    std::string getPredicateName() const;
+    std::string getTerms() const;
+    bool getIsNegated() const;
+    bool getIsEquality() const;
     bool equalsWithoutSign(const std::shared_ptr<Literal>& other);
     std::variant<bool, std::pair<std::string, std::shared_ptr<Term>>> augmentUnification(const std::shared_ptr<Literal>& other);
     std::shared_ptr<Literal> createDeepCopy();
-    bool hasNestedFunctions();
-    std::unordered_set<std::string> getAllVariables();
-    std::vector<std::string> getAllVariablesInOrder();
+    bool hasNestedFunctions() const;
+    std::unordered_set<std::string> getAllVariables() const;
+    std::vector<std::string> getAllVariablesInOrder() const;
     void applySubstitution(const std::pair<std::string, std::shared_ptr<Term>>& mapping);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);
@@ -63,6 +69,8 @@ class Literal : public std::enable_shared_from_this<Literal> {
     std::string getStringWithoutVariableNames() const;
     std::string getHash(const std::unordered_map<std::string, std::string>& substitution) const;
     std::pair<int, std::unordered_map<std::string, int>> getDepths();
+    int getArityExcludingConstants() const;
+    void negate();
 };
 
 }; // namespace utils
