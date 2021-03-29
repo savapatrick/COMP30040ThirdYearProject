@@ -12,7 +12,9 @@ class TwoVariableTheoremProver : public BasicTheoremProver {
     bool withEquality;
 
     public:
-    TwoVariableTheoremProver(const std::shared_ptr<ClauseForm> &_clauseForm, bool allowEquality = false, const std::string& _fileName = "theorem_prover.txt")
+    TwoVariableTheoremProver(const std::shared_ptr<ClauseForm>& _clauseForm,
+    bool allowEquality           = false,
+    const std::string& _fileName = "theorem_prover.txt")
     : BasicTheoremProver(_clauseForm, allowEquality, _fileName), withEquality(allowEquality) {
         if(!clauseForm->isTwoVariableFragment()) {
             throw std::invalid_argument("The given clause form " + clauseForm->getString() + "is not a valid two variable fragment");

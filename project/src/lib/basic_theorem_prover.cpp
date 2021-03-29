@@ -81,7 +81,7 @@ void BasicTheoremProver::factoringStep() {
         for(auto& newClause : unificationResult) {
             if(!isTautology(newClause) and removeDuplicates(newClause)) {
                 setGuard.lock();
-                if (clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
+                if(clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
                     setGuard.unlock();
                     toBeInsertedGuard.lock();
                     toBeInserted.push_back(newClause);
@@ -204,10 +204,8 @@ int BasicTheoremProver::addNewClause(const std::shared_ptr<Clause>& newClause) {
     }
     return previousState.back();
 }
-void BasicTheoremProver::revert(const int &checkpoint) {
-    while(!previousState.empty() and previousState.back() >= checkpoint) {
-        previousState.pop_back();
-    }
+void BasicTheoremProver::revert(const int& checkpoint) {
+    while(!previousState.empty() and previousState.back() >= checkpoint) { previousState.pop_back(); }
     while(clauseForm->clauseForm.size() > checkpoint) {
         auto whichClause = clauseForm->clauseForm.back();
         if(clausesSoFar.find(whichClause->getHash()) != clausesSoFar.end()) {
