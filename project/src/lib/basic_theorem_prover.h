@@ -85,25 +85,13 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         std::cerr.flush();
         std::mutex setGuard;
         std::mutex insertGuard;
-        std::mutex derivedEmptyGuard;
-        bool derivedEmpty = false;
-        std::vector<std::pair <int, int>> indexes;
+        std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
-        for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) {
-            indexes.emplace_back(clauseForm->clauseForm[index]->clause.size(), index);
-        }
-        std::sort(indexes.begin(), indexes.end());
+        for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
         std::cerr << "enters inside multithreading!\n";
         std::cerr.flush();
-        std::for_each(std::execution::par, std::begin(indexes), std::end(indexes), [&](auto&& information) {
-            auto index = information.second;
+        std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
             if(isDeleted.find(index) == isDeleted.end()) {
-                derivedEmptyGuard.lock();
-                if (derivedEmpty) {
-                    derivedEmptyGuard.unlock();
-                    return;
-                }
-                derivedEmptyGuard.unlock();
                 for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
                     if(isDeleted.find(index2) != isDeleted.end()) {
                         continue;
@@ -142,12 +130,6 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                             clauses[clauseHash] = currentClause;
                             clausesSoFar.insert(clauseHash);
                             insertGuard.unlock();
-                            if (currentClause->clause.empty()) {
-                                derivedEmptyGuard.lock();
-                                derivedEmpty = true;
-                                derivedEmptyGuard.unlock();
-                                break;
-                            }
                         }
                     }
                 }
@@ -156,15 +138,19 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         std::cerr << "it's outside multithreading!\n";
         std::cerr.flush();
         if(!clauses.empty()) {
+            bool derivedEmpty = false;
             for(auto& keyValue : clauses) {
                 auto& currentClause = keyValue.second;
                 clauseForm->clauseForm.push_back(currentClause);
+                if(currentClause->clause.empty()) {
+                    derivedEmpty = true;
+                }
             }
             if(derivedEmpty) {
                 outputData();
                 return true;
             }
-            // clauseForm->makeVariableNamesUniquePerClause();
+            clauseForm->makeVariableNamesUniquePerClause();
         } else {
             return false;
         }
