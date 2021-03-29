@@ -79,11 +79,11 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentCh
         buckets[current].emplace_back(elem);
     }
     for(auto& elem : buckets) {
-        prover->addNewClause(make_shared<Clause>(elem.second));
+        const int checkpoint = prover->addNewClause(make_shared<Clause>(elem.second));
         if(backtrackingClauseFormAndResolution(currentChoice + 1, prover)) {
             return true;
         }
-        prover->revert();
+        prover->revert(checkpoint);
     }
     return false;
 }
