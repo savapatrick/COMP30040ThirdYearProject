@@ -195,40 +195,29 @@ bool BasicTheoremProver::run() {
     }
 }
 
-void BasicTheoremProver::addNewClause(const std::shared_ptr<Clause>& newClause) {
+int BasicTheoremProver::addNewClause(const std::shared_ptr<Clause>& newClause) {
     previousState.push_back(clauseForm->clauseForm.size());
     if(clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
         clausesSoFar.insert(newClause->getHash());
         clauseForm->clauseForm.push_back(newClause->createDeepCopy());
         clauseForm->makeVariableNamesUniquePerClause();
     }
+    return previousState.back();
 }
-void BasicTheoremProver::revert() {
-    if(previousState.empty()) {
-        throw logic_error("[BasicTheoremProver] Cannot revert when there are no checkpoints!");
+void BasicTheoremProver::revert(const int &checkpoint) {
+    while(!previousState.empty() and previousState.back() >= checkpoint) {
+        previousState.pop_back();
     }
-    int previousLabel = previousState.back();
-    previousState.pop_back();
-    while(clauseForm->clauseForm.size() > previousLabel) {
+    while(clauseForm->clauseForm.size() > checkpoint) {
         auto whichClause = clauseForm->clauseForm.back();
         if(clausesSoFar.find(whichClause->getHash()) != clausesSoFar.end()) {
             clausesSoFar.erase(clausesSoFar.find(whichClause->getHash()));
         }
         clauseForm->clauseForm.pop_back();
     }
-    vector<pair<int, int>> toBeDeleted;
-    for(auto& elem : avoid) {
-        if(elem.first >= previousLabel or elem.second >= previousLabel) {
-            toBeDeleted.push_back(elem);
-        }
-    }
-    while(!toBeDeleted.empty()) {
-        avoid.erase(avoid.find(toBeDeleted.back()));
-        toBeDeleted.pop_back();
-    }
     vector<int> revive;
     for(auto& elem : isDeleted) {
-        if(elem.second == previousLabel) {
+        if(elem.second >= checkpoint) {
             revive.push_back(elem.first);
         }
     }
@@ -239,5 +228,6 @@ void BasicTheoremProver::revert() {
         }
         revive.pop_back();
     }
+    firstSetOfSupportCheckpointIndex = 0;
 }
 }; // namespace utils
