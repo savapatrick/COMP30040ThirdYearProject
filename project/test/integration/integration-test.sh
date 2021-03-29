@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-for i in {1..47}; do
+for i in {29..29}; do
   printf "=====================================\n\n"
   echo "" >basic_theorem_prover_output.txt
   echo "" >two_variable_theorem_prover_output.txt
   cp "../../samples/input$i.txt" input.txt
   echo "begin $(date +%s)"
-  timeout 10s ../../../cmake-build-debug/project/src/theorem_prover basic >/dev/null 2>&1
-  exit_code=$?
+#timeout 10s ../../../cmake-build-debug/project/src/theorem_prover basic >/dev/null 2>&1
+  exit_code=1
   if [[ $exit_code -eq 0 ]]; then
     matches="$(tail -1 basic_theorem_prover_output.txt | grep -c -f "../../samples/answer$i.ans")"
     if ((matches > 0)); then
@@ -20,8 +20,8 @@ for i in {1..47}; do
   fi
   echo "end $(date +%s)"
 
-  timeout 10s ../../../cmake-build-debug/project/src/theorem_prover depth >/dev/null 2>&1
-  exit_code=$?
+#timeout 10s ../../../cmake-build-debug/project/src/theorem_prover depth >/dev/null 2>&1
+  exit_code=1
   if [[ $exit_code -eq 0 ]]; then
     matches="$(tail -1 depth_ordered_theorem_prover_output.txt | grep -c -f "../../samples/answer$i.ans")"
     if ((matches > 0)); then

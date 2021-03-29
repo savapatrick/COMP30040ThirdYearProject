@@ -104,9 +104,9 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
                     setGuard.unlock();
                     auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
                     clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
-                    setGuard.lock();
-                    avoid.insert({ index, index2 });
-                    setGuard.unlock();
+                    // setGuard.lock();
+                    // avoid.insert({ index, index2 });
+                    // setGuard.unlock();
                     if(!result.empty()) {
                         for(auto& currentClause : result) {
                             if(isTautology(currentClause)) {

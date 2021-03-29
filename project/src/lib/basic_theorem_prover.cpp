@@ -79,19 +79,20 @@ void BasicTheoremProver::factoringStep() {
         }
         auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
         for(auto& newClause : unificationResult) {
-            setGuard.lock();
-            if(!isTautology(newClause) and removeDuplicates(newClause) and
-            clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
+            if(!isTautology(newClause) and removeDuplicates(newClause)) {
+                setGuard.lock();
+                if (clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
+                    setGuard.unlock();
+                    toBeInsertedGuard.lock();
+                    toBeInserted.push_back(newClause);
+                    toBeInsertedGuard.unlock();
+                    changedGuard.lock();
+                    changed = true;
+                    changedGuard.unlock();
+                    continue;
+                }
                 setGuard.unlock();
-                toBeInsertedGuard.lock();
-                toBeInserted.push_back(newClause);
-                toBeInsertedGuard.unlock();
-                changedGuard.lock();
-                changed = true;
-                changedGuard.unlock();
-                continue;
             }
-            setGuard.unlock();
         }
     });
     if(changed) {
