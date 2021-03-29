@@ -21,11 +21,11 @@ class BasicTheoremProver : public TheoremProver {
     protected:
     std::mutex outputStreamGuard;
     std::shared_ptr<Unification> unification;
-    std::set<std::pair<int, int>> avoid;
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
     std::unordered_set<std::string> clausesSoFar;
     std::vector<int> previousState;
     std::unordered_map<int, int> isDeleted;
+    int firstSetOfSupportCheckpointIndex;
     long long upperLimit;
 
     bool removeDuplicates(std::shared_ptr<Clause>& clause);
@@ -38,12 +38,12 @@ class BasicTheoremProver : public TheoremProver {
     BasicTheoremProver(const std::shared_ptr<ClauseForm>& _clauseForm, bool allowEquality = false, const std::string& _fileName = "theorem_prover.txt")
     : TheoremProver(_clauseForm, allowEquality, _fileName), outputStreamGuard() {
         unification = std::make_shared<Unification>(outputStreamGuard, outputStream);
-        avoid.clear();
         clauses.clear();
         clausesSoFar.clear();
         previousState.clear();
         isDeleted.clear();
-        upperLimit = std::numeric_limits<long long>::max(); // something HUGE
+        firstSetOfSupportCheckpointIndex = 0;
+        upperLimit                       = std::numeric_limits<long long>::max(); // something HUGE
         previousState.push_back(0);
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
@@ -61,8 +61,8 @@ class BasicTheoremProver : public TheoremProver {
         }
         clauseForm->makeVariableNamesUniquePerClause();
     }
-    void addNewClause(const std::shared_ptr<Clause>& newClause);
-    void revert();
+    int addNewClause(const std::shared_ptr<Clause>& newClause);
+    void revert(const int& checkpoint);
     bool run() override;
 };
 
@@ -83,61 +83,56 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         subsumption();
         std::cerr << "it's outside subsumption!\n";
         std::cerr.flush();
-        std::mutex setGuard;
         std::mutex insertGuard;
         std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
-        std::cerr << "enters inside multithreading!\n";
-        std::cerr.flush();
-        std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
-            if(isDeleted.find(index) == isDeleted.end()) {
-                for(int index2 = index; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-                    if(isDeleted.find(index2) != isDeleted.end()) {
-                        continue;
-                    }
-                    setGuard.lock();
-                    if(avoid.find({ index, index2 }) != avoid.end()) {
-                        setGuard.unlock();
-                        continue;
-                    }
-                    setGuard.unlock();
-                    auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
-                    clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
-                    setGuard.lock();
-                    avoid.insert({ index, index2 });
-                    setGuard.unlock();
-                    if(!result.empty()) {
-                        for(auto& currentClause : result) {
-                            if(isTautology(currentClause)) {
-                                continue;
-                            }
-                            removeDuplicates(currentClause);
-                            auto clauseHash = currentClause->getHash();
-                            insertGuard.lock();
-                            if(clauses.find(clauseHash) != clauses.end() or
-                            clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
+        if(firstSetOfSupportCheckpointIndex < previousState.size()) {
+            std::cerr << "enters inside multithreading!\n";
+            std::cerr.flush();
+            int startPosition = previousState[firstSetOfSupportCheckpointIndex];
+            std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
+                if(isDeleted.find(index) == isDeleted.end()) {
+                    for(int index2 = startPosition; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                        if(isDeleted.find(index2) != isDeleted.end()) {
+                            continue;
+                        }
+                        auto result = unification->attemptToUnify<decltype(literalPredicate), decltype(resolventPredicate)>(
+                        clauseForm->clauseForm[index], clauseForm->clauseForm[index2], literalPredicate, resolventPredicate);
+                        if(!result.empty()) {
+                            for(auto& currentClause : result) {
+                                if(isTautology(currentClause)) {
+                                    continue;
+                                }
+                                removeDuplicates(currentClause);
+                                auto clauseHash = currentClause->getHash();
+                                insertGuard.lock();
+                                if(clauses.find(clauseHash) != clauses.end() or
+                                clausesSoFar.find(clauseHash) != clausesSoFar.end()) {
+                                    insertGuard.unlock();
+                                    continue;
+                                }
                                 insertGuard.unlock();
-                                continue;
+                                outputStreamGuard.lock();
+                                outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
+                                             << " with " << clauseForm->clauseForm[index2]->getString()
+                                             << "and it results a new clause " << currentClause->getString() << '\n';
+                                outputStreamGuard.unlock();
+                                insertGuard.lock();
+                                clauses[clauseHash] = currentClause;
+                                clausesSoFar.insert(clauseHash);
+                                insertGuard.unlock();
                             }
-                            insertGuard.unlock();
-                            outputStreamGuard.lock();
-                            outputStream << "[ADD] we managed to unify " << clauseForm->clauseForm[index]->getString()
-                                         << " with " << clauseForm->clauseForm[index2]->getString()
-                                         << "and it results a new clause " << currentClause->getString() << '\n';
-                            outputStreamGuard.unlock();
-                            insertGuard.lock();
-                            clauses[clauseHash] = currentClause;
-                            clausesSoFar.insert(clauseHash);
-                            insertGuard.unlock();
                         }
                     }
                 }
-            }
-        });
-        std::cerr << "it's outside multithreading!\n";
-        std::cerr.flush();
+            });
+            std::cerr << "it's outside multithreading!\n";
+            std::cerr.flush();
+        }
+        firstSetOfSupportCheckpointIndex++;
         if(!clauses.empty()) {
+            previousState.push_back(clauseForm->clauseForm.size());
             bool derivedEmpty = false;
             for(auto& keyValue : clauses) {
                 auto& currentClause = keyValue.second;
