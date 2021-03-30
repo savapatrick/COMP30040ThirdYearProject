@@ -38,67 +38,66 @@ void BasicTheoremProver::factoringStep() {
     std::mutex setGuard;
     std::mutex changedGuard;
     std::mutex toBeInsertedGuard;
-    std::vector<int> indexes;
-    indexes.reserve((int)clauseForm->clauseForm.size());
-    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
-    std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
-        // this means that we have seen index before!
-        if (avoid.lower_bound({index, 0}) != avoid.end()) {
-            return;
-        }
-        isDeletedGuard.lock();
-        if(isDeleted.find(index) != isDeleted.end()) {
+    if(firstSetOfSupportCheckpointIndex < previousState.size()) {
+        int startPosition = previousState[firstSetOfSupportCheckpointIndex];
+        std::vector<int> indexes;
+        indexes.reserve((int)clauseForm->clauseForm.size());
+        for(int index = startPosition; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
+        std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
+            isDeletedGuard.lock();
+            if(isDeleted.find(index) != isDeleted.end()) {
+                isDeletedGuard.unlock();
+                return;
+            }
             isDeletedGuard.unlock();
-            return;
-        }
-        isDeletedGuard.unlock();
-        auto& clause      = clauseForm->clauseForm[index];
-        auto previousHash = clause->getHash();
-        if(removeDuplicates(clause)) {
-            changedGuard.lock();
-            changed = true;
-            changedGuard.unlock();
-            if(previousHash != clause->getHash()) {
+            auto& clause      = clauseForm->clauseForm[index];
+            auto previousHash = clause->getHash();
+            if(removeDuplicates(clause)) {
+                changedGuard.lock();
+                changed = true;
+                changedGuard.unlock();
+                if(previousHash != clause->getHash()) {
+                    setGuard.lock();
+                    clausesSoFar.erase(clausesSoFar.find(previousHash));
+                    clausesSoFar.insert(clause->getHash());
+                    setGuard.unlock();
+                    previousHash = clause->getHash();
+                }
+            }
+            if(isTautology(clause)) {
+                outputStreamGuard.lock();
+                outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
+                outputStreamGuard.unlock();
                 setGuard.lock();
                 clausesSoFar.erase(clausesSoFar.find(previousHash));
-                clausesSoFar.insert(clause->getHash());
                 setGuard.unlock();
-                previousHash = clause->getHash();
+                changedGuard.lock();
+                changed = true;
+                changedGuard.unlock();
+                isDeletedGuard.lock();
+                isDeleted[index] = previousState.back();
+                isDeletedGuard.unlock();
+                return;
             }
-        }
-        if(isTautology(clause)) {
-            outputStreamGuard.lock();
-            outputStream << "clause " + clause->getString() + " is a tautology, so it's dropped\n";
-            outputStreamGuard.unlock();
-            setGuard.lock();
-            clausesSoFar.erase(clausesSoFar.find(previousHash));
-            setGuard.unlock();
-            changedGuard.lock();
-            changed = true;
-            changedGuard.unlock();
-            isDeletedGuard.lock();
-            isDeleted[index] = previousState.back();
-            isDeletedGuard.unlock();
-            return;
-        }
-        auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
-        for(auto& newClause : unificationResult) {
-            if(!isTautology(newClause) and removeDuplicates(newClause)) {
-                setGuard.lock();
-                if(clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
+            auto unificationResult = unification->tryToUnifyTwoLiterals(clause);
+            for(auto& newClause : unificationResult) {
+                if(!isTautology(newClause) and removeDuplicates(newClause)) {
+                    setGuard.lock();
+                    if(clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
+                        setGuard.unlock();
+                        toBeInsertedGuard.lock();
+                        toBeInserted.push_back(newClause);
+                        toBeInsertedGuard.unlock();
+                        changedGuard.lock();
+                        changed = true;
+                        changedGuard.unlock();
+                        continue;
+                    }
                     setGuard.unlock();
-                    toBeInsertedGuard.lock();
-                    toBeInserted.push_back(newClause);
-                    toBeInsertedGuard.unlock();
-                    changedGuard.lock();
-                    changed = true;
-                    changedGuard.unlock();
-                    continue;
                 }
-                setGuard.unlock();
             }
-        }
-    });
+        });
+    }
     if(changed) {
         for(auto& elem : toBeInserted) {
             if(clausesSoFar.find(elem->getHash()) == clausesSoFar.end()) {
@@ -115,70 +114,73 @@ void BasicTheoremProver::subsumption() {
     bool toBeModified = false;
     std::mutex toBeDeletedGuard;
     std::mutex toBeModifiedGuard;
-    std::vector<int> indexes;
-    indexes.reserve((int)clauseForm->clauseForm.size());
-    for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
-    std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
-        if(isDeleted.find(index) != isDeleted.end()) {
-            return;
-        }
-        toBeDeletedGuard.lock();
-        if(toBeDeleted[index]) {
-            toBeDeletedGuard.unlock();
-            return;
-        }
-        toBeDeletedGuard.unlock();
-        auto& clause    = clauseForm->clauseForm[index];
-        auto hashSetOne = clause->getHashSet();
-        for(int index2 = index + 1; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
-            if(isDeleted.find(index2) != isDeleted.end() or avoid.find({index, index2}) != avoid.end()) {
-                continue;
+    if(firstSetOfSupportCheckpointIndex < previousState.size()) {
+        int startPosition = previousState[firstSetOfSupportCheckpointIndex];
+        std::vector<int> indexes;
+        indexes.reserve((int)clauseForm->clauseForm.size());
+        for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
+        std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
+            if(isDeleted.find(index) != isDeleted.end()) {
+                return;
             }
             toBeDeletedGuard.lock();
-            if(toBeDeleted[index2]) {
+            if(toBeDeleted[index]) {
                 toBeDeletedGuard.unlock();
-                continue;
+                return;
             }
             toBeDeletedGuard.unlock();
-            auto& clause2         = clauseForm->clauseForm[index2];
-            const auto hashSetTwo = clause2->getHashSet();
-            bool isSubsumed       = true;
-            for(auto& x : hashSetOne) {
-                if(hashSetTwo.find(x) == hashSetTwo.end()) {
-                    // that's a weak check; we could lose precious subsumptions
-                    isSubsumed = false;
-                    break;
+            auto& clause    = clauseForm->clauseForm[index];
+            auto hashSetOne = clause->getHashSet();
+            for(int index2 = startPosition; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                if(isDeleted.find(index2) != isDeleted.end() or index2 <= index) {
+                    continue;
                 }
-            }
-            if(!isSubsumed) {
-                isSubsumed = true;
-                for(auto& x : hashSetTwo) {
-                    if(hashSetOne.find(x) == hashSetOne.end()) {
+                toBeDeletedGuard.lock();
+                if(toBeDeleted[index2]) {
+                    toBeDeletedGuard.unlock();
+                    continue;
+                }
+                toBeDeletedGuard.unlock();
+                auto& clause2         = clauseForm->clauseForm[index2];
+                const auto hashSetTwo = clause2->getHashSet();
+                bool isSubsumed       = true;
+                for(auto& x : hashSetOne) {
+                    if(hashSetTwo.find(x) == hashSetTwo.end()) {
                         // that's a weak check; we could lose precious subsumptions
                         isSubsumed = false;
                         break;
                     }
                 }
-                if (isSubsumed) {
-                    toBeDeletedGuard.lock();
-                    toBeDeleted[index] = true;
-                    byWhich[index]     = index2;
-                    toBeDeletedGuard.unlock();
-                    toBeModifiedGuard.lock();
-                    toBeModified = true;
-                    toBeModifiedGuard.unlock();
+                if(!isSubsumed) {
+                    isSubsumed = true;
+                    for(auto& x : hashSetTwo) {
+                        if(hashSetOne.find(x) == hashSetOne.end()) {
+                            // that's a weak check; we could lose precious subsumptions
+                            isSubsumed = false;
+                            break;
+                        }
+                    }
+                    if(isSubsumed) {
+                        toBeDeletedGuard.lock();
+                        toBeDeleted[index] = true;
+                        byWhich[index]     = index2;
+                        toBeDeletedGuard.unlock();
+                        toBeModifiedGuard.lock();
+                        toBeModified = true;
+                        toBeModifiedGuard.unlock();
+                    }
+                    continue;
                 }
-                continue;
+                toBeDeletedGuard.lock();
+                toBeDeleted[index2] = true;
+                byWhich[index2]     = index;
+                toBeDeletedGuard.unlock();
+                toBeModifiedGuard.lock();
+                toBeModified = true;
+                toBeModifiedGuard.unlock();
             }
-            toBeDeletedGuard.lock();
-            toBeDeleted[index2] = true;
-            byWhich[index2]     = index;
-            toBeDeletedGuard.unlock();
-            toBeModifiedGuard.lock();
-            toBeModified = true;
-            toBeModifiedGuard.unlock();
-        }
-    });
+        });
+    }
     if(!toBeModified) {
         return;
     }
