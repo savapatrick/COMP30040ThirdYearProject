@@ -30,6 +30,7 @@ while true; do
             echo "$step: Failure! Vampire and TP are having different verdicts!"
             break
           fi
+          echo "tp_satisfiable is $tp_satisfiable and vampire_satisfiable is $vampire_satisfiable"
           ((step = step + 1))
         done
       done
