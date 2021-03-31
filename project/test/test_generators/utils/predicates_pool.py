@@ -19,6 +19,15 @@ class PredicatesPool:
 
     _unique_instance = None
 
+    def __choice__(self):
+        return random.choice(self.predicates)
+
+    def __choices__(self, size):
+        return random.choices(self.predicates, k=size)
+
+    def __sample__(self, size):
+        return random.sample(self.predicates, k=size)
+
     def __new__(cls, *args, **kwargs):
         if not cls._unique_instance:
             cls._unique_instance = super(PredicatesPool, cls).__new__(cls)
@@ -29,15 +38,15 @@ class PredicatesPool:
         self.predicate_length_max = max(1, _predicate_length_max)
         for i in range(size):
             self.__generate_predicate()
+        self.alpha = self.predicates
+        self.beta = random.sample(self.alpha, k=random.randint(1, len(self.alpha)))
 
     def get_predicates(self):
         return self.predicates
 
-    def choice(self):
-        return random.choice(self.predicates)
+    def alpha_choice(self):
+        return random.choice(self.alpha)
 
-    def choices(self, size):
-        return random.choices(self.predicates, k=size)
+    def beta_choice(self):
+        return random.choice(self.beta)
 
-    def sample(self, size):
-        return random.sample(self.predicates, k=size)

@@ -349,6 +349,7 @@ void ClauseForm::resolveEquality() {
         resultedClause);
     }
     cerr << resultedClause << '\n';
+    cerr.flush();
     ParseTree tree(resultedClause);
     Reducer reducer(tree);
     auto newClauseForm = reducer.getClauseForm();

@@ -42,7 +42,9 @@ void BasicTheoremProver::factoringStep() {
         int startPosition = previousState[firstSetOfSupportCheckpointIndex];
         std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
-        for(int index = startPosition; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
+        for(int index = startPosition; index < (int)clauseForm->clauseForm.size(); ++index) {
+            indexes.push_back(index);
+        }
         std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
             isDeletedGuard.lock();
             if(isDeleted.find(index) != isDeleted.end()) {
