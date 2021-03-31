@@ -62,8 +62,6 @@ class Reducer {
 
     void skolemization();
 
-    void removeUniversalQuantifiers();
-
     std::shared_ptr<SimplifiedClauseForm> unifyTwoNormalFormsOnOperator(std::shared_ptr<SimplifiedClauseForm>& first,
     std::shared_ptr<SimplifiedClauseForm>& second,
     bool isAnd,

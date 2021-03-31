@@ -49,4 +49,3 @@ class PredicatesPool:
 
     def beta_choice(self):
         return random.choice(self.beta)
-

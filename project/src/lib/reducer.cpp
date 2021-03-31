@@ -570,28 +570,7 @@ void Reducer::skolemization() {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }
     }
-    removeUniversalQuantifiers();
-}
-
-void Reducer::removeUniversalQuantifiers() {
-    vector<int> universalQuantifiersNodes;
-    Operators& operators = Operators::getInstance();
     allBoundVariables.clear();
-    for(auto& information : parseTree.information) {
-        auto key   = information.first;
-        auto value = information.second;
-        if(value->getType() == BOUNDVariable) {
-            auto boundVariable = value->getEntity<string>();
-            auto quantifier    = operators.getQuantifierFromQuantifierAndVariable(boundVariable);
-            if(quantifier != operators.VQuantifier) {
-                throw std::logic_error("We still have existential quantifiers in the parse tree after skolemization!");
-            }
-            auto variable = operators.getVariableFromQuantifierAndVariable(boundVariable);
-            allBoundVariables.insert(variable);
-            universalQuantifiersNodes.emplace_back(key);
-        }
-    }
-    for(auto& elem : universalQuantifiersNodes) { parseTree.information.erase(parseTree.information.find(elem)); }
 }
 
 shared_ptr<SimplifiedClauseForm> Reducer::unifyTwoNormalFormsOnOperator(shared_ptr<SimplifiedClauseForm>& first,
@@ -605,9 +584,9 @@ std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
     if(second->isEmpty) {
         return make_shared<SimplifiedClauseForm>(first->simplifiedClauseForm);
     }
-    std::vector<SimplifiedClauseForm::SimplifiedClause> firstClauses(first->getSimplifiedClauseForm());
-    std::vector<SimplifiedClauseForm::SimplifiedClause> secondClauses(second->getSimplifiedClauseForm());
     if(isAnd) {
+        std::vector<SimplifiedClauseForm::SimplifiedClause> firstClauses(first->getSimplifiedClauseForm());
+        std::vector<SimplifiedClauseForm::SimplifiedClause> secondClauses(second->getSimplifiedClauseForm());
         firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
         return make_shared<SimplifiedClauseForm>(firstClauses);
     }
@@ -666,6 +645,8 @@ std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
     recalibrate(first);
     recalibrate(second);
     recalibrate(second);
+    std::vector<SimplifiedClauseForm::SimplifiedClause> firstClauses(first->getSimplifiedClauseForm());
+    std::vector<SimplifiedClauseForm::SimplifiedClause> secondClauses(second->getSimplifiedClauseForm());
     // uncomment here if you want to escape from the optimization
     if(firstClauses.size() == 1 and secondClauses.size() == 1) {
         /// trivial case
@@ -677,18 +658,26 @@ std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
 }
 
 void Reducer::unifyNormalForms(int node, vector<string>& inScopeVariables, std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
-    Operators& operators = Operators::getInstance();
+    Operators& operators  = Operators::getInstance();
+    bool rememberToDelete = false;
     if(parseTree.information.find(node) != parseTree.information.end()) {
         if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
             auto information = parseTree.information[node]->getEntity<string>();
-            string variable  = operators.getVariableFromQuantifierAndVariable(information);
+            auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
+            if(quantifier != operators.VQuantifier) {
+                throw std::logic_error("We still have existential quantifiers in the parse tree after skolemization!");
+            }
+            string variable = operators.getVariableFromQuantifierAndVariable(information);
             inScopeVariables.push_back(variable);
+            allBoundVariables.insert(variable);
+            parseTree.information.erase(parseTree.information.find(node));
+            rememberToDelete = true;
         }
     }
     int cnt = 0;
     int whichNeighbour;
     for(auto& neighbour : parseTree.graph[node]) {
-        unifyNormalForms(neighbour, inScopeVariables);
+        unifyNormalForms(neighbour, inScopeVariables, inAddition);
         if(parseTree.information.find(neighbour) != parseTree.information.end()) {
             cnt += 1;
             whichNeighbour = neighbour;
@@ -733,7 +722,7 @@ void Reducer::unifyNormalForms(int node, vector<string>& inScopeVariables, std::
                 } else if(parseTree.information[neighbour]->getType() == EntityType::NORMALForms) {
                     auto currentNode      = parseTree.information[node]->getEntity<shared_ptr<SimplifiedClauseForm>>();
                     auto currentNeighbour = parseTree.information[neighbour]->getEntity<shared_ptr<SimplifiedClauseForm>>();
-                    auto result = unifyTwoNormalFormsOnOperator(currentNode, currentNeighbour, isAnd, inScopeVariables);
+                    auto result = unifyTwoNormalFormsOnOperator(currentNode, currentNeighbour, isAnd, inScopeVariables, inAddition);
                     parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms, result);
                     parseTree.information.erase(parseTree.information.find(neighbour));
                 } else if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
@@ -742,10 +731,8 @@ void Reducer::unifyNormalForms(int node, vector<string>& inScopeVariables, std::
             }
         }
     }
-    if(parseTree.information.find(node) != parseTree.information.end()) {
-        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
-            inScopeVariables.pop_back();
-        }
+    if(rememberToDelete) {
+        inScopeVariables.pop_back();
     }
 }
 
