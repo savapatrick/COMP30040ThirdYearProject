@@ -113,7 +113,7 @@ std::string ClauseForm::getStringWithIndex(const std::unordered_map<int, int>& i
 
 bool ClauseForm::isTwoVariableFragment() {
     return all_of(clauseForm.begin(), clauseForm.end(), [](const shared_ptr<Clause>& clause) -> bool {
-        return (!clause->hasNestedFunctions() and clause->getAllVariables().size() <= 2);
+        return (!clause->hasNestedFunctions() and clause->getMaximumNumberOfVariablesPerLiteral() <= 2);
     });
 }
 
@@ -137,11 +137,12 @@ void ClauseForm::enforcePureTwoVariableFragment() {
             throw std::logic_error("The clause " + clause->getString() + "contains more than two variables!");
         }
         if(clauseVariables.size() == 2) {
-            if(!clause->containsEquality()) {
+            // todo: probably delete this
+            /*if(!clause->containsEquality()) {
                 throw std::logic_error(
                 "Only clauses containing equality should be in two variables at this point!; clause " +
                 clause->getString() + " violates this!");
-            }
+            }*/
             hasTwo = true;
         }
         // set because otherwise we would mess up the order of the variables
@@ -193,27 +194,27 @@ void ClauseForm::resolveEquality() {
     }
     string resultedClause;
     for(auto& clause : clauseForm) {
-        if(clause->containsEquality()) {
-            string currentClause;
-            map<string, vector<shared_ptr<Literal>>> groups;
-            const string noVariables = "<empty>";
-            auto literals            = clause->getLiterals();
-            for(auto& literal : literals) {
-                if(literal->getIsEquality()) {
-                    continue; // this is going to be resolved in the next for loop
+        string currentClause;
+        map<string, vector<shared_ptr<Literal>>> groups;
+        const string noVariables = "<empty>";
+        auto literals            = clause->getLiterals();
+        for(auto& literal : literals) {
+            if(literal->getIsEquality()) {
+                continue; // this is going to be resolved in the next for loop
+            } else {
+                auto variables = literal->getAllVariables();
+                if(variables.size() > 1) {
+                    throw std::logic_error("Any literal containing more than one variable"
+                                           " should be Equality at this point!");
+                } else if(variables.size() == 1) {
+                    groups[*variables.begin()].push_back(literal);
                 } else {
-                    auto variables = literal->getAllVariables();
-                    if(variables.size() > 1) {
-                        throw std::logic_error("Any literal containing more than one variable"
-                                               " should be Equality at this point!");
-                    } else if(variables.size() == 1) {
-                        groups[*variables.begin()].push_back(literal);
-                    } else {
-                        groups[noVariables].push_back(literal);
-                    }
+                    groups[noVariables].push_back(literal);
                 }
             }
-            string equalityPart;
+        }
+        string equalityPart;
+        if(clause->containsEquality()) {
             for(auto& literal : literals) {
                 if(literal->getIsEquality()) {
                     if(groups["_v_x"].empty() or groups["_v_y"].empty()) {
@@ -295,39 +296,27 @@ void ClauseForm::resolveEquality() {
                     equalityPart.append(operators.OR);
                 }
             }
-            if(!equalityPart.empty()) {
-                equalityPart.pop_back();
-            }
-            for(auto& bucket : groups) {
-                for(auto& currentLiteral : bucket.second) {
-                    if(bucket.first != noVariables) {
-                        currentClause += operators.VQuantifier + bucket.first;
-                    }
-                    currentClause += operators.OPENEDBracket + currentLiteral->getString() + operators.CLOSEDBracket;
-                    currentClause += operators.OR;
+        }
+        if(!equalityPart.empty()) {
+            equalityPart.pop_back();
+        }
+        for(auto& bucket : groups) {
+            for(auto& currentLiteral : bucket.second) {
+                if(bucket.first != noVariables) {
+                    currentClause += operators.VQuantifier + bucket.first;
                 }
-            }
-            if(!currentClause.empty()) {
-                currentClause.pop_back();
-            }
-            if(!equalityPart.empty()) {
-                currentClause.append(operators.OR);
-                currentClause.append(equalityPart);
-            }
-            resultedClause += operators.OPENEDBracket + currentClause + operators.CLOSEDBracket;
-        } else {
-            auto variables = clause->getAllVariables();
-            if(variables.size() > 1) {
-                throw std::logic_error("Any clause containing more than one variable "
-                                       "should contain Equality as well at this point");
-            } else if(variables.size() == 1) {
-                string whichVariable = *variables.begin();
-                resultedClause += operators.VQuantifier + whichVariable + operators.OPENEDBracket +
-                clause->getString() + operators.CLOSEDBracket;
-            } else {
-                resultedClause += operators.OPENEDBracket + clause->getString() + operators.CLOSEDBracket;
+                currentClause += operators.OPENEDBracket + currentLiteral->getString() + operators.CLOSEDBracket;
+                currentClause += operators.OR;
             }
         }
+        if(!currentClause.empty()) {
+            currentClause.pop_back();
+        }
+        if(!equalityPart.empty()) {
+            currentClause.append(operators.OR);
+            currentClause.append(equalityPart);
+        }
+        resultedClause += operators.OPENEDBracket + currentClause + operators.CLOSEDBracket;
         resultedClause += operators.AND;
     }
     if(!resultedClause.empty()) {

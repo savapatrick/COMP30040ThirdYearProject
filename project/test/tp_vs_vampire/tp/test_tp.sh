@@ -6,7 +6,6 @@ while true; do
   exit_code=$?
   if [[ $exit_code -eq 0 ]]; then
     echo "$step: success!"
-    break
   else
     echo "$step: failure!"
     break

@@ -94,13 +94,16 @@ bool TwoVariableTheoremProver::run() {
     outputStream << clauseForm->getStringWithIndex();
     cerr << "[SIZE] : " << clauseForm->clauseForm.size() << '\n';
     cerr << "entering in full resolution on two variable literals!";
-    cerr.flush();
     if(!fullResolutionTwoVariableLiterals()) {
         outputData();
         return false;
     }
     cerr << "exiting in full resolution on two variable literals!";
     cerr.flush();
+    cerr << "[SIZE before disposal] : " << clauseForm->clauseForm.size() << '\n';
+    outputStream << "[two variable theorem prover]\nwe have the following clauses before disposal:\n";
+    outputStream << clauseForm->getStringWithIndex();
+    outputData();
     disposeTwoVariableClauses();
     cerr << "[SIZE after disposal] : " << clauseForm->clauseForm.size() << '\n';
     outputStream << "[two variable theorem prover]\nwe have the following clauses after disposal:\n";

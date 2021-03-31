@@ -590,7 +590,7 @@ std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
         firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
         return make_shared<SimplifiedClauseForm>(firstClauses);
     }
-    static auto recalibrate = [this, &inScopeVariables, &inAddition](shared_ptr<SimplifiedClauseForm>& which) -> void {
+    auto recalibrate = [this, &inScopeVariables, &inAddition](shared_ptr<SimplifiedClauseForm>& which) -> void {
         std::vector<SimplifiedLiteral::arg> argumentsVariant(inScopeVariables.begin(), inScopeVariables.end());
         if(argumentsVariant.empty()) {
             // we'll introduce a constant here, in order to do not allow predicates of arity 0
@@ -612,7 +612,9 @@ std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
             }
         }
         if(allOfThemOne) {
-            std::string fakePredicateName            = getRandomPredicateName();
+            std::string fakePredicateName = getRandomPredicateName();
+            cerr << fakePredicateName << '\n';
+            cerr.flush();
             shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
             shared_ptr<SimplifiedLiteral> newLiteralNegated =
             make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);
@@ -628,6 +630,8 @@ std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
             std::vector<SimplifiedClauseForm::SimplifiedClause> newClauseForm;
             for(auto& currentClause : whichClauses) {
                 std::string fakePredicateName = getRandomPredicateName();
+                cerr << fakePredicateName << '\n';
+                cerr.flush();
                 shared_ptr<SimplifiedLiteral> newLiteral =
                 make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
                 shared_ptr<SimplifiedLiteral> newLiteralNegated =
