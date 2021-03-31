@@ -16,8 +16,14 @@ class TwoVariableTheoremProver : public BasicTheoremProver {
     bool allowEquality           = false,
     const std::string& _fileName = "theorem_prover.txt")
     : BasicTheoremProver(_clauseForm, allowEquality, _fileName), withEquality(allowEquality) {
-        if(!clauseForm->isTwoVariableFragment()) {
+        if(!clauseForm->makeTwoVariableFragment()) {
             throw std::invalid_argument("The given clause form " + clauseForm->getString() + "is not a valid two variable fragment");
+        }
+        clausesSoFar.clear();
+        for(auto& elem : clauseForm->clauseForm) {
+            if(clausesSoFar.find(elem->getHash()) == clausesSoFar.end()) {
+                clausesSoFar.insert(elem->getHash());
+            }
         }
     }
     bool fullResolutionTwoVariableLiterals();

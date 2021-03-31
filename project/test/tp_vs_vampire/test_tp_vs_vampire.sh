@@ -4,7 +4,7 @@ while true; do
     for B in {1..3}; do
       for C in {1..2}; do
         for P in {1..15}; do
-          python3.8 ../test_generators/generator_scott_form.py -A "$A" -B "$B" -C "$C" -E -LMIN 3 -LMAX 3 -P "$P" -VP -TP
+          python3.8 ../test_generators/generator_scott_form.py -A "$A" -B "$B" -C "$C" -E -LMIN 1 -LMAX 3 -P "$P" -VP -TP
           cp input_tp.txt input.txt
           ../../../cmake-build-debug/project/src/theorem_prover two >/dev/null 2>&1
           exit_code=$?

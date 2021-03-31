@@ -42,9 +42,8 @@ std::unordered_set<std::string> Clause::getAllVariables() const {
 
 int Clause::getMaximumNumberOfVariablesPerLiteral() const {
     int maximumNumberOfVariablesPerLiteral = 0;
-    for (auto& literal : clause) {
-        maximumNumberOfVariablesPerLiteral = max(maximumNumberOfVariablesPerLiteral,
-                                                 (int)literal->getAllVariables().size());
+    for(auto& literal : clause) {
+        maximumNumberOfVariablesPerLiteral = max(maximumNumberOfVariablesPerLiteral, (int)literal->getAllVariables().size());
     }
     return maximumNumberOfVariablesPerLiteral;
 }

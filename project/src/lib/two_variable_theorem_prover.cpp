@@ -110,6 +110,10 @@ bool TwoVariableTheoremProver::run() {
     outputStream << clauseForm->getStringWithIndex();
     outputData();
     if(withEquality and clauseForm->containsEquality()) {
+        if (!clauseForm->makeTwoVariableFragment()) {
+            throw logic_error("The intermediate representation of the given set of formulas in an invalid "
+                              "two variable fragment: " + clauseForm->getString());
+        }
         clauseForm->resolveEquality();
     }
     cerr << "[SIZE after equality] : " << clauseForm->clauseForm.size() << '\n';
