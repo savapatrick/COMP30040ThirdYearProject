@@ -23,7 +23,7 @@ class BasicTheoremProver : public TheoremProver {
     std::shared_ptr<Unification> unification;
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
     std::unordered_set<std::string> clausesSoFar;
-    std::vector<int> previousState;
+    std::vector<std::pair<int, int>> previousState;
     std::unordered_map<int, int> isDeleted;
     int firstSetOfSupportCheckpointIndex;
     long long upperLimit;
@@ -44,7 +44,7 @@ class BasicTheoremProver : public TheoremProver {
         isDeleted.clear();
         firstSetOfSupportCheckpointIndex = 0;
         upperLimit                       = std::numeric_limits<long long>::max(); // something HUGE
-        previousState.push_back(0);
+        previousState.emplace_back(0, firstSetOfSupportCheckpointIndex);
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
             removeDuplicates(elem);
@@ -132,7 +132,7 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         }
         firstSetOfSupportCheckpointIndex++;
         if(!clauses.empty()) {
-            previousState.push_back(clauseForm->clauseForm.size());
+            previousState.emplace_back(clauseForm->clauseForm.size(), firstSetOfSupportCheckpointIndex);
             bool derivedEmpty = false;
             for(auto& keyValue : clauses) {
                 auto& currentClause = keyValue.second;

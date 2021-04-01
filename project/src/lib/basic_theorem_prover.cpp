@@ -39,7 +39,7 @@ void BasicTheoremProver::factoringStep() {
     std::mutex changedGuard;
     std::mutex toBeInsertedGuard;
     if(firstSetOfSupportCheckpointIndex < previousState.size()) {
-        int startPosition = previousState[firstSetOfSupportCheckpointIndex];
+        int startPosition = previousState[firstSetOfSupportCheckpointIndex].first;
         std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
         for(int index = startPosition; index < (int)clauseForm->clauseForm.size(); ++index) {
@@ -117,7 +117,7 @@ void BasicTheoremProver::subsumption() {
     std::mutex toBeDeletedGuard;
     std::mutex toBeModifiedGuard;
     if(firstSetOfSupportCheckpointIndex < previousState.size()) {
-        int startPosition = previousState[firstSetOfSupportCheckpointIndex];
+        int startPosition = previousState[firstSetOfSupportCheckpointIndex].first;
         std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
@@ -192,7 +192,7 @@ void BasicTheoremProver::subsumption() {
         if(toBeDeleted[index]) {
             outputStream << "clause " + clause->getString() + " is being subsumed by " +
             clauseForm->clauseForm[byWhich[index]]->getString() + " so it's dropped\n";
-            isDeleted[index] = previousState.back();
+            isDeleted[index] = previousState.back().first;
             continue;
         }
     }
@@ -220,16 +220,17 @@ bool BasicTheoremProver::run() {
 }
 
 int BasicTheoremProver::addNewClause(const std::shared_ptr<Clause>& newClause) {
-    previousState.push_back(clauseForm->clauseForm.size());
+    previousState.emplace_back(clauseForm->clauseForm.size(), firstSetOfSupportCheckpointIndex);
     if(clausesSoFar.find(newClause->getHash()) == clausesSoFar.end()) {
         clausesSoFar.insert(newClause->getHash());
         clauseForm->clauseForm.push_back(newClause->createDeepCopy());
         clauseForm->makeVariableNamesUniquePerClause();
     }
-    return previousState.back();
+    return previousState.back().first;
 }
 void BasicTheoremProver::revert(const int& checkpoint) {
-    while(!previousState.empty() and previousState.back() >= checkpoint) { previousState.pop_back(); }
+    while(!previousState.empty() and previousState.back().first >= checkpoint) { previousState.pop_back(); }
+    firstSetOfSupportCheckpointIndex = previousState.back().second;
     while(clauseForm->clauseForm.size() > checkpoint) {
         auto whichClause = clauseForm->clauseForm.back();
         if(clausesSoFar.find(whichClause->getHash()) != clausesSoFar.end()) {
@@ -247,6 +248,5 @@ void BasicTheoremProver::revert(const int& checkpoint) {
         isDeleted.erase(isDeleted.find(revive.back()));
         revive.pop_back();
     }
-    firstSetOfSupportCheckpointIndex = 0;
 }
 }; // namespace utils
