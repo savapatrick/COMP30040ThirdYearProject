@@ -3,7 +3,7 @@ while true; do
   for A in {1..10}; do
     for B in {1..10}; do
       for C in {1..10}; do
-        for P in {1..10}; do
+        for P in {10..100}; do
           for L in {1..10}; do
             python3.8 ../test_generators/generator_scott_form.py -A "$A" -B "$B" -C "$C" -E -LMIN 1 -LMAX "$L" -P "$P" -VP -TP
             cp input_tp.txt input.txt

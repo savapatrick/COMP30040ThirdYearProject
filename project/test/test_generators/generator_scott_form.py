@@ -26,9 +26,9 @@ argument_parser.add_argument("-E", "--has-equality", default=False,
                              help="Whether we generate formulas with equality or not.",
                              action="store_true")
 argument_parser.add_argument("-LMIN", "--min-literals-per-clause", type=int, default=3,
-                             help="This is the minimum number of literals occurring per clause in alpha.")
+                             help="This is the minimum number of literals occurring per clause.")
 argument_parser.add_argument("-LMAX", "--max-literals-per-clause", type=int, default=3,
-                             help="This is the maximum number of literals occurring per clause in alpha.")
+                             help="This is the maximum number of literals occurring per clause.")
 argument_parser.add_argument("-P", "--predicates", type=int, default=5,
                              help="This is the cardinality of the pool of predicates "
                                   "from which a random predicate is going to be picked.")
@@ -56,14 +56,14 @@ class ScottClauseRandomGenerator:
         assert len(self.variables) == 2
         number_of_literals_per_clause = random.randint(MIN_LITERALS_PER_CLAUSE, MAX_LITERALS_PER_CLAUSE)
         if _is_alpha:
-            self.alpha = [[Predicate(_predicate_manager.alpha_choice(), 2, _variable_manager.choices(2),
+            self.alpha = [[Predicate(_predicate_manager.choice(), 2, _variable_manager.choices(2),
                                      random.choice([False, True])) for _ in range(number_of_literals_per_clause)]
                           for _ in range(_number_of_clauses)]
         else:
             if _conjunctions is None:
                 raise ValueError("[Scott Clause]: for the beta clauses, the number of conjunctions has to be given")
-            self.beta = [[[Predicate(_predicate_manager.beta_choice(), 2, _variable_manager.choices(2),
-                                     False) for _ in range(1)]
+            self.beta = [[[Predicate(_predicate_manager.choice(), 2, _variable_manager.choices(2),
+                                     random.choice([False, True])) for _ in range(number_of_literals_per_clause)]
                           for _ in range(_number_of_clauses)] for _ in range(_conjunctions)]
         if self.has_equality:
             self.equality = Equality(self.variables[0], self.variables[1], not _is_alpha)
@@ -77,7 +77,7 @@ class ScottClauseRandomGenerator:
                               for clause in self.alpha])}) 
                    {equality_part}'''
         else:
-            equality_part = ""
+            equality_part = f" ^ ({self.equality.tp_output()})" if self.has_equality else ""
             result = f'''{'^'.join([f"@{self.variables[0].lower()}?{self.variables[1].lower()}("
                                   + '^'.join(["((" + '|'.join(predicate.tp_output() for predicate in clause) + 
                                               ")" + equality_part + ")"
@@ -94,7 +94,7 @@ class ScottClauseRandomGenerator:
                               for clause in self.alpha])})
                    {equality_part}'''
         else:
-            equality_part = ""
+            equality_part = f" & ({self.equality.vampire_output()})" if self.has_equality else ""
             result = f'''{'&'.join([f"![{self.variables[0].lower().capitalize()}]: "
                                   f"?[{self.variables[1].lower().capitalize()}]: ("
                                   + '&'.join(['((' + '|'.join(predicate.vampire_output() for predicate in clause) +
