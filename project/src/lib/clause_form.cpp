@@ -56,24 +56,19 @@ void ClauseForm::makeVariableNamesUniquePerClause() {
         }
         AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(soFar, localVariables, allVariableNames);
     }
-    if(allVariableNames.find("_v_x") != allVariableNames.end()) {
-        auto which = RandomFactory::getRandomVariableName(allVariableNames);
-        while(which != "_v_y") {
-            allVariableNames.erase(allVariableNames.find(which));
-            which = RandomFactory::getRandomVariableName(allVariableNames);
+    auto enforceNotHaving = [&] (const string& x, const string& y) -> void {
+        if(allVariableNames.find(x) != allVariableNames.end()) {
+            auto which = RandomFactory::getRandomVariableName(allVariableNames);
+            while(which != y and which != x) {
+                allVariableNames.erase(allVariableNames.find(which));
+                which = RandomFactory::getRandomVariableName(allVariableNames);
+            }
+            applySubstitution({ x, which });
+            allVariableNames.erase(allVariableNames.find(x));
         }
-        applySubstitution({ "_v_x", which });
-        allVariableNames.erase(allVariableNames.find("_v_x"));
-    }
-    if(allVariableNames.find("_v_y") != allVariableNames.end()) {
-        auto which = RandomFactory::getRandomVariableName(allVariableNames);
-        while(which != "_v_x") {
-            allVariableNames.erase(allVariableNames.find(which));
-            which = RandomFactory::getRandomVariableName(allVariableNames);
-        }
-        applySubstitution({ "_v_y", which });
-        allVariableNames.erase(allVariableNames.find("_v_y"));
-    }
+    };
+    enforceNotHaving("_v_x", "_v_y");
+    enforceNotHaving("_v_y", "_v_x");
 }
 
 void ClauseForm::renameFunction(const std::pair<std::string, std::string>& mapping) {
