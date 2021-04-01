@@ -570,81 +570,114 @@ void Reducer::skolemization() {
             throw logic_error("skolemization does not dispose the right content between two independent executions");
         }
     }
-    removeUniversalQuantifiers();
-}
-
-void Reducer::removeUniversalQuantifiers() {
-    vector<int> universalQuantifiersNodes;
-    Operators& operators = Operators::getInstance();
     allBoundVariables.clear();
-    for(auto& information : parseTree.information) {
-        auto key   = information.first;
-        auto value = information.second;
-        if(value->getType() == BOUNDVariable) {
-            auto boundVariable = value->getEntity<string>();
-            auto quantifier    = operators.getQuantifierFromQuantifierAndVariable(boundVariable);
-            if(quantifier != operators.VQuantifier) {
-                throw std::logic_error("We still have existential quantifiers in the parse tree after skolemization!");
-            }
-            auto variable = operators.getVariableFromQuantifierAndVariable(boundVariable);
-            allBoundVariables.insert(variable);
-            universalQuantifiersNodes.emplace_back(key);
-        }
-    }
-    for(auto& elem : universalQuantifiersNodes) { parseTree.information.erase(parseTree.information.find(elem)); }
 }
 
-shared_ptr<SimplifiedClauseForm> Reducer::unifyTwoNormalFormsOnOperator(const shared_ptr<SimplifiedClauseForm>& first,
-const shared_ptr<SimplifiedClauseForm>& second,
-bool isAnd) {
+shared_ptr<SimplifiedClauseForm> Reducer::unifyTwoNormalFormsOnOperator(shared_ptr<SimplifiedClauseForm>& first,
+shared_ptr<SimplifiedClauseForm>& second,
+bool isAnd,
+const std::vector<std::string>& inScopeVariables,
+std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
     if(first->isEmpty) {
         return make_shared<SimplifiedClauseForm>(second->simplifiedClauseForm);
     }
     if(second->isEmpty) {
         return make_shared<SimplifiedClauseForm>(first->simplifiedClauseForm);
     }
-    std::vector<SimplifiedClauseForm::SimplifiedClause> firstClauses(first->getSimplifiedClauseForm());
-    std::vector<SimplifiedClauseForm::SimplifiedClause> secondClauses(second->getSimplifiedClauseForm());
     if(isAnd) {
+        std::vector<SimplifiedClauseForm::SimplifiedClause> firstClauses(first->getSimplifiedClauseForm());
+        std::vector<SimplifiedClauseForm::SimplifiedClause> secondClauses(second->getSimplifiedClauseForm());
         firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
         return make_shared<SimplifiedClauseForm>(firstClauses);
     }
+    auto recalibrate = [this, &inScopeVariables, &inAddition](shared_ptr<SimplifiedClauseForm>& which) -> void {
+        std::vector<SimplifiedLiteral::arg> argumentsVariant(inScopeVariables.begin(), inScopeVariables.end());
+        if(argumentsVariant.empty()) {
+            // we'll introduce a constant here, in order to do not allow predicates of arity 0
+            argumentsVariant.emplace_back(RandomFactory::getRandomConstantName(reservedTermNames));
+        }
+        std::vector<SimplifiedClauseForm::SimplifiedClause> whichClauses(which->getSimplifiedClauseForm());
+        if(whichClauses.size() == 1) {
+            return;
+        }
+        bool allOfThemOne = true;
+        for(auto& currentClause : whichClauses) {
+            if(currentClause.size() > 1) {
+                allOfThemOne = false;
+                break;
+            }
+            if(currentClause.empty()) {
+                throw logic_error(
+                "Something went wrong when attempting to merge normal forms. A normal form contains an empty clause");
+            }
+        }
+        if(allOfThemOne) {
+            std::string fakePredicateName            = getRandomPredicateName();
+            shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
+            shared_ptr<SimplifiedLiteral> newLiteralNegated =
+            make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);
+            std::vector<SimplifiedClauseForm::SimplifiedClause> newClauseForm({ { newLiteral } });
+            for(auto& currentClause : whichClauses) {
+                SimplifiedClauseForm::SimplifiedClause currentResultingClause;
+                currentResultingClause.push_back(newLiteralNegated);
+                for(auto& literal : currentClause) { currentResultingClause.push_back(literal); }
+                inAddition.push_back(currentResultingClause);
+            }
+            which = make_shared<SimplifiedClauseForm>(newClauseForm);
+        } else {
+            std::vector<SimplifiedClauseForm::SimplifiedClause> newClauseForm;
+            for(auto& currentClause : whichClauses) {
+                std::string fakePredicateName = getRandomPredicateName();
+                shared_ptr<SimplifiedLiteral> newLiteral =
+                make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
+                shared_ptr<SimplifiedLiteral> newLiteralNegated =
+                make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);
+                SimplifiedClauseForm::SimplifiedClause currentResultingClause;
+                currentResultingClause.push_back(newLiteralNegated);
+                for(auto& literal : currentClause) { currentResultingClause.push_back(literal); }
+                inAddition.push_back(currentResultingClause);
+                newClauseForm.push_back({ newLiteral });
+            }
+            which = make_shared<SimplifiedClauseForm>(newClauseForm);
+        }
+    };
+    recalibrate(first);
+    recalibrate(first);
+    recalibrate(second);
+    recalibrate(second);
+    std::vector<SimplifiedClauseForm::SimplifiedClause> firstClauses(first->getSimplifiedClauseForm());
+    std::vector<SimplifiedClauseForm::SimplifiedClause> secondClauses(second->getSimplifiedClauseForm());
     // uncomment here if you want to escape from the optimization
     if(firstClauses.size() == 1 and secondClauses.size() == 1) {
         /// trivial case
         firstClauses[0].insert(end(firstClauses[0]), begin(secondClauses[0]), end(secondClauses[0]));
         return make_shared<SimplifiedClauseForm>(firstClauses);
+    } else {
+        throw logic_error("When merging two clause normal forms, we failed to reduce them to the trivial case");
     }
-    // TODO: bear in mind that here we made the assumption that any free-variable in the
-    // initial formula is a constant
-    std::string fakePredicateName = getRandomPredicateName();
-    auto allArgumentsFirst        = first->getAllArguments();
-    auto allArgumentsSecond       = second->getAllArguments();
-    auto arguments                = AdHocTemplated<string>::unionIterablesVector(allArgumentsFirst, allArgumentsSecond);
-    std::vector<SimplifiedLiteral::arg> argumentsVariant;
-    argumentsVariant.reserve(arguments.size());
-    for(auto& arg : arguments) {
-        if(arg.rfind("_v_", 0) == 0) { // starts with _v_, then it's variable
-            argumentsVariant.emplace_back(arg);
-        }
-    }
-    if(argumentsVariant.empty()) {
-        // we'll introduce a constant here, in order to do not allow predicates of arity 0
-        argumentsVariant.emplace_back(RandomFactory::getRandomConstantName(reservedTermNames));
-    }
-    shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
-    shared_ptr<SimplifiedLiteral> newLiteralNegated = make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);
-    for(auto& clause : firstClauses) { clause.push_back(newLiteral); }
-    for(auto& clause : secondClauses) { clause.push_back(newLiteralNegated); }
-    firstClauses.insert(end(firstClauses), begin(secondClauses), end(secondClauses));
-    return make_shared<SimplifiedClauseForm>(firstClauses);
 }
 
-void Reducer::unifyNormalForms(int node) {
+void Reducer::unifyNormalForms(int node, vector<string>& inScopeVariables, std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
+    Operators& operators  = Operators::getInstance();
+    bool rememberToDelete = false;
+    if(parseTree.information.find(node) != parseTree.information.end()) {
+        if(parseTree.information[node]->getType() == EntityType::BOUNDVariable) {
+            auto information = parseTree.information[node]->getEntity<string>();
+            auto quantifier  = operators.getQuantifierFromQuantifierAndVariable(information);
+            if(quantifier != operators.VQuantifier) {
+                throw std::logic_error("We still have existential quantifiers in the parse tree after skolemization!");
+            }
+            string variable = operators.getVariableFromQuantifierAndVariable(information);
+            inScopeVariables.push_back(variable);
+            allBoundVariables.insert(variable);
+            parseTree.information.erase(parseTree.information.find(node));
+            rememberToDelete = true;
+        }
+    }
     int cnt = 0;
     int whichNeighbour;
     for(auto& neighbour : parseTree.graph[node]) {
-        unifyNormalForms(neighbour);
+        unifyNormalForms(neighbour, inScopeVariables, inAddition);
         if(parseTree.information.find(neighbour) != parseTree.information.end()) {
             cnt += 1;
             whichNeighbour = neighbour;
@@ -669,7 +702,6 @@ void Reducer::unifyNormalForms(int node) {
             }
         }
     }
-    Operators& operators = Operators::getInstance();
     if(parseTree.graph[node].empty() and parseTree.information.find(node) != parseTree.information.end() and
     parseTree.information[node]->getType() == EntityType::SIMPLIFIEDLiteral) {
         /// simple leaf which is simplifiedLiteral
@@ -688,14 +720,19 @@ void Reducer::unifyNormalForms(int node) {
                 if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDLiteral) {
                     throw logic_error("at this point it should be no simplifiedLiteral in the parse tree");
                 } else if(parseTree.information[neighbour]->getType() == EntityType::NORMALForms) {
-                    parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms,
-                    unifyTwoNormalFormsOnOperator(parseTree.information[node]->getEntity<shared_ptr<SimplifiedClauseForm>>(),
-                    parseTree.information[neighbour]->getEntity<shared_ptr<SimplifiedClauseForm>>(), isAnd));
+                    auto currentNode      = parseTree.information[node]->getEntity<shared_ptr<SimplifiedClauseForm>>();
+                    auto currentNeighbour = parseTree.information[neighbour]->getEntity<shared_ptr<SimplifiedClauseForm>>();
+                    auto result = unifyTwoNormalFormsOnOperator(currentNode, currentNeighbour, isAnd, inScopeVariables, inAddition);
+                    parseTree.information[node] = make_shared<Entity>(EntityType::NORMALForms, result);
+                    parseTree.information.erase(parseTree.information.find(neighbour));
                 } else if(parseTree.information[neighbour]->getType() == EntityType::SIMPLIFIEDOperator) {
                     isAnd = operators.isAnd(parseTree.information[neighbour]->getEntity<string>());
                 }
             }
         }
+    }
+    if(rememberToDelete) {
+        inScopeVariables.pop_back();
     }
 }
 
@@ -710,9 +747,12 @@ template <> std::vector<SimplifiedClauseForm::SimplifiedClause> Reducer::getSimp
         disambiguateFormula();
         basicReduce();
         skolemization();
-        unifyNormalForms(parseTree.Root);
+        vector<string> inScopeVariables;
+        std::vector<SimplifiedClauseForm::SimplifiedClause> inAddition;
+        unifyNormalForms(parseTree.Root, inScopeVariables, inAddition);
         clauseForm =
         parseTree.information[parseTree.Root]->getEntity<shared_ptr<SimplifiedClauseForm>>()->getSimplifiedClauseForm();
+        for(auto& currentClause : inAddition) { clauseForm.push_back(currentClause); }
         computedClauseForm = true;
     }
     return clauseForm;

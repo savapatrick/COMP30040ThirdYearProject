@@ -42,7 +42,9 @@ void BasicTheoremProver::factoringStep() {
         int startPosition = previousState[firstSetOfSupportCheckpointIndex];
         std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
-        for(int index = startPosition; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
+        for(int index = startPosition; index < (int)clauseForm->clauseForm.size(); ++index) {
+            indexes.push_back(index);
+        }
         std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
             isDeletedGuard.lock();
             if(isDeleted.find(index) != isDeleted.end()) {
@@ -191,7 +193,6 @@ void BasicTheoremProver::subsumption() {
             outputStream << "clause " + clause->getString() + " is being subsumed by " +
             clauseForm->clauseForm[byWhich[index]]->getString() + " so it's dropped\n";
             isDeleted[index] = previousState.back();
-            clausesSoFar.erase(clausesSoFar.find(previousHash));
             continue;
         }
     }
@@ -244,9 +245,6 @@ void BasicTheoremProver::revert(const int& checkpoint) {
     }
     while(!revive.empty()) {
         isDeleted.erase(isDeleted.find(revive.back()));
-        if(revive.back() < (int)clauseForm->clauseForm.size()) {
-            clausesSoFar.insert(clauseForm->clauseForm[revive.back()]->getHash());
-        }
         revive.pop_back();
     }
     firstSetOfSupportCheckpointIndex = 0;

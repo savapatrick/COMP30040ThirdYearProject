@@ -61,6 +61,8 @@ void TwoVariableTheoremProver::disposeTwoVariableClauses() {
 }
 
 bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentChoice, shared_ptr<DepthOrderedTheoremProver>& prover) {
+    cerr << currentChoice << " out of " << clauseForm->clauseForm.size() << '\n';
+    cerr.flush();
     if(currentChoice == clauseForm->clauseForm.size()) {
         if(prover->unboundedRun()) {
             outputStream << prover->getData();
@@ -78,6 +80,8 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentCh
         set<string> current(variables.begin(), variables.end());
         buckets[current].emplace_back(elem);
     }
+    cerr << "on level " << currentChoice << " there are " << buckets.size() << " possible choices!\n";
+    cerr.flush();
     for(auto& elem : buckets) {
         const int checkpoint = prover->addNewClause(make_shared<Clause>(elem.second));
         if(backtrackingClauseFormAndResolution(currentChoice + 1, prover)) {
@@ -94,19 +98,27 @@ bool TwoVariableTheoremProver::run() {
     outputStream << clauseForm->getStringWithIndex();
     cerr << "[SIZE] : " << clauseForm->clauseForm.size() << '\n';
     cerr << "entering in full resolution on two variable literals!";
-    cerr.flush();
     if(!fullResolutionTwoVariableLiterals()) {
         outputData();
         return false;
     }
     cerr << "exiting in full resolution on two variable literals!";
     cerr.flush();
+    cerr << "[SIZE before disposal] : " << clauseForm->clauseForm.size() << '\n';
+    outputStream << "[two variable theorem prover]\nwe have the following clauses before disposal:\n";
+    outputStream << clauseForm->getStringWithIndex();
+    outputData();
     disposeTwoVariableClauses();
     cerr << "[SIZE after disposal] : " << clauseForm->clauseForm.size() << '\n';
     outputStream << "[two variable theorem prover]\nwe have the following clauses after disposal:\n";
     outputStream << clauseForm->getStringWithIndex();
     outputData();
     if(withEquality and clauseForm->containsEquality()) {
+        if(!clauseForm->makeTwoVariableFragment()) {
+            throw logic_error("The intermediate representation of the given set of formulas in an invalid "
+                              "two variable fragment: " +
+            clauseForm->getString());
+        }
         clauseForm->resolveEquality();
     }
     cerr << "[SIZE after equality] : " << clauseForm->clauseForm.size() << '\n';

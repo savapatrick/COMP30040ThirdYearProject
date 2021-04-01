@@ -40,6 +40,14 @@ std::unordered_set<std::string> Clause::getAllVariables() const {
     return result;
 }
 
+int Clause::getMaximumNumberOfVariablesPerLiteral() const {
+    int maximumNumberOfVariablesPerLiteral = 0;
+    for(auto& literal : clause) {
+        maximumNumberOfVariablesPerLiteral = max(maximumNumberOfVariablesPerLiteral, (int)literal->getAllVariables().size());
+    }
+    return maximumNumberOfVariablesPerLiteral;
+}
+
 void Clause::applySubstitution(const pair<std::string, std::shared_ptr<Term>>& mapping) {
     for(auto& literal : clause) { literal->applySubstitution(mapping); }
 }

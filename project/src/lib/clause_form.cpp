@@ -7,11 +7,37 @@
 #include "operators.h"
 #include "random_factory.h"
 #include "reducer.h"
-#include <algorithm>
 #include <iostream>
 #include <regex>
 
 using namespace std;
+
+namespace {
+bool checkTwoColorability(const string& node, const unordered_map<string, vector<string>>& graph, unordered_map<string, bool>& colors) {
+    if(colors.find(node) != colors.end()) {
+        return true;
+    }
+    for(auto& neighbour : graph.at(node)) {
+        if(colors.find(neighbour) != colors.end()) {
+            if(colors.find(node) == colors.end()) {
+                colors[node] = !colors[neighbour];
+            } else if(colors[node] == colors[neighbour]) {
+                return false;
+            }
+        }
+    }
+    if(colors.find(node) == colors.end()) {
+        colors[node] = true;
+    }
+    for(auto& neighbour : graph.at(node)) {
+        if(!checkTwoColorability(neighbour, graph, colors)) {
+            return false;
+        }
+    }
+    return true;
+}
+} // namespace
+
 namespace utils {
 
 void ClauseForm::makeVariableNamesUniquePerClause() {
@@ -30,6 +56,19 @@ void ClauseForm::makeVariableNamesUniquePerClause() {
         }
         AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(soFar, localVariables, allVariableNames);
     }
+    auto enforceNotHaving = [&](const string& x, const string& y) -> void {
+        if(allVariableNames.find(x) != allVariableNames.end()) {
+            auto which = RandomFactory::getRandomVariableName(allVariableNames);
+            while(which == y) {
+                allVariableNames.erase(allVariableNames.find(which));
+                which = RandomFactory::getRandomVariableName(allVariableNames);
+            }
+            applySubstitution({ x, which });
+            allVariableNames.erase(allVariableNames.find(x));
+        }
+    };
+    enforceNotHaving("_v_x", "_v_y");
+    enforceNotHaving("_v_y", "_v_x");
 }
 
 void ClauseForm::renameFunction(const std::pair<std::string, std::string>& mapping) {
@@ -38,46 +77,6 @@ void ClauseForm::renameFunction(const std::pair<std::string, std::string>& mappi
 
 void ClauseForm::applySubstitution(const std::pair<std::string, std::string>& mapping) {
     for(auto& clause : clauseForm) { clause->applySubstitution(mapping); }
-}
-
-void ClauseForm::renameTerms(std::shared_ptr<ClauseForm>& other,
-std::unordered_set<std::string>& _allTermNames,
-std::unordered_set<std::string>& _allTermNamesOther,
-std::unordered_set<std::string>& forbiddenOne,
-std::unordered_set<std::string>& forbiddenTwo,
-const bool isFunctionRenaming) {
-    vector<pair<string, string>> namesToBeChanged;
-    for(auto& termName : _allTermNamesOther) {
-        if(_allTermNames.find(termName) != _allTermNames.end()) {
-            namesToBeChanged.emplace_back(termName, "");
-        } else {
-            _allTermNames.insert(termName);
-        }
-    }
-    for(auto& termName : namesToBeChanged) {
-        termName.second = RandomFactory::getRandomTermOrFunctionName(_allTermNames);
-        while(_allTermNamesOther.find(termName.second) != _allTermNamesOther.end() ||
-        forbiddenOne.find(termName.second) != forbiddenOne.end() || forbiddenTwo.find(termName.second) != forbiddenTwo.end()) {
-            _allTermNames.erase(_allTermNames.find(termName.second));
-            termName.second = RandomFactory::getRandomTermOrFunctionName(_allTermNames);
-        }
-        _allTermNamesOther.insert(termName.second);
-        _allTermNames.insert(termName.second);
-    }
-    for(auto& termName : namesToBeChanged) {
-        if(isFunctionRenaming) {
-            other->renameFunction(termName);
-        } else {
-            other->applySubstitution(termName);
-        }
-    }
-}
-
-void ClauseForm::merge(std::shared_ptr<ClauseForm>& other) {
-    renameTerms(other, allFunctionNames, other->allFunctionNames, allVariableNames, allConstantNames, true);
-    renameTerms(other, allVariableNames, other->allVariableNames, allFunctionNames, allConstantNames, false);
-    for(auto& constantName : other->allConstantNames) { allConstantNames.insert(constantName); }
-    for(auto& clause : other->clauseForm) { clauseForm.push_back(clause); }
 }
 
 std::string ClauseForm::getString() const {
@@ -111,10 +110,42 @@ std::string ClauseForm::getStringWithIndex(const std::unordered_map<int, int>& i
     return result;
 }
 
-bool ClauseForm::isTwoVariableFragment() {
-    return all_of(clauseForm.begin(), clauseForm.end(), [](const shared_ptr<Clause>& clause) -> bool {
-        return (!clause->hasNestedFunctions() and clause->getAllVariables().size() <= 2);
-    });
+bool ClauseForm::makeTwoVariableFragment() {
+    unordered_map<string, vector<string>> graph;
+    for(auto& clause : clauseForm) {
+        if(clause->getMaximumNumberOfVariablesPerLiteral() > 2 or clause->hasNestedFunctions()) {
+            return false;
+        } else {
+            auto literals = clause->getLiterals();
+            for(auto& literal : literals) {
+                auto vars = literal->getAllVariables();
+                if(vars.size() == 2) {
+                    vector<string> variables(vars.begin(), vars.end());
+                    graph[variables[0]].emplace_back(variables[1]);
+                    graph[variables[1]].emplace_back(variables[0]);
+                } else if(vars.size() == 1) {
+                    if(graph.find(*vars.begin()) == graph.end()) {
+                        graph[*vars.begin()] = {};
+                    }
+                }
+            }
+        }
+    }
+    unordered_map<string, bool> answer;
+    for(auto& information : graph) {
+        if(!checkTwoColorability(information.first, graph, answer)) {
+            return false;
+        }
+    }
+    if(allVariableNames.find("_v_x") != allVariableNames.end() or allVariableNames.find("_v_y") != allVariableNames.end()) {
+        throw logic_error("[Two Variable Fragment Validity] At this point _v_x and _v_y should not occur "
+                          "in the given clause form.");
+    }
+    for(auto& substitution : answer) {
+        string which = substitution.second ? "_v_x" : "_v_y";
+        applySubstitution({ substitution.first, which });
+    }
+    return true;
 }
 
 bool ClauseForm::containsEquality() const {
@@ -135,13 +166,7 @@ void ClauseForm::enforcePureTwoVariableFragment() {
         auto clauseVariables = clause->getAllVariables();
         if(clauseVariables.size() > 2) {
             throw std::logic_error("The clause " + clause->getString() + "contains more than two variables!");
-        }
-        if(clauseVariables.size() == 2) {
-            if(!clause->containsEquality()) {
-                throw std::logic_error(
-                "Only clauses containing equality should be in two variables at this point!; clause " +
-                clause->getString() + " violates this!");
-            }
+        } else if(clauseVariables.size() == 2) {
             hasTwo = true;
         }
         // set because otherwise we would mess up the order of the variables
@@ -193,27 +218,27 @@ void ClauseForm::resolveEquality() {
     }
     string resultedClause;
     for(auto& clause : clauseForm) {
-        if(clause->containsEquality()) {
-            string currentClause;
-            map<string, vector<shared_ptr<Literal>>> groups;
-            const string noVariables = "<empty>";
-            auto literals            = clause->getLiterals();
-            for(auto& literal : literals) {
-                if(literal->getIsEquality()) {
-                    continue; // this is going to be resolved in the next for loop
+        string currentClause;
+        map<string, vector<shared_ptr<Literal>>> groups;
+        const string noVariables = "<empty>";
+        auto literals            = clause->getLiterals();
+        for(auto& literal : literals) {
+            if(literal->getIsEquality()) {
+                continue; // this is going to be resolved in the next for loop
+            } else {
+                auto variables = literal->getAllVariables();
+                if(variables.size() > 1) {
+                    throw std::logic_error("Any literal containing more than one variable"
+                                           " should be Equality at this point!");
+                } else if(variables.size() == 1) {
+                    groups[*variables.begin()].push_back(literal);
                 } else {
-                    auto variables = literal->getAllVariables();
-                    if(variables.size() > 1) {
-                        throw std::logic_error("Any literal containing more than one variable"
-                                               " should be Equality at this point!");
-                    } else if(variables.size() == 1) {
-                        groups[*variables.begin()].push_back(literal);
-                    } else {
-                        groups[noVariables].push_back(literal);
-                    }
+                    groups[noVariables].push_back(literal);
                 }
             }
-            string equalityPart;
+        }
+        string equalityPart;
+        if(clause->containsEquality()) {
             for(auto& literal : literals) {
                 if(literal->getIsEquality()) {
                     if(groups["_v_x"].empty() or groups["_v_y"].empty()) {
@@ -295,39 +320,27 @@ void ClauseForm::resolveEquality() {
                     equalityPart.append(operators.OR);
                 }
             }
-            if(!equalityPart.empty()) {
-                equalityPart.pop_back();
-            }
-            for(auto& bucket : groups) {
-                for(auto& currentLiteral : bucket.second) {
-                    if(bucket.first != noVariables) {
-                        currentClause += operators.VQuantifier + bucket.first;
-                    }
-                    currentClause += operators.OPENEDBracket + currentLiteral->getString() + operators.CLOSEDBracket;
-                    currentClause += operators.OR;
+        }
+        if(!equalityPart.empty()) {
+            equalityPart.pop_back();
+        }
+        for(auto& bucket : groups) {
+            for(auto& currentLiteral : bucket.second) {
+                if(bucket.first != noVariables) {
+                    currentClause += operators.VQuantifier + bucket.first;
                 }
-            }
-            if(!currentClause.empty()) {
-                currentClause.pop_back();
-            }
-            if(!equalityPart.empty()) {
-                currentClause.append(operators.OR);
-                currentClause.append(equalityPart);
-            }
-            resultedClause += operators.OPENEDBracket + currentClause + operators.CLOSEDBracket;
-        } else {
-            auto variables = clause->getAllVariables();
-            if(variables.size() > 1) {
-                throw std::logic_error("Any clause containing more than one variable "
-                                       "should contain Equality as well at this point");
-            } else if(variables.size() == 1) {
-                string whichVariable = *variables.begin();
-                resultedClause += operators.VQuantifier + whichVariable + operators.OPENEDBracket +
-                clause->getString() + operators.CLOSEDBracket;
-            } else {
-                resultedClause += operators.OPENEDBracket + clause->getString() + operators.CLOSEDBracket;
+                currentClause += operators.OPENEDBracket + currentLiteral->getString() + operators.CLOSEDBracket;
+                currentClause += operators.OR;
             }
         }
+        if(!currentClause.empty()) {
+            currentClause.pop_back();
+        }
+        if(!equalityPart.empty()) {
+            currentClause.append(operators.OR);
+            currentClause.append(equalityPart);
+        }
+        resultedClause += operators.OPENEDBracket + currentClause + operators.CLOSEDBracket;
         resultedClause += operators.AND;
     }
     if(!resultedClause.empty()) {
@@ -349,9 +362,15 @@ void ClauseForm::resolveEquality() {
         resultedClause);
     }
     cerr << resultedClause << '\n';
+    cerr.flush();
     ParseTree tree(resultedClause);
     Reducer reducer(tree);
     auto newClauseForm = reducer.getClauseForm();
+    if(!newClauseForm->makeTwoVariableFragment()) {
+        throw logic_error("The intermediate representation of the given set of formulas in an invalid "
+                          "two variable fragment: " +
+        newClauseForm->getString());
+    }
     copyToThis(newClauseForm);
 }
 
