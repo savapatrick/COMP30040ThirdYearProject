@@ -612,7 +612,7 @@ std::vector<SimplifiedClauseForm::SimplifiedClause>& inAddition) {
             }
         }
         if(allOfThemOne) {
-            std::string fakePredicateName = getRandomPredicateName();
+            std::string fakePredicateName            = getRandomPredicateName();
             shared_ptr<SimplifiedLiteral> newLiteral = make_shared<SimplifiedLiteral>(false, fakePredicateName, argumentsVariant);
             shared_ptr<SimplifiedLiteral> newLiteralNegated =
             make_shared<SimplifiedLiteral>(true, fakePredicateName, argumentsVariant);

@@ -61,7 +61,8 @@ void TwoVariableTheoremProver::disposeTwoVariableClauses() {
 }
 
 bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentChoice, shared_ptr<DepthOrderedTheoremProver>& prover) {
-    cerr << currentChoice << " out of " << clauseForm->clauseForm.size() << '\n'; cerr.flush();
+    cerr << currentChoice << " out of " << clauseForm->clauseForm.size() << '\n';
+    cerr.flush();
     if(currentChoice == clauseForm->clauseForm.size()) {
         if(prover->unboundedRun()) {
             outputStream << prover->getData();
@@ -79,7 +80,8 @@ bool TwoVariableTheoremProver::backtrackingClauseFormAndResolution(int currentCh
         set<string> current(variables.begin(), variables.end());
         buckets[current].emplace_back(elem);
     }
-    cerr << "on level " << currentChoice << " there are " << buckets.size() << " possible choices!\n"; cerr.flush();
+    cerr << "on level " << currentChoice << " there are " << buckets.size() << " possible choices!\n";
+    cerr.flush();
     for(auto& elem : buckets) {
         const int checkpoint = prover->addNewClause(make_shared<Clause>(elem.second));
         if(backtrackingClauseFormAndResolution(currentChoice + 1, prover)) {
