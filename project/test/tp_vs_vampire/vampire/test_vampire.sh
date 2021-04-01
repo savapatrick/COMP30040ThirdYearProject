@@ -5,7 +5,7 @@ while true; do
   exit_code=$?
   if [[ $exit_code -eq 0 ]]; then
     echo "$step: success!"
-	echo "$(grep status output_vampire.txt)"
+    echo "$(grep status output_vampire.txt)"
   else
     echo "$step: failure!"
   fi

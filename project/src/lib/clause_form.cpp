@@ -56,7 +56,7 @@ void ClauseForm::makeVariableNamesUniquePerClause() {
         }
         AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(soFar, localVariables, allVariableNames);
     }
-    auto enforceNotHaving = [&] (const string& x, const string& y) -> void {
+    auto enforceNotHaving = [&](const string& x, const string& y) -> void {
         if(allVariableNames.find(x) != allVariableNames.end()) {
             auto which = RandomFactory::getRandomVariableName(allVariableNames);
             while(which == y) {
@@ -123,9 +123,8 @@ bool ClauseForm::makeTwoVariableFragment() {
                     vector<string> variables(vars.begin(), vars.end());
                     graph[variables[0]].emplace_back(variables[1]);
                     graph[variables[1]].emplace_back(variables[0]);
-                }
-                else if (vars.size() == 1) {
-                    if (graph.find(*vars.begin()) == graph.end()) {
+                } else if(vars.size() == 1) {
+                    if(graph.find(*vars.begin()) == graph.end()) {
                         graph[*vars.begin()] = {};
                     }
                 }
@@ -367,9 +366,10 @@ void ClauseForm::resolveEquality() {
     ParseTree tree(resultedClause);
     Reducer reducer(tree);
     auto newClauseForm = reducer.getClauseForm();
-    if (!newClauseForm->makeTwoVariableFragment()) {
+    if(!newClauseForm->makeTwoVariableFragment()) {
         throw logic_error("The intermediate representation of the given set of formulas in an invalid "
-                          "two variable fragment: " + newClauseForm->getString());
+                          "two variable fragment: " +
+        newClauseForm->getString());
     }
     copyToThis(newClauseForm);
 }
