@@ -77,7 +77,7 @@ void BasicTheoremProver::factoringStep() {
                 changed = true;
                 changedGuard.unlock();
                 isDeletedGuard.lock();
-                isDeleted[index] = previousState.back();
+                isDeleted[index] = previousState.back().first;
                 isDeletedGuard.unlock();
                 return;
             }

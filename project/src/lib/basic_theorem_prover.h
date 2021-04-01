@@ -90,7 +90,7 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         if(firstSetOfSupportCheckpointIndex < previousState.size()) {
             std::cerr << "enters inside multithreading!\n";
             std::cerr.flush();
-            int startPosition = previousState[firstSetOfSupportCheckpointIndex];
+            int startPosition = previousState[firstSetOfSupportCheckpointIndex].first;
             std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
                 if(isDeleted.find(index) == isDeleted.end()) {
                     for(int index2 = startPosition; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
