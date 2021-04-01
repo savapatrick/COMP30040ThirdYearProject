@@ -59,7 +59,7 @@ void ClauseForm::makeVariableNamesUniquePerClause() {
     auto enforceNotHaving = [&] (const string& x, const string& y) -> void {
         if(allVariableNames.find(x) != allVariableNames.end()) {
             auto which = RandomFactory::getRandomVariableName(allVariableNames);
-            while(which != y and which != x) {
+            while(which == y) {
                 allVariableNames.erase(allVariableNames.find(which));
                 which = RandomFactory::getRandomVariableName(allVariableNames);
             }
