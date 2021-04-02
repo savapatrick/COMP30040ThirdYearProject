@@ -4,7 +4,6 @@
 
 #include "basic_theorem_prover.h"
 #include <algorithm>
-#include <cassert>
 #include <random>
 
 using namespace std;

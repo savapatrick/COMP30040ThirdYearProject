@@ -3,7 +3,6 @@
 //
 
 #include "term.h"
-#include <cassert>
 #include <queue>
 
 using namespace std;
