@@ -228,9 +228,7 @@ int BasicTheoremProver::addNewClause(const std::shared_ptr<Clause>& newClause) {
 }
 
 void BasicTheoremProver::revert(const int& checkpoint) {
-    while (previousState.size() > checkpoint) {
-        previousState.pop_back();
-    }
+    while(previousState.size() > checkpoint) { previousState.pop_back(); }
     auto information = previousState.back();
     previousState.pop_back();
     firstSetOfSupportCheckpointIndex = information.second;

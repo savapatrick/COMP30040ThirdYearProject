@@ -11,7 +11,9 @@ namespace utils {
 class DepthOrderedTheoremProver : public BasicTheoremProver {
     private:
     public:
-    DepthOrderedTheoremProver(const std::shared_ptr<ClauseForm> &_clauseForm, bool allowEquality = false, const std::string& _fileName = "theorem_prover.txt")
+    DepthOrderedTheoremProver(const std::shared_ptr<ClauseForm>& _clauseForm,
+    bool allowEquality           = false,
+    const std::string& _fileName = "theorem_prover.txt")
     : BasicTheoremProver(_clauseForm, allowEquality, _fileName) {
     }
     bool run() override;

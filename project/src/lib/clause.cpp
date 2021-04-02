@@ -128,7 +128,7 @@ void Clause::disjointifyVariables(shared_ptr<Clause>& other) {
     for(auto& variable : allOtherVariables) {
         if(allVariables.find(variable) != allVariables.end()) {
             string which = RandomFactory::getRandomVariableName(allVariables);
-            while (allOtherVariables.find(which) != allOtherVariables.end()) {
+            while(allOtherVariables.find(which) != allOtherVariables.end()) {
                 allVariables.erase(allVariables.find(which));
                 which = RandomFactory::getRandomVariableName(allVariables);
             }

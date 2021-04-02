@@ -10,5 +10,3 @@ for i in {1..1000}; do
   echo "timeout"
   grep timeout "aux$i.txt"
 done
-
-

@@ -40,7 +40,7 @@ bool checkTwoColorability(const string& node, const unordered_map<string, vector
 
 namespace utils {
 
-void ClauseForm::enforceNotHaving (const string& x, const string& y) {
+void ClauseForm::enforceNotHaving(const string& x, const string& y) {
     if(allVariableNames.find(x) != allVariableNames.end()) {
         auto which = RandomFactory::getRandomVariableName(allVariableNames);
         while(which == y) {
