@@ -87,13 +87,13 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
-        if(firstSetOfSupportCheckpointIndex < previousState.size()) {
+        firstSetOfSupportCheckpointIndex = previousState.back().second;
+        if(firstSetOfSupportCheckpointIndex < clauseForm->clauseForm.size()) {
             std::cerr << "enters inside multithreading!\n";
             std::cerr.flush();
-            int startPosition = previousState[firstSetOfSupportCheckpointIndex].first;
             std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
                 if(isDeleted.find(index) == isDeleted.end()) {
-                    for(int index2 = startPosition; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                    for(int index2 = firstSetOfSupportCheckpointIndex; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
                         if(isDeleted.find(index2) != isDeleted.end()) {
                             continue;
                         }
@@ -130,9 +130,9 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
             std::cerr << "it's outside multithreading!\n";
             std::cerr.flush();
         }
-        firstSetOfSupportCheckpointIndex++;
+        firstSetOfSupportCheckpointIndex = clauseForm->clauseForm.size();
+        previousState.emplace_back(clauseForm->clauseForm.size(), firstSetOfSupportCheckpointIndex);
         if(!clauses.empty()) {
-            previousState.emplace_back(clauseForm->clauseForm.size(), firstSetOfSupportCheckpointIndex);
             bool derivedEmpty = false;
             for(auto& keyValue : clauses) {
                 auto& currentClause = keyValue.second;
