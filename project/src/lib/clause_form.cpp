@@ -67,7 +67,7 @@ void ClauseForm::makeVariableNamesUniquePerClause() {
     }
     enforceNotHaving("_v_x", "_v_y");
     enforceNotHaving("_v_y", "_v_x");
-    if(allVariableNames.find("_v_x") != allVariableNames.end() or allVariableNames.find("_v_y") == allVariableNames.end()) {
+    if(allVariableNames.find("_v_x") != allVariableNames.end() or allVariableNames.find("_v_y") != allVariableNames.end()) {
         throw logic_error("[Clause form] At this point _v_x and _v_y should not occur "
                           "in the clause form.");
     }
