@@ -113,6 +113,7 @@ std::string ClauseForm::getStringWithIndex(const std::unordered_map<int, int>& i
 }
 
 bool ClauseForm::makeTwoVariableFragment() {
+    makeVariableNamesUniquePerClause();
     unordered_map<string, vector<string>> graph;
     for(auto& clause : clauseForm) {
         if(clause->getMaximumNumberOfVariablesPerLiteral() > 2 or clause->hasNestedFunctions()) {
