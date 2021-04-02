@@ -25,25 +25,4 @@ bool Verifier::isBalanced(const std::vector<std::string>& seq) {
     return open == 0;
 }
 
-bool Verifier::areAllDNFs(const vector<std::vector<std::string>>& terms) {
-    static Operators& operators = Operators::getInstance();
-    for(auto& term : terms) {
-        if(term.size() % 2 == 1) {
-            for(int ind = 0; ind < (int)term.size(); ++ind) {
-                if(ind % 2 == 1) {
-                    if(operators.whichOperator(ind, term[ind]) != "OR") {
-                        return false;
-                    }
-                } else {
-                    if(!SimplifiedLiteral::isSimplifiedLiteral(term[ind])) {
-                        return false;
-                    }
-                }
-            }
-        } else {
-            return false;
-        }
-    }
-    return true;
-}
 } // namespace utils
