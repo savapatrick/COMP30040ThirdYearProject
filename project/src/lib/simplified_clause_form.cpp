@@ -40,9 +40,7 @@ std::string utils::SimplifiedClauseForm::getString() const {
 const vector<SimplifiedClauseForm::SimplifiedClause>& SimplifiedClauseForm::getSimplifiedClauseForm() const {
     return simplifiedClauseForm;
 }
-std::unordered_set<std::string> SimplifiedClauseForm::getAllArguments() const {
-    return allArguments;
-}
+
 std::shared_ptr<SimplifiedClauseForm> SimplifiedClauseForm::clone() const {
     std::vector<SimplifiedClauseForm::SimplifiedClause> simplifiedClauseFormCopy;
     simplifiedClauseFormCopy.reserve(simplifiedClauseForm.size());
@@ -56,31 +54,6 @@ std::shared_ptr<SimplifiedClauseForm> SimplifiedClauseForm::clone() const {
         simplifiedClauseFormCopy.push_back(simplifiedClauseCopy);
     }
     return make_shared<SimplifiedClauseForm>(simplifiedClauseFormCopy);
-}
-
-unordered_set<std::string> SimplifiedClauseForm::makeVariableNamesUniquePerClause(const unordered_set<std::string>& variables) {
-    unordered_set<string> soFar;
-    for(auto& simplifiedClause : simplifiedClauseForm) {
-        unordered_map<string, string> localSubstitution;
-        vector<string> allVarsForClause;
-        for(auto& simplifiedLiteral : simplifiedClause) {
-            auto args = simplifiedLiteral->getAllVariablesAndConstants();
-            auto vars = AdHocTemplated<std::string>::unionIterablesVector(args, variables);
-            for(auto& var : vars) {
-                if(soFar.find(var) != soFar.end()) {
-                    if(localSubstitution.find(var) == localSubstitution.end()) {
-                        localSubstitution[var] = RandomFactory::getRandomVariableName(allArguments);
-                    }
-                } else {
-                    allVarsForClause.push_back(var);
-                }
-            }
-        }
-        for(auto& simplifiedLiteral : simplifiedClause) { simplifiedLiteral->simpleSubstitution(localSubstitution); }
-        for(auto& keyValue : localSubstitution) { allVarsForClause.push_back(keyValue.second); }
-        for(auto& variable : allVarsForClause) { soFar.insert(variable); }
-    }
-    return soFar;
 }
 
 }; // namespace utils
