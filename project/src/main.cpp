@@ -10,7 +10,7 @@
 #include <lib/two_variable_theorem_prover.h>
 #include <memory>
 
-// C++ 17, because it uses variant
+// C++ 17, because it uses variant and ltbb for multithreading
 
 using namespace std;
 
