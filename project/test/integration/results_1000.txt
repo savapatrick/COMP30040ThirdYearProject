@@ -1,0 +1,5223 @@
+test 1
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 2
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 3
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 4
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 5
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 6
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 7
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 8
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 9
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 10
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 11
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 12
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 13
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 14
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 15
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 16
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 17
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 18
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 19
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 20
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 21
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 22
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 23
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 24
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 25
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 26
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 27
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 28
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 29
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 30
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 31
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 32
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 33
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 34
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 35
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 36
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 37
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 38
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 39
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 40
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 41
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 42
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 43
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 44
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 45
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 46
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 47
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 48
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 49
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 50
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 51
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 52
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 53
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 54
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 55
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 56
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 57
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 58
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 59
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 60
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 61
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 62
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 63
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 64
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 65
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 66
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 67
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 68
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 69
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 70
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 71
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 72
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 73
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 74
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 75
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 76
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 77
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 78
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 79
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 80
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 81
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 82
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 83
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 84
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 85
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 86
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 87
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 88
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 89
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 90
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 91
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 92
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 93
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 94
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 95
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 96
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 97
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 98
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 99
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 100
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 101
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 102
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 103
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 104
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 105
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 106
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 107
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 108
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 109
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 110
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 111
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 112
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 113
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 114
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 115
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 116
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 117
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 118
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 119
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 120
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 121
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 122
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 123
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 124
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 125
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 126
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 127
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 128
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 129
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 130
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 131
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 132
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 133
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 134
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 135
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 136
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 137
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 138
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 139
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 140
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 141
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 142
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 143
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 144
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 145
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 146
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 147
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 148
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 149
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 150
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 151
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 152
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 153
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 154
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 155
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 156
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 157
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 158
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 159
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 160
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 161
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 162
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 163
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 164
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 165
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 166
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 167
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 168
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 169
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 170
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 171
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 172
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 173
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 174
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 175
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 176
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 177
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 178
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 179
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 180
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 181
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 182
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 183
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 184
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 185
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 186
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 187
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 188
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 189
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 190
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 191
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 192
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 193
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 194
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 195
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 196
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 197
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 198
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 199
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 200
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 201
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 202
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 203
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 204
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 205
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 206
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 207
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 208
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 209
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 210
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 211
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 212
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 213
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 214
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 215
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 216
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 217
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 218
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 219
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 220
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 221
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 222
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 223
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 224
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 225
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 226
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 227
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 228
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 229
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 230
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 231
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 232
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 233
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 234
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 235
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 236
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 237
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 238
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 239
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 240
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 241
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 242
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 243
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 244
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 245
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 246
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 247
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 248
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 249
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 250
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 251
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 252
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 253
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 254
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 255
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 256
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 257
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 258
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 259
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 260
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 261
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 262
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 263
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 264
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 265
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 266
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 267
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 268
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 269
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 270
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 271
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 272
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 273
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 274
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 275
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 276
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 277
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 278
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 279
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 280
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 281
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 282
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 283
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 284
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 285
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 286
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 287
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 288
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 289
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 290
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 291
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 292
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 293
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 294
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 295
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 296
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 297
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 298
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 299
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 300
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 301
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 302
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 303
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 304
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 305
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 306
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 307
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 308
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 309
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 310
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 311
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 312
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 313
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 314
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 315
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 316
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 317
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 318
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 319
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 320
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 321
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 322
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 323
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 324
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 325
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 326
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 327
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 328
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 329
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 330
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 331
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 332
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 333
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 334
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 335
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 336
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 337
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 338
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 339
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 340
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 341
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 342
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 343
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 344
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 345
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 346
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 347
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 348
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 349
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 350
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 351
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 352
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 353
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 354
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 355
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 356
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 357
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 358
+corect: 
+136
+wrong
+Output Two-Variable Theorem Prover 6 : wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 359
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 360
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 361
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 362
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 363
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 364
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 365
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 366
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 367
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 368
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 369
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 370
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 371
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 372
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 373
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 374
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 375
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 376
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 377
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 378
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 379
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 380
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 381
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 382
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 383
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 384
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 385
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 386
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 387
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 388
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 389
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 390
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 391
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 392
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 393
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 394
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 395
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 396
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 397
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 398
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 399
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 400
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 401
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 402
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 403
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 404
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 405
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 406
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 407
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 408
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 409
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 410
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 411
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 412
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 413
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 414
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 415
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 416
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 417
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 418
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 419
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 420
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 421
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 422
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 423
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 424
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 425
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 426
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 427
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 428
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 429
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 430
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 431
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 432
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 433
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 434
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 435
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 436
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 437
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 438
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 439
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 440
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 441
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 442
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 443
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 444
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 445
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 446
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 447
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 448
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 449
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 450
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 451
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 452
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 453
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 454
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 455
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 456
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 457
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 458
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 459
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 460
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 461
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 462
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 463
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 464
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 465
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 466
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 467
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 468
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 469
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 470
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 471
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 472
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 473
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 474
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 475
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 476
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 477
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 478
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 479
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 480
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 481
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 482
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 483
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 484
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 485
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 486
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 487
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 488
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 489
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 490
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 491
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 492
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 493
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 494
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 495
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 496
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 497
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 498
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 499
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 500
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 501
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 502
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 503
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 504
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 505
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 506
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 507
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 508
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 509
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 510
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 511
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 512
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 513
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 514
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 515
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 516
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 517
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 518
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 519
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 520
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 521
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 522
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 523
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 524
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 525
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 526
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 527
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 528
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 529
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 530
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 531
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 532
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 533
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 534
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 535
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 536
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 537
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 538
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 539
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 540
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 541
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 542
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 543
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 544
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 545
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 546
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 547
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 548
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 549
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 550
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 551
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 552
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 553
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 554
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 555
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 556
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 557
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 558
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 559
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 560
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 561
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 562
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 563
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 564
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 565
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 566
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 567
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 568
+corect: 
+136
+wrong
+Output Two-Variable Theorem Prover 6 : wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 569
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 570
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 571
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 572
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 573
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 574
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 575
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 576
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 577
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 578
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 579
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 580
+corect: 
+137
+wrong
+timeout
+Output Basic Theorem Prover 13 : timeout
+Output Basic Theorem Prover 14 : timeout
+Output Basic Theorem Prover 29 : timeout
+Output Depth Ordered Theorem Prover 29 : timeout
+test 581

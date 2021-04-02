@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for i in {1..100}; do
+for i in {1..1000}; do
   echo "test $i"
   ./integration-test.sh &>"aux$i.txt"
   echo "corect: "
@@ -10,3 +10,5 @@ for i in {1..100}; do
   echo "timeout"
   grep timeout "aux$i.txt"
 done
+
+
