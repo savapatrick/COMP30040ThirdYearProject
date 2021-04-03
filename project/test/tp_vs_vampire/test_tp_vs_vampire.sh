@@ -1,10 +1,10 @@
 step=0
 while true; do
-  for A in {1..2}; do
-    for B in {1..2}; do
-      for C in {1..2}; do
-        for P in {1..4}; do
-          for L in {1..2}; do
+  for A in {1..4}; do
+    for B in {1..4}; do
+      for C in {1..4}; do
+        for P in {1..1000}; do
+          for L in {1..4}; do
             python3.8 ../test_generators/generator_scott_form.py -A "$A" -B "$B" -C "$C" -E -LMIN 1 -LMAX "$L" -P "$P" -VP -TP
             cp input_tp.txt input.txt
             ../../../cmake-build-debug/project/src/theorem_prover two >/dev/null 2>&1
