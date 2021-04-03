@@ -127,7 +127,12 @@ void Clause::disjointifyVariables(shared_ptr<Clause>& other) {
     auto allVariables      = this->getAllVariables();
     for(auto& variable : allOtherVariables) {
         if(allVariables.find(variable) != allVariables.end()) {
-            auto substitution = make_pair(variable, RandomFactory::getRandomVariableName(allVariables));
+            string which = RandomFactory::getRandomVariableName(allVariables);
+            while(allOtherVariables.find(which) != allOtherVariables.end()) {
+                allVariables.erase(allVariables.find(which));
+                which = RandomFactory::getRandomVariableName(allVariables);
+            }
+            auto substitution = make_pair(variable, which);
             this->applySubstitution(substitution);
         }
     }

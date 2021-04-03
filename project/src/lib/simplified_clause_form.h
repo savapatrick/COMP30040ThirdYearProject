@@ -40,11 +40,9 @@ class SimplifiedClauseForm {
             }
         }
     }
-    std::unordered_set<std::string> makeVariableNamesUniquePerClause(const std::unordered_set<std::string>& variables);
     std::shared_ptr<SimplifiedClauseForm> clone() const;
-    [[nodiscard]] static std::string getString(const SimplifiedClause& clause);
+    static std::string getString(const SimplifiedClause& clause);
     [[nodiscard]] std::string getString() const;
-    [[nodiscard]] std::unordered_set<std::string> getAllArguments() const;
     [[nodiscard]] const std::vector<SimplifiedClause>& getSimplifiedClauseForm() const;
 };
 }; // namespace utils

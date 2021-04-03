@@ -23,7 +23,7 @@ class BasicTheoremProver : public TheoremProver {
     std::shared_ptr<Unification> unification;
     std::unordered_map<std::string, std::shared_ptr<Clause>> clauses;
     std::unordered_set<std::string> clausesSoFar;
-    std::vector<int> previousState;
+    std::vector<std::pair<int, int>> previousState;
     std::unordered_map<int, int> isDeleted;
     int firstSetOfSupportCheckpointIndex;
     long long upperLimit;
@@ -44,7 +44,7 @@ class BasicTheoremProver : public TheoremProver {
         isDeleted.clear();
         firstSetOfSupportCheckpointIndex = 0;
         upperLimit                       = std::numeric_limits<long long>::max(); // something HUGE
-        previousState.push_back(0);
+        previousState.emplace_back(0, firstSetOfSupportCheckpointIndex);
         std::vector<std::shared_ptr<Clause>> newClauseForm;
         for(auto& elem : clauseForm->clauseForm) {
             removeDuplicates(elem);
@@ -87,13 +87,13 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
         std::vector<int> indexes;
         indexes.reserve((int)clauseForm->clauseForm.size());
         for(int index = 0; index < (int)clauseForm->clauseForm.size(); ++index) { indexes.push_back(index); }
-        if(firstSetOfSupportCheckpointIndex < previousState.size()) {
+        firstSetOfSupportCheckpointIndex = previousState.back().second;
+        if(firstSetOfSupportCheckpointIndex < clauseForm->clauseForm.size()) {
             std::cerr << "enters inside multithreading!\n";
             std::cerr.flush();
-            int startPosition = previousState[firstSetOfSupportCheckpointIndex];
             std::for_each(std::execution::par_unseq, std::begin(indexes), std::end(indexes), [&](auto&& index) {
                 if(isDeleted.find(index) == isDeleted.end()) {
-                    for(int index2 = startPosition; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
+                    for(int index2 = firstSetOfSupportCheckpointIndex; index2 < (int)clauseForm->clauseForm.size(); ++index2) {
                         if(isDeleted.find(index2) != isDeleted.end()) {
                             continue;
                         }
@@ -130,9 +130,9 @@ bool BasicTheoremProver::resolutionStep(LiteralPredicate literalPredicate, Resol
             std::cerr << "it's outside multithreading!\n";
             std::cerr.flush();
         }
-        firstSetOfSupportCheckpointIndex++;
+        firstSetOfSupportCheckpointIndex = clauseForm->clauseForm.size();
+        previousState.emplace_back(clauseForm->clauseForm.size(), firstSetOfSupportCheckpointIndex);
         if(!clauses.empty()) {
-            previousState.push_back(clauseForm->clauseForm.size());
             bool derivedEmpty = false;
             for(auto& keyValue : clauses) {
                 auto& currentClause = keyValue.second;

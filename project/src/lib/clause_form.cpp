@@ -40,35 +40,37 @@ bool checkTwoColorability(const string& node, const unordered_map<string, vector
 
 namespace utils {
 
+void ClauseForm::enforceNotHaving(const string& x, const string& y) {
+    if(allVariableNames.find(x) != allVariableNames.end()) {
+        auto which = RandomFactory::getRandomVariableName(allVariableNames);
+        while(which == y) {
+            allVariableNames.erase(allVariableNames.find(which));
+            which = RandomFactory::getRandomVariableName(allVariableNames);
+        }
+        applySubstitution({ x, which });
+        allVariableNames.erase(allVariableNames.find(x));
+    }
+}
+
 void ClauseForm::makeVariableNamesUniquePerClause() {
-    unordered_set<string> soFar;
+    allVariableNames.clear();
     for(auto& clause : clauseForm) {
         auto allVariables = clause->getAllVariables();
-        unordered_set<string> localVariables;
         for(auto& variable : allVariables) {
-            if(soFar.find(variable) != soFar.end()) {
+            if(allVariableNames.find(variable) != allVariableNames.end()) {
                 auto substitution = make_pair(variable, RandomFactory::getRandomVariableName(allVariableNames));
                 clause->applySubstitution(substitution);
-                localVariables.insert(substitution.second);
             } else {
-                localVariables.insert(variable);
+                allVariableNames.insert(variable);
             }
         }
-        AdHocTemplated<string>::unionIterablesUnorderedSetInPlace(soFar, localVariables, allVariableNames);
     }
-    auto enforceNotHaving = [&](const string& x, const string& y) -> void {
-        if(allVariableNames.find(x) != allVariableNames.end()) {
-            auto which = RandomFactory::getRandomVariableName(allVariableNames);
-            while(which == y) {
-                allVariableNames.erase(allVariableNames.find(which));
-                which = RandomFactory::getRandomVariableName(allVariableNames);
-            }
-            applySubstitution({ x, which });
-            allVariableNames.erase(allVariableNames.find(x));
-        }
-    };
     enforceNotHaving("_v_x", "_v_y");
     enforceNotHaving("_v_y", "_v_x");
+    if(allVariableNames.find("_v_x") != allVariableNames.end() or allVariableNames.find("_v_y") != allVariableNames.end()) {
+        throw logic_error("[Clause form] At this point _v_x and _v_y should not occur "
+                          "in the clause form.");
+    }
 }
 
 void ClauseForm::renameFunction(const std::pair<std::string, std::string>& mapping) {
@@ -111,6 +113,7 @@ std::string ClauseForm::getStringWithIndex(const std::unordered_map<int, int>& i
 }
 
 bool ClauseForm::makeTwoVariableFragment() {
+    makeVariableNamesUniquePerClause();
     unordered_map<string, vector<string>> graph;
     for(auto& clause : clauseForm) {
         if(clause->getMaximumNumberOfVariablesPerLiteral() > 2 or clause->hasNestedFunctions()) {
@@ -119,6 +122,9 @@ bool ClauseForm::makeTwoVariableFragment() {
             auto literals = clause->getLiterals();
             for(auto& literal : literals) {
                 auto vars = literal->getAllVariables();
+                if(vars.size() > 2) {
+                    return false;
+                }
                 if(vars.size() == 2) {
                     vector<string> variables(vars.begin(), vars.end());
                     graph[variables[0]].emplace_back(variables[1]);
@@ -141,8 +147,10 @@ bool ClauseForm::makeTwoVariableFragment() {
         throw logic_error("[Two Variable Fragment Validity] At this point _v_x and _v_y should not occur "
                           "in the given clause form.");
     }
+    allVariableNames.clear();
     for(auto& substitution : answer) {
         string which = substitution.second ? "_v_x" : "_v_y";
+        allVariableNames.insert(which);
         applySubstitution({ substitution.first, which });
     }
     return true;

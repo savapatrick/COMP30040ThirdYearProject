@@ -22,6 +22,7 @@ class ClauseForm {
     std::unordered_set<std::string> allVariableNames;
     std::unordered_set<std::string> allConstantNames;
 
+    void enforceNotHaving(const std::string& x, const std::string& y);
     void applySubstitution(const std::pair<std::string, std::string>& mapping);
     void renameFunction(const std::pair<std::string, std::string>& mapping);
     void copyToThis(const std::shared_ptr<ClauseForm>& other);
