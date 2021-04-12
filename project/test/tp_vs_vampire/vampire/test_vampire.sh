@@ -3,8 +3,9 @@ while true; do
   for A in {1..15}; do
     for B in {1..15}; do
       for C in {1..15}; do
-        for P in {1..15}; do
+        for P in {1..1000}; do
           for LMAX in {1..15}; do
+            echo "A=$A B=$B C=$C P=$P LMAX=$LMAX"
             python3.8 ../../test_generators/generator_scott_form.py -A "$A" -B "$B" -C "$C" -E -LMIN 1 -LMAX "$LMAX" -P "$P" -VP
             ./vampire_z3_Release_static_master_4764 <input_vampire.txt >output_vampire.txt
             exit_code=$?
