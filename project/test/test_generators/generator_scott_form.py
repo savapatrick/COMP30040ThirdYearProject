@@ -79,10 +79,10 @@ class ScottClauseRandomGenerator:
         else:
             equality_part = f" ^ ({self.equality.tp_output()})" if self.has_equality else ""
             result = f'''{'^'.join([f"@{self.variables[0].lower()}?{self.variables[1].lower()}("
-                                  + '^'.join(["((" + '|'.join(predicate.tp_output() for predicate in clause) + 
-                                              ")" + equality_part + ")"
-                                              for clause in clause_form]) + ")"
-                                  for clause_form in self.beta])}'''
+                                    + '^'.join(["((" + '|'.join(predicate.tp_output() for predicate in clause) +
+                                                ")" + equality_part + ")"
+                                                for clause in clause_form]) + ")"
+                                    for clause_form in self.beta])}'''
         return re.sub(r"\s+", "", result, flags=re.UNICODE)
 
     def vampire_output(self):
@@ -96,11 +96,11 @@ class ScottClauseRandomGenerator:
         else:
             equality_part = f" & ({self.equality.vampire_output()})" if self.has_equality else ""
             result = f'''{'&'.join([f"![{self.variables[0].lower().capitalize()}]: "
-                                  f"?[{self.variables[1].lower().capitalize()}]: ("
-                                  + '&'.join(['((' + '|'.join(predicate.vampire_output() for predicate in clause) +
-                                              ')' + equality_part + ')'
-                                              for clause in clause_form]) + ")"
-                                  for clause_form in self.beta])}'''
+                                    f"?[{self.variables[1].lower().capitalize()}]: ("
+                                    + '&'.join(['((' + '|'.join(predicate.vampire_output() for predicate in clause) +
+                                                ')' + equality_part + ')'
+                                                for clause in clause_form]) + ")"
+                                    for clause_form in self.beta])}'''
         return re.sub(r"\s+", "", result, flags=re.UNICODE)
 
 
