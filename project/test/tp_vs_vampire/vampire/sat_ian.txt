@@ -1,0 +1,1 @@
+fof(one, conjecture, ((![X]:![Y]:(((p(X,Y) | q(X, Y)) & (p(X, Y) | p(Y, X)))|(X=Y)) & (![X]:?[Y]:(((p(X,Y))&(X!=Y))))))).
