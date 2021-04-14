@@ -15,12 +15,10 @@ possible_connectors = ["->", "|", "^", "|"]
 
 
 def generate_random_lowercase(how_many):
-    # todo: probably worth refactoring here
     return "".join(choice(string.ascii_lowercase) for _ in range(how_many))
 
 
 def generate_constant(variables_so_far, constants_so_far):
-    # todo: probably worth refactoring here
     new_constant = generate_random_lowercase(randint(1, CONSTANT_LENGTH_MAX))
     while new_constant in variables_so_far or new_constant in constants_so_far:
         new_constant = generate_random_lowercase(randint(1, CONSTANT_LENGTH_MAX))
@@ -29,7 +27,6 @@ def generate_constant(variables_so_far, constants_so_far):
 
 
 def generate_variable(variables_so_far, constants_so_far):
-    # todo: probably worth refactoring here
     new_variable = generate_random_lowercase(randint(1, VARIABLE_LENGTH_MAX))
     while new_variable in variables_so_far or new_variable in constants_so_far:
         new_variable = generate_random_lowercase(randint(1, VARIABLE_LENGTH_MAX))
@@ -96,7 +93,7 @@ def formula(predicates_so_far, variabes_so_far, constants_so_far, limit):
 
 if __name__ == "__main__":
     with open("output.txt", "w") as out:
-        size_limit = randint(1, 2500)
+        size_limit = randint(1, 250)
         predicates_number = randint(1, MAX_NUMBER_PREDICATES)
         predicates = []
         for _ in range(predicates_number):

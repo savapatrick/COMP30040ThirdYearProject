@@ -1,0 +1,1 @@
+fof(one, negated_conjecture, (((![X]:![Y]:(((p(X, Y) & ~p(X, Y)))|(X=Y)) & (![X]:?[Y]:(((q(X,Y))&(X!=Y)))))))).
