@@ -48,7 +48,8 @@ MAX_LITERALS_PER_CLAUSE = arguments.max_literals_per_clause
 
 
 class ScottClauseRandomGenerator:
-    def __init__(self, _is_alpha, _number_of_clauses, _has_equality, _variable_manager, _predicate_manager, _conjunctions=None):
+    def __init__(self, _is_alpha, _number_of_clauses, _has_equality, _variable_manager, _predicate_manager,
+                 _conjunctions=None):
         self.is_alpha = _is_alpha
         self.has_equality = _has_equality
         self.variables = _variable_manager.get_variables()
@@ -118,9 +119,11 @@ if __name__ == "__main__":
                 th.flush()
         if arguments.vampire:
             with open("input_vampire.txt", "w") as vampire:
-                vampire.write(f"fof(one, negated_conjecture, ~(({alpha.vampire_output()}) & ({beta.vampire_output()}))).")
+                vampire.write(
+                    f"fof(one, negated_conjecture, ~(({alpha.vampire_output()}) & ({beta.vampire_output()}))).")
                 vampire.flush()
             with open("input_vampire_statistics.txt", "w") as vampire:
-                vampire.write(f"fof(one, negated_conjecture, (({alpha.vampire_output()}) & ({beta.vampire_output()}))).")
+                vampire.write(
+                    f"fof(one, negated_conjecture, (({alpha.vampire_output()}) & ({beta.vampire_output()}))).")
                 vampire.flush()
     exit(0)
