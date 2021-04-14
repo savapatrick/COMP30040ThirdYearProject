@@ -16,6 +16,7 @@ class DepthOrderedTheoremProver : public BasicTheoremProver {
     const std::string& _fileName = "theorem_prover.txt")
     : BasicTheoremProver(_clauseForm, allowEquality, _fileName) {
     }
+    static bool isAOrdering(const std::shared_ptr<Literal>& first, const std::shared_ptr<Literal>& second);
     bool run() override;
     bool boundedRun();
     bool unboundedRun();
