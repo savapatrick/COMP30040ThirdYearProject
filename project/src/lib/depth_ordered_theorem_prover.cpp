@@ -11,34 +11,34 @@ using namespace std;
 
 namespace utils {
 
+bool DepthOrderedTheoremProver::isAOrdering(const shared_ptr<Literal>& first, const shared_ptr<Literal>& second) {
+    auto getDepthsFirst  = first->getDepths();
+    auto getDepthsSecond = second->getDepths();
+    if(getDepthsFirst.second.empty() and getDepthsSecond.second.empty() and getDepthsFirst.first <= getDepthsSecond.first) {
+        return false;
+    }
+    for(auto& variableAndDepth : getDepthsFirst.second) {
+        auto variable = variableAndDepth.first;
+        auto depth    = variableAndDepth.second;
+        if(depth >= getDepthsSecond.second[variable]) {
+            return false;
+        }
+    }
+    for(auto& variableAndDepth : getDepthsSecond.second) {
+        auto variable = variableAndDepth.first;
+        auto depth    = variableAndDepth.second;
+        if(depth <= getDepthsFirst.second[variable]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool DepthOrderedTheoremProver::run() {
     auto literalPredicate = [](shared_ptr<Literal>& first, shared_ptr<Literal>& second) -> bool {
         return (first->isNegated != second->isNegated) and (first->predicateName == second->predicateName);
     };
-    auto isAOrdering = [&](const shared_ptr<Literal>& first, const shared_ptr<Literal>& second) -> bool {
-        auto getDepthsFirst  = first->getDepths();
-        auto getDepthsSecond = second->getDepths();
-        if(getDepthsFirst.second.empty() and getDepthsSecond.second.empty() and getDepthsFirst.first <= getDepthsSecond.first) {
-            return false;
-        }
-        for(auto& variableAndDepth : getDepthsFirst.second) {
-            auto variable = variableAndDepth.first;
-            auto depth    = variableAndDepth.second;
-            if(depth >= getDepthsSecond.second[variable]) {
-                return false;
-            }
-        }
-        for(auto& variableAndDepth : getDepthsSecond.second) {
-            auto variable = variableAndDepth.first;
-            auto depth    = variableAndDepth.second;
-            if(depth <= getDepthsFirst.second[variable]) {
-                return false;
-            }
-        }
-        return true;
-    };
-    auto resolventPredicate = [&isAOrdering](const std::shared_ptr<Literal>& resolvedLiteral,
-                              const std::shared_ptr<Clause>& clause) -> bool {
+    auto resolventPredicate = [&](const std::shared_ptr<Literal>& resolvedLiteral, const std::shared_ptr<Clause>& clause) -> bool {
         auto resolvents = clause->getLiterals();
         for(auto& resolvent : resolvents) {
             if(isAOrdering(resolvedLiteral, resolvent)) {

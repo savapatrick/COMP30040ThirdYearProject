@@ -20,8 +20,17 @@ bool TwoVariableTheoremProver::fullResolutionTwoVariableLiterals() {
         return (first->getAllVariables().size() == 2 or second->getAllVariables().size() == 2) and
         !first->isEquality and !second->isEquality;
     };
-    auto resolventPredicate = [](const std::shared_ptr<Literal>& resolvedLiteral,
-                              const std::shared_ptr<Clause>& clause) -> bool { return true; };
+    auto resolventPredicate = [&](const std::shared_ptr<Literal>& resolvedLiteral, const std::shared_ptr<Clause>& clause) -> bool {
+        // uncomment the next line in case we do not want to be depth-ordered
+        // return true
+        auto resolvents = clause->getLiterals();
+        for(auto& resolvent : resolvents) {
+            if(DepthOrderedTheoremProver::isAOrdering(resolvedLiteral, resolvent)) {
+                return false;
+            }
+        }
+        return true;
+    };
     outputData();
     if(resolutionStep<decltype(literalPredicate), decltype(resolventPredicate)>(literalPredicate, resolventPredicate)) {
         outputStream << "proved by deriving the empty clause!\n";

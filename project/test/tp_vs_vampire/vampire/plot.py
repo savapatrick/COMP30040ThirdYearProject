@@ -1,6 +1,7 @@
-from matplotlib import pyplot
-import numpy
 import fileinput
+
+import numpy
+from matplotlib import pyplot
 
 SX = []
 SY = []
