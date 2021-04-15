@@ -6,6 +6,8 @@ from matplotlib import pyplot
 total = {}
 sat = {}
 
+pyplot.title("The probability for satisfiability\nLMIN is 1, LMAX is 3\n100 data samples for each tuple (A, P, C)")
+
 for line in fileinput.input():
     a, p, c, res = line.split()
     a = int(a)
@@ -39,25 +41,25 @@ for a in range(1, 51):
             points[cm[curCol]][1].append(sat[(a, p, c)]/total[(a, p, c)] * 100)
             curCol += 1
 
-# for col in range(8):
-#     pyplot.scatter(points[cm[col]][0], points[cm[col]][1])
-#     pyplot.plot(points[cm[col]][0], points[cm[col]][1])
-# 
+for col in range(8):
+    pyplot.scatter(points[cm[col]][0], points[cm[col]][1])
+    pyplot.plot(points[cm[col]][0], points[cm[col]][1])
+
 for col in range(8, 16):
     pyplot.scatter(points[cm[col]][0], points[cm[col]][1])
     pyplot.plot(points[cm[col]][0], points[cm[col]][1], linestyle='dashed')
 
 labels = []
-# for p in [10, 35]:
-#     for c in [10, 25, 40, 50]:
-#         labels.append(f"P={p} and C={c}")
-#
+for p in [10, 35]:
+    for c in [10, 25, 40, 50]:
+        labels.append(f"P={p} and C={c}")
+
 for p in [60, 100]:
     for c in [10, 25, 40, 50]:
         labels.append(f"P={p} and C={c}")
 
 pyplot.legend(labels)
-pyplot.xlabel("value for A")
-pyplot.ylabel("Probability of Satisfiability")
+pyplot.xlabel("Value for A")
+pyplot.ylabel("Probability of Satisfiability (%)")
 
 pyplot.show()
