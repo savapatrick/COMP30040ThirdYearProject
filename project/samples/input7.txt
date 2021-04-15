@@ -1,5 +1,0 @@
-~(?x(Bigs(x)^Bigq(x)))
-@x(Bigp(x)->(Bigq(x)|Bigr(x)))
-(~(?x(Bigp(x)))->?y(Bigq(y)))
-(@x((Bigq(x)|Bigr(x))->Bigs(x)))
-?x(Bigp(x)^Bigr(x))

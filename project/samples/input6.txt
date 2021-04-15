@@ -1,4 +1,0 @@
-@x(Happy(x)<->?y(Loves(x,y)))
-@x(Rich(x)->Loves(x, money))
-Rich(patrick)
-Happy(patrick)

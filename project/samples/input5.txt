@@ -1,3 +1,0 @@
-?x(Artst(x) ^ @y(Bkpr(y) -> ~Hate(x,y)))
-@x(Bkpr(x) -> ?y(Artst(y) ^ Hate(x, y)))
-?x(Artst(x) ^ ~Bkpr(x))

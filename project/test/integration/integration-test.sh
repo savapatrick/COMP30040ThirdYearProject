@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for i in {1..47}; do
+for i in {1..3}; do
   printf "=====================================\n\n"
   echo "" >basic_theorem_prover_output.txt
   echo "" >two_variable_theorem_prover_output.txt
