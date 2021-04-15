@@ -7,3 +7,6 @@ output_vampire.txt
 two_variable_theorem_prover_output.txt
 basic_theorem_prover_output.txt
 input_vampire_statistics.txt
+possible_errors_tp.txt
+tp_overall_errors.txt
+vampire_overall_errors.txt
