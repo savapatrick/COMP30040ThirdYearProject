@@ -56,15 +56,16 @@ class ScottClauseRandomGenerator:
         assert len(self.variables) == 2
         number_of_literals_per_clause = random.randint(MIN_LITERALS_PER_CLAUSE, MAX_LITERALS_PER_CLAUSE)
         if _is_alpha:
-            self.alpha = [[Predicate(_predicate_manager.choice(), 2, _variable_manager.choices(2),
+            self.alpha = [[Predicate(_predicate_manager.choice(), 2, _variable_manager.sample(2),
                                      random.choice([False, True])) for _ in range(number_of_literals_per_clause)]
                           for _ in range(_number_of_clauses)]
         else:
+            assert _number_of_clauses == 1
             if _conjunctions is None:
                 raise ValueError("[Scott Clause]: for the beta clauses, the number of conjunctions has to be given")
-            self.beta = [[[Predicate(_predicate_manager.choice(), 2, _variable_manager.choices(2),
-                                     random.choice([False, True])) for _ in range(number_of_literals_per_clause)]
-                          for _ in range(_number_of_clauses)] for _ in range(_conjunctions)]
+            self.beta = [[[Predicate(_predicate_manager.choice(), 2, _variable_manager.sample(2), False)
+                           for _ in range(1)]
+                          for _ in range(1)] for _ in range(_conjunctions)]
         if self.has_equality:
             self.equality = Equality(self.variables[0], self.variables[1], not _is_alpha)
 
@@ -118,6 +119,11 @@ if __name__ == "__main__":
                 th.flush()
         if arguments.vampire:
             with open("input_vampire.txt", "w") as vampire:
-                vampire.write(f"fof(one, conjecture, (({alpha.vampire_output()}) & ({beta.vampire_output()}))).")
+                vampire.write(
+                    f"fof(one, negated_conjecture, ~(({alpha.vampire_output()}) & ({beta.vampire_output()}))).")
+                vampire.flush()
+            with open("input_vampire_statistics.txt", "w") as vampire:
+                vampire.write(
+                    f"fof(one, negated_conjecture, (({alpha.vampire_output()}) & ({beta.vampire_output()}))).")
                 vampire.flush()
     exit(0)
